@@ -1,26 +1,66 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #FAF6F2;
+  --foreground: #201A1D;
+  --card: #FFFFFF;
+  --card-foreground: #201A1D;
+  --popover: #FFFFFF;
+  --popover-foreground: #201A1D;
+  --primary: #FA5271;
+  --primary-foreground: #FFFFFF;
+  --primary-light: #FFEBF0;
+  --secondary: #F6EFF0;
+  --secondary-foreground: #362B30;
+  --muted: #8E8287;
+  --muted-foreground: #73696E;
+  --accent: #FFF0F3;
+  --accent-foreground: #FA5271;
+  --border: #EFE6E2;
+  --input: #F3EAE6;
+  --ring: #FA5271;
+  --radius: 1.25rem;
 }
 
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-light: var(--primary-light);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --font-sans: var(--font-app), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
 }
+
+/* Custom scrollbar hiding for clean mobile presentation */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Touch targets and tap improvements */
+button, a {
+  touch-action: manipulation;
+}
+
