@@ -5,8 +5,11 @@ import { createBrowserClient } from "@supabase/ssr";
  * Only uses public environment variables (NEXT_PUBLIC_*).
  */
 export function createClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  let supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+
+  // Strip trailing slashes or accidentally included /rest/v1
+  supabaseUrl = supabaseUrl.replace(/\/rest\/v1\/?$/, "").replace(/\/+$/, "");
 
   if (!supabaseUrl || !supabaseAnonKey) {
     // Return a dummy client during build or when env is missing to prevent runtime crash

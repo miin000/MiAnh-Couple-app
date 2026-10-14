@@ -6,11 +6,12 @@ export async function updateSession(request: NextRequest) {
     request,
   });
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  let supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+  supabaseUrl = supabaseUrl.replace(/\/rest\/v1\/?$/, "").replace(/\/+$/, "");
 
-  // If Supabase environment is not set up, pass through safely
-  if (!supabaseUrl || !supabaseAnonKey) {
+  // If Supabase environment is not set up, allow navigation
+  if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes("placeholder")) {
     return supabaseResponse;
   }
 
@@ -33,9 +34,36 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  // Refresh auth token by reading user session
-  // In Phase 0, we do not force redirect to login
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const path = request.nextUrl.pathname;
+
+  const isAuthRoute = path === "/login" || path === "/register";
+  const isProtectedRoute =
+    path === "/pair" ||
+    path.startsWith("/home") ||
+    path.startsWith("/discover") ||
+    path.startsWith("/play") ||
+    path.startsWith("/learn") ||
+    path.startsWith("/our-space") ||
+    path.startsWith("/settings");
+
+  // If user is not logged in and tries to access protected app routes
+  if (!user && isProtectedRoute) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
+  // If user is already logged in and tries to access login or register
+  if (user && isAuthRoute) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/home";
+    return NextResponse.redirect(url);
+  }
 
   return supabaseResponse;
 }
+

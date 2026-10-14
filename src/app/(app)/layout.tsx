@@ -1,10 +1,31 @@
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 import { BottomNav } from "@/components/layout/bottom-nav";
 
-export default function AppLayout({
+export default async function AppLayout({
+
+
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  // Check if user has an active couple
+  const { data: coupleId } = await supabase.rpc("current_couple_id");
+
+  if (!coupleId) {
+    redirect("/pair");
+  }
+
   return (
     <div className="min-h-screen bg-[#FAF6F2] flex justify-center text-[#201A1D]">
       {/* Mobile container - optimized for 375px+ */}
@@ -17,3 +38,4 @@ export default function AppLayout({
     </div>
   );
 }
+
