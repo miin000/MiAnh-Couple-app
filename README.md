@@ -317,9 +317,10 @@ Truy cập endpoint kiểm tra trạng thái:
 ### 5. Trang Quản Trị Hệ Thống (Admin Dashboard)
 Đường dẫn: [http://localhost:3000/admin](http://localhost:3000/admin) (riêng biệt, không nằm trong bottom navigation của cặp đôi).
 
-#### 2 Tài khoản Quản trị viên (Admin) sẵn dùng:
-- **Admin 1**: `admin1@mianh.app` / Mật khẩu: `AdminPassword@123`
-- **Admin 2**: `admin2@mianh.app` / Mật khẩu: `AdminPassword@123`
+#### Cấp quyền quản trị viên:
+- Không dùng tài khoản hoặc mật khẩu quản trị viên mặc định trong repository.
+- Tạo tài khoản trong Supabase Authentication, sau đó cập nhật `profiles.is_admin = true` cho tài khoản đó bằng SQL Editor hoặc migration riêng trong môi trường production.
+- Không đưa mật khẩu production vào README, seed hoặc source code.
 
 #### Tính năng Bảng Quản trị:
 - **Tổng quan**: Thống kê số lượng câu hỏi & trò chơi (Daily, Nói thật, Thử thách), từ vựng học tập, gợi ý hẹn hò, người dùng và bảng phân bố 4 mức chi tiêu.

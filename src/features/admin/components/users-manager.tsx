@@ -72,13 +72,13 @@ export function UsersManager({ initialUsers, currentUserId }: UsersManagerProps)
           <KeyRound className="w-4 h-4" />
         </div>
         <div className="text-xs space-y-1 text-[#201A1D]">
-          <div className="font-extrabold">2 Tài khoản Quản trị viên (Admin) sẵn sàng</div>
-          <div className="text-stone-600 leading-relaxed font-mono">
-            • admin1@mianh.app (Pass: AdminPassword@123)<br />
-            • admin2@mianh.app (Pass: AdminPassword@123)
+          <div className="font-extrabold">Cấp quyền quản trị viên</div>
+          <div className="text-stone-600 leading-relaxed">
+            Tạo tài khoản trong Supabase Authentication rồi cập nhật quyền
+            quản trị cho tài khoản đó trong cơ sở dữ liệu.
           </div>
           <div className="text-[11px] text-[#7C4DFF] font-medium pt-0.5">
-            Bạn có thể dùng tài khoản trên để đăng nhập hoặc quản lý phân quyền cho tài khoản khác.
+            Không hiển thị hoặc lưu mật khẩu quản trị trong ứng dụng.
           </div>
         </div>
       </Card>
