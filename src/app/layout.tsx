@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Nunito } from "next/font/google";
 import "./globals.css";
 import { PwaRegister } from "@/components/pwa-register";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const appFont = Nunito({
   variable: "--font-app",
@@ -42,6 +43,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-[#FAF6F2] text-[#201A1D]">
         <PwaRegister />
         {children}
+        <SpeedInsights />
       </body>
     </html>
   );
