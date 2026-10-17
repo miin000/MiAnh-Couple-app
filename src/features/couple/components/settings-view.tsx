@@ -11,7 +11,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { CoupleAvatars } from "@/components/shared/couple-avatars";
-import { User, Calendar, KeyRound, LogOut, Save, Copy, Check, RefreshCw } from "lucide-react";
+import { User, Calendar, KeyRound, LogOut, Save, Copy, Check, RefreshCw, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { PwaInstallGuide } from "@/components/pwa-install-guide";
 
 export interface CoupleMember {
   user_id: string;
@@ -27,6 +29,7 @@ export interface SettingsViewProps {
   memberCount: number;
   members: CoupleMember[];
   activeInviteCode?: string | null;
+  isAdmin?: boolean;
 }
 
 export function SettingsView({
@@ -35,6 +38,7 @@ export function SettingsView({
   memberCount,
   members,
   activeInviteCode,
+  isAdmin,
 }: SettingsViewProps) {
   const [copied, setCopied] = React.useState(false);
   const [inviteCode, setInviteCode] = React.useState<string | null>(activeInviteCode || null);
@@ -71,7 +75,9 @@ export function SettingsView({
       await navigator.clipboard.writeText(code);
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
-    } catch {}
+    } catch {
+      setServerMessage({ type: "error", text: "Không thể sao chép mã. Bạn hãy nhấn giữ để sao chép thủ công." });
+    }
   };
 
   const handleGenerateNewCode = async () => {
@@ -266,6 +272,27 @@ export function SettingsView({
         </div>
       )}
 
+      {isAdmin && (
+        <Card className="p-4 bg-gradient-to-r from-[#FFEBF0] to-[#FFF2EB] border-[#FA5271]/30 rounded-2xl flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-white text-[#FA5271] flex items-center justify-center shadow-2xs">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-[#201A1D]">Bảng Quản Trị Hệ Thống</div>
+              <div className="text-[11px] text-[#786D73]">Quản lý gợi ý, chi tiêu, từ vựng & thành viên</div>
+            </div>
+          </div>
+          <Link href="/admin">
+            <Button size="sm" className="rounded-xl bg-[#FA5271] hover:bg-[#E03A58] text-white text-xs font-bold h-8">
+              Mở Dashboard
+            </Button>
+          </Link>
+        </Card>
+      )}
+
+      <PwaInstallGuide />
+
       <div className="pt-2">
         <form action={logoutAction}>
           <Button
@@ -281,4 +308,3 @@ export function SettingsView({
     </div>
   );
 }
-

@@ -1,12 +1,13 @@
-import { getRandomItems, getDatePlans } from "@/features/randomizer/queries";
+import { getRandomItems, getDatePlans, getPriceLevelConfigs } from "@/features/randomizer/queries";
 import { getCurrentCouple } from "@/features/couple/queries";
 import { DiscoverView } from "@/features/randomizer/components/discover-view";
 
 export default async function DiscoverPage() {
-  const [items, plans, coupleInfo] = await Promise.all([
+  const [items, plans, coupleInfo, priceConfigs] = await Promise.all([
     getRandomItems(),
     getDatePlans(),
     getCurrentCouple(),
+    getPriceLevelConfigs(),
   ]);
 
   const isPaired = Boolean(coupleInfo && coupleInfo.member_count >= 2);
@@ -19,9 +20,11 @@ export default async function DiscoverPage() {
     <DiscoverView
       initialItems={items}
       plans={plans}
+      priceConfigs={priceConfigs}
       isPaired={isPaired}
       coupleInitials={initials}
     />
   );
 }
+
 

@@ -24,7 +24,7 @@ export default async function SettingsPage() {
   // Fetch current user's profile
   const { data: profile } = await supabase
     .from("profiles")
-    .select("display_name, avatar_url")
+    .select("display_name, avatar_url, is_admin")
     .eq("id", user.id)
     .single();
 
@@ -41,6 +41,7 @@ export default async function SettingsPage() {
       memberCount={coupleInfo.member_count || 1}
       members={coupleInfo.members || []}
       activeInviteCode={coupleInfo.active_invite?.code}
+      isAdmin={profile?.is_admin === true}
     />
   );
 }

@@ -1,4 +1,4 @@
-import { DiscoverKind, RandomItem } from "@/types/discover";
+import { DiscoverKind, RandomItem, PriceLevelConfig } from "@/types/discover";
 import { Utensils, Wine, MapPin, Sparkles } from "lucide-react";
 
 export interface CategoryItem {
@@ -100,10 +100,89 @@ export function getItemEmoji(item: RandomItem): string {
   return fallback[item.kind] || "✨";
 }
 
-export function getPriceLevelText(level: number | null): string {
-  if (!level) return "Bình dân";
-  if (level === 1) return "Tiết kiệm (Dưới 100k)";
-  if (level === 2) return "Vừa phải (100k - 300k)";
-  if (level === 3) return "Tương đối (300k - 600k)";
-  return "Sang xịn (Trên 600k)";
+export interface PriceFilterOption {
+  value: number | "all";
+  label: string;
+  badge: string;
+  rangeText: string;
 }
+
+export const DEFAULT_PRICE_LEVEL_CONFIGS: PriceLevelConfig[] = [
+  {
+    level: 1,
+    label: "Tiết kiệm",
+    badge: "₫ (Dưới 100k)",
+    rangeText: "Dưới 100.000₫",
+    minCost: 0,
+    maxCost: 100000,
+    description: "Ăn vặt, trà đá, bánh mì vỉa hè, dạo công viên tự do.",
+  },
+  {
+    level: 2,
+    label: "Vừa phải",
+    badge: "₫₫ (100k - 300k)",
+    rangeText: "100.000₫ - 300.000₫",
+    minCost: 100000,
+    maxCost: 300000,
+    description: "Cơm tấm, phở ngon, cà phê máy lạnh, trà sữa đôi.",
+  },
+  {
+    level: 3,
+    label: "Tương đối",
+    badge: "₫₫₫ (300k - 600k)",
+    rangeText: "300.000₫ - 600.000₫",
+    minCost: 300000,
+    maxCost: 600000,
+    description: "Lẩu nướng, BBQ, cafe rooftop, bảo tàng nghệ thuật.",
+  },
+  {
+    level: 4,
+    label: "Sang xịn",
+    badge: "₫₫₫₫ (Trên 600k)",
+    rangeText: "Trên 600.000₫",
+    minCost: 600000,
+    maxCost: null,
+    description: "Fine dining lãng mạn, resort, workshop nến/gốm cao cấp.",
+  },
+];
+
+export function buildPriceFilterOptions(configs?: PriceLevelConfig[] | null): PriceFilterOption[] {
+  const source = configs && configs.length === 4 ? configs : DEFAULT_PRICE_LEVEL_CONFIGS;
+  return [
+    { value: "all", label: "Tất cả mức giá", badge: "Tất cả", rangeText: "Mọi ngân sách" },
+    ...source.map((c) => ({
+      value: c.level,
+      label: c.label,
+      badge: c.badge,
+      rangeText: c.rangeText,
+    })),
+  ];
+}
+
+export const PRICE_FILTER_OPTIONS: PriceFilterOption[] = buildPriceFilterOptions();
+
+export function getPriceLevelText(level: number | null, configs?: PriceLevelConfig[] | null): string {
+  if (!level) return "Bình dân";
+  const source = configs && configs.length === 4 ? configs : DEFAULT_PRICE_LEVEL_CONFIGS;
+  const found = source.find((c) => c.level === level);
+  if (found) {
+    return `${found.label} (${found.rangeText})`;
+  }
+  return "Bình dân";
+}
+
+/**
+ * Định dạng URL Google Maps chuẩn từ URL nhập hoặc địa chỉ
+ */
+export function formatGoogleMapsUrl(input: string | null | undefined): string | null {
+  if (!input) return null;
+  const trimmed = input.trim();
+  if (!trimmed) return null;
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(trimmed)}`;
+}
+
+
+

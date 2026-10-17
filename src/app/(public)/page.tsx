@@ -9,7 +9,7 @@ export default function PublicLandingPage() {
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-[#FFEBF0] text-[#FA5271] shadow-sm mb-4">
           <Heart className="w-8 h-8 fill-[#FA5271]" />
         </div>
-        <h1 className="text-3xl font-extrabold tracking-tight">Mi & Anh</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight">MiAnh</h1>
         <p className="text-sm text-[#7D7076] mt-2 max-w-xs mx-auto leading-relaxed">
           Không gian dành riêng cho hai người. Cùng chọn điều ngẫu nhiên, cùng trải nghiệm, cùng lưu giữ kỷ niệm.
         </p>

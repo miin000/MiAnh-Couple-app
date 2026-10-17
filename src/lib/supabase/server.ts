@@ -1,5 +1,15 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import dns from "node:dns";
+
+// Fix DNS resolution on Windows / Node 18+: prioritize IPv4 to avoid IPv6 connection timeout/hang
+if (typeof dns !== "undefined" && typeof dns.setDefaultResultOrder === "function") {
+  try {
+    dns.setDefaultResultOrder("ipv4first");
+  } catch {
+    // Ignore if not supported in the current environment
+  }
+}
 
 /**
  * Creates a Supabase client for Server Components, Route Handlers, and Server Actions.
@@ -60,3 +70,4 @@ export function createAdminClient() {
     }
   );
 }
+

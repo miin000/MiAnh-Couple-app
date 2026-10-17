@@ -1,14 +1,26 @@
 "use client";
 
-import { RandomItem } from "@/types/discover";
-import { getItemEmoji, getPriceLevelText } from "./discover-helpers";
+import { useState } from "react";
+import { RandomItem, PriceLevelConfig } from "@/types/discover";
+import {
+  getItemEmoji,
+  getPriceLevelText,
+  formatGoogleMapsUrl,
+} from "./discover-helpers";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Lightbulb, RefreshCw, Check } from "lucide-react";
+import {
+  Lightbulb,
+  RefreshCw,
+  Check,
+  MapPin,
+  ExternalLink,
+} from "lucide-react";
 
 interface SpinResultCardProps {
   item: RandomItem;
   categoryLabel: string;
+  priceConfigs?: PriceLevelConfig[];
   onSpinAgain: () => void;
   onSelect: () => void;
 }
@@ -16,10 +28,14 @@ interface SpinResultCardProps {
 export function SpinResultCard({
   item,
   categoryLabel,
+  priceConfigs,
   onSpinAgain,
   onSelect,
 }: SpinResultCardProps) {
+  const [imageError, setImageError] = useState(false);
   const emoji = getItemEmoji(item);
+  const mapsUrl = formatGoogleMapsUrl(item.map_url);
+  const hasValidImage = Boolean(item.image_url && !imageError);
 
   return (
     <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-300">
@@ -34,15 +50,30 @@ export function SpinResultCard({
       </div>
 
       {/* Main Result Card */}
-      <Card className="p-6 text-center bg-white border border-[#F2EAE5] shadow-[0_8px_30px_rgba(250,82,113,0.08)] rounded-3xl space-y-4">
-        {/* Large Emoji Badge */}
-        <div className="w-20 h-20 mx-auto rounded-3xl bg-[#FFF2EB] flex items-center justify-center text-4xl shadow-inner">
-          {emoji}
-        </div>
+      <Card className="p-5 sm:p-6 text-center bg-white border border-[#F2EAE5] shadow-[0_8px_30px_rgba(250,82,113,0.08)] rounded-3xl space-y-4 overflow-hidden">
+        {/* Visual Image / Large Emoji Badge */}
+        {hasValidImage ? (
+          <div className="relative w-full h-44 sm:h-52 rounded-2xl overflow-hidden bg-stone-100 border border-[#F2EAE5] shadow-inner">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={item.image_url!}
+              alt={item.title}
+              className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+              onError={() => setImageError(true)}
+            />
+            <div className="absolute top-2.5 right-2.5 w-10 h-10 rounded-xl bg-white/90 backdrop-blur-xs flex items-center justify-center text-xl shadow-xs">
+              {emoji}
+            </div>
+          </div>
+        ) : (
+          <div className="w-20 h-20 mx-auto rounded-3xl bg-[#FFF2EB] flex items-center justify-center text-4xl shadow-inner">
+            {emoji}
+          </div>
+        )}
 
         <div>
           <div className="inline-block text-[11px] font-bold text-[#FA5271] bg-[#FFEBF0] px-3 py-1 rounded-full uppercase tracking-wider mb-1.5">
-            {categoryLabel} · {getPriceLevelText(item.price_level)}
+            {categoryLabel} · {getPriceLevelText(item.price_level, priceConfigs)}
           </div>
           <h3 className="text-xl font-extrabold text-[#201A1D] mt-1">
             {item.title}
@@ -53,6 +84,22 @@ export function SpinResultCard({
             </p>
           )}
         </div>
+
+        {/* NÚT DẪN TỚI GOOGLE MAPS THEO ĐỊA CHỈ TỪ ADMIN */}
+        {mapsUrl && (
+          <div className="pt-1">
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-2xl bg-[#E8F0FE] hover:bg-[#D2E3FC] text-[#1967D2] border border-[#C2D7FA] text-xs font-bold transition-all shadow-xs active:scale-[0.98]"
+            >
+              <MapPin className="w-4 h-4 text-[#EA4335] shrink-0" />
+              <span>Xem địa chỉ trên Google Maps</span>
+              <ExternalLink className="w-3.5 h-3.5 opacity-70 shrink-0" />
+            </a>
+          </div>
+        )}
 
         {/* Tip Box */}
         {item.tip && (
@@ -91,3 +138,4 @@ export function SpinResultCard({
     </div>
   );
 }
+

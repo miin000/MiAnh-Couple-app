@@ -8,10 +8,23 @@ export interface RandomItem {
   description: string | null;
   tip: string | null;
   price_level: number | null;
+  image_url?: string | null;
+  map_url?: string | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;
 }
+
+export interface PriceLevelConfig {
+  level: number; // 1, 2, 3, 4
+  label: string;
+  badge: string;
+  rangeText: string;
+  minCost: number | null;
+  maxCost: number | null;
+  description: string;
+}
+
 
 export interface DatePlanItem {
   id: string;

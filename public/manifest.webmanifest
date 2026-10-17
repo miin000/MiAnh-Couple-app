@@ -1,0 +1,31 @@
+{
+  "name": "MiAnh — Không gian cho hai đứa",
+  "short_name": "MiAnh",
+  "description": "Không gian riêng cho hai người cùng trải nghiệm và lưu giữ kỷ niệm.",
+  "lang": "vi",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FAF6F2",
+  "theme_color": "#FA5271",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

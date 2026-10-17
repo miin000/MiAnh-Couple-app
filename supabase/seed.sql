@@ -112,20 +112,179 @@ on conflict (external_key) do update set
   is_active = excluded.is_active;
 
 -- ---------- Play ----------
+-- Daily: Vui vẻ (fun)
 insert into public.questions (external_key, kind, category, intimacy_level, text) values
-  ('daily-fun-1',     'daily', 'fun',      1, 'Nếu được ăn một món suốt một tuần, bạn chọn món nào?'),
-  ('daily-fun-2',     'daily', 'fun',      1, 'Siêu năng lực vô dụng nhưng buồn cười nhất bạn muốn có là gì?'),
-  ('daily-discover-1','daily', 'discover', 2, 'Một kỷ niệm tuổi thơ bạn nhớ rõ nhất là gì?'),
-  ('daily-discover-2','daily', 'discover', 2, 'Điều gì ở thành phố này bạn thích nhất?'),
-  ('daily-emotion-1', 'daily', 'emotion',  3, 'Khoảnh khắc nào gần đây khiến bạn thấy được yêu thương?'),
-  ('daily-deep-1',    'daily', 'deep',     4, 'Một điều bạn mong hai ta cùng làm được trong năm tới là gì?'),
-  ('truth-1',         'truth', 'fun',      1, 'Món ăn kỳ lạ nhất bạn từng thử là gì?'),
-  ('truth-2',         'truth', 'discover', 2, 'Lần đầu thấy mình thích người ấy là khi nào?'),
-  ('truth-3',         'truth', 'emotion',  3, 'Điều gì ở bản thân bạn muốn người ấy hiểu hơn?'),
-  ('dare-1',          'dare',  'fun',      1, 'Nhắn cho người ấy một tin nhắn chỉ bằng emoji để mô tả ngày hôm nay.'),
-  ('dare-2',          'dare',  'fun',      1, 'Bắt chước giọng của người ấy trong 10 giây.'),
-  ('dare-3',          'dare',  'emotion',  2, 'Kể ba điều bạn biết ơn ở người ấy.')
-on conflict (external_key) do nothing;
+  ('daily-fun-01', 'daily', 'fun', 1, 'Nếu được ăn một món suốt một tuần mà không chán, bạn chọn món nào?'),
+  ('daily-fun-02', 'daily', 'fun', 1, 'Siêu năng lực vô dụng nhưng buồn cười nhất bạn muốn có là gì?'),
+  ('daily-fun-03', 'daily', 'fun', 1, 'Nếu hai đứa mình xuyên không về thời cổ đại, ai sẽ là người sống sót lâu hơn?'),
+  ('daily-fun-04', 'daily', 'fun', 1, 'Bài hát nào hễ bật lên là bạn lập tức muốn nhún nhảy hoặc hát theo?'),
+  ('daily-fun-05', 'daily', 'fun', 1, 'Nếu được đổi tên cho người ấy bằng một loại trái cây, bạn sẽ chọn quả gì?'),
+  ('daily-fun-06', 'daily', 'fun', 1, 'Bộ phim hoạt hình nào bạn có thể xem đi xem lại mà không bao giờ chán?'),
+  ('daily-fun-07', 'daily', 'fun', 1, 'Nếu một ngày thức dậy bạn biến thành một chú mèo, bạn sẽ làm gì đầu tiên?'),
+  ('daily-fun-08', 'daily', 'fun', 1, 'Kỷ niệm "quê độ" nhất nhưng mỗi lần nhớ lại đều bật cười của bạn là gì?'),
+  ('daily-fun-09', 'daily', 'fun', 1, 'Món đồ linh tinh vô nghĩa nhất mà bạn từng mua trên mạng là gì?'),
+  ('daily-fun-10', 'daily', 'fun', 1, 'Nếu chúng mình cùng tham gia một gameshow sinh tồn, nhiệm vụ của bạn là gì?'),
+  ('daily-fun-11', 'daily', 'fun', 1, 'Thói quen kỳ quặc nhất khi ở nhà một mình của bạn là gì?'),
+  ('daily-fun-12', 'daily', 'fun', 1, 'Trang phục nào của người ấy khiến bạn thấy buồn cười hoặc đáng yêu nhất?'),
+  ('daily-fun-13', 'daily', 'fun', 1, 'Nếu trúng số độc đắc ngày mai, điều điên rồ đầu tiên bạn muốn làm là gì?'),
+  ('daily-fun-14', 'daily', 'fun', 1, 'Biểu cảm gương mặt nào của người ấy khiến bạn không thể nhịn được cười?'),
+  ('daily-fun-15', 'daily', 'fun', 1, 'Nếu được nuôi một con thú cưng kỳ lạ (cánh cụt, gấu trúc), bạn chọn con nào?'),
+  ('daily-fun-16', 'daily', 'fun', 1, 'Trò chơi điện tử hay board game nào bạn tự tin sẽ thắng người ấy 100%?'),
+  ('daily-fun-17', 'daily', 'fun', 1, 'Thời tiết lý tưởng nhất cho một ngày lười biếng trùm chăn xem phim cùng nhau?'),
+  ('daily-fun-18', 'daily', 'fun', 1, 'Nếu một ngày hai đứa bị lạc trên đảo hoang, bạn nghĩ ai sẽ tìm ra lửa trước?'),
+  -- Daily: Tìm hiểu (discover)
+  ('daily-discover-01', 'daily', 'discover', 2, 'Một kỷ niệm thời thơ ấu mà bạn nhớ rõ và trân trọng nhất là gì?'),
+  ('daily-discover-02', 'daily', 'discover', 2, 'Góc phố hay địa điểm nào ở thành phố này mang lại cho bạn cảm giác bình yên nhất?'),
+  ('daily-discover-03', 'daily', 'discover', 2, 'Ước mơ thời còn đi học của bạn là gì? Nó có khác nhiều so với hiện tại không?'),
+  ('daily-discover-04', 'daily', 'discover', 2, 'Cuốn sách hoặc bộ phim nào đã làm thay đổi góc nhìn cuộc sống của bạn nhiều nhất?'),
+  ('daily-discover-05', 'daily', 'discover', 2, 'Ai là người có sức ảnh hưởng lớn nhất đến tính cách và nhân sinh quan của bạn?'),
+  ('daily-discover-06', 'daily', 'discover', 2, 'Kỹ năng nào bạn luôn ấp ủ muốn học nhưng chưa có cơ hội thực hiện?'),
+  ('daily-discover-07', 'daily', 'discover', 2, 'Chuyến du lịch nào trong đời để lại cho bạn nhiều ấn tượng khó quên nhất?'),
+  ('daily-discover-08', 'daily', 'discover', 2, 'Một mùi hương gợi nhớ bạn về những ký ức ngọt ngào trong quá khứ là gì?'),
+  ('daily-discover-09', 'daily', 'discover', 2, 'Khi gặp áp lực trong công việc hoặc cuộc sống, cách bạn thường giải tỏa là gì?'),
+  ('daily-discover-10', 'daily', 'discover', 2, 'Một lời khuyên ý nghĩa nhất mà bạn từng nhận được từ một người khác?'),
+  ('daily-discover-11', 'daily', 'discover', 2, 'Bạn thuộc tuýp người thích đón bình minh thức giấc sớm hay thức khuya ngắm đêm?'),
+  ('daily-discover-12', 'daily', 'discover', 1, 'Nỗi sợ vô lý hoặc kỳ lạ nhất của bạn từ bé đến giờ là gì?'),
+  ('daily-discover-13', 'daily', 'discover', 2, 'Nếu có cơ hội sống ở một quốc gia khác trong 1 năm, bạn sẽ chọn nơi nào?'),
+  ('daily-discover-14', 'daily', 'discover', 2, 'Món ăn do mẹ hoặc người thân nấu khiến bạn luôn thấy ấm lòng mỗi khi nhớ tới?'),
+  ('daily-discover-15', 'daily', 'discover', 2, 'Một thành tựu nhỏ bé gần đây khiến bạn cảm thấy tự hào về bản thân?'),
+  ('daily-discover-16', 'daily', 'discover', 2, 'Thể loại âm nhạc nào luôn đồng hành cùng bạn những lúc tâm trạng chùng xuống?'),
+  ('daily-discover-17', 'daily', 'discover', 2, 'Đối với bạn, một ngày chủ nhật hoàn hảo sẽ diễn ra như thế nào?'),
+  ('daily-discover-18', 'daily', 'discover', 2, 'Tính cách nào ở một người bạn mà bạn coi trọng và tìm kiếm nhất?')
+on conflict (external_key) do update set text = excluded.text;
+  -- Daily: Cảm xúc (emotion)
+insert into public.questions (external_key, kind, category, intimacy_level, text) values
+  ('daily-emotion-01', 'daily', 'emotion', 3, 'Khoảnh khắc nào gần đây khiến bạn cảm nhận sâu sắc rằng mình được yêu thương?'),
+  ('daily-emotion-02', 'daily', 'emotion', 2, 'Điều nhỏ bé nào người ấy làm mỗi ngày luôn khiến bạn mỉm cười ấm lòng?'),
+  ('daily-emotion-03', 'daily', 'emotion', 3, 'Lần đầu tiên nhìn thấy người ấy, cảm xúc đầu tiên xuất hiện trong lòng bạn là gì?'),
+  ('daily-emotion-04', 'daily', 'emotion', 2, 'Khi ở bên cạnh người ấy, bạn cảm thấy mình giống đứa trẻ hay một phiên bản trưởng thành hơn?'),
+  ('daily-emotion-05', 'daily', 'emotion', 3, 'Một cái ôm hay một cái nắm tay từ người ấy có ý nghĩa như thế nào trong ngày mệt mỏi của bạn?'),
+  ('daily-emotion-06', 'daily', 'emotion', 3, 'Điều gì ở bản thân mà bạn cảm thấy tự tin và an tâm hơn rất nhiều từ khi yêu người ấy?'),
+  ('daily-emotion-07', 'daily', 'emotion', 2, 'Lời khen nào từ người ấy khiến bạn nhớ mãi không quên?'),
+  ('daily-emotion-08', 'daily', 'emotion', 3, 'Có khoảnh khắc nào hai đứa không nói lời nào nhưng bạn vẫn cảm thấy vô cùng gắn kết?'),
+  ('daily-emotion-09', 'daily', 'emotion', 2, 'Mỗi khi nghĩ về người ấy lúc xa nhau, điều đầu tiên hiện lên trong tâm trí bạn là gì?'),
+  ('daily-emotion-10', 'daily', 'emotion', 3, 'Hành động ấm áp nào của người ấy khiến bạn bất ngờ và xúc động nhất?'),
+  ('daily-emotion-11', 'daily', 'emotion', 2, 'Một bài hát nào mỗi khi cất lên giai điệu đều khiến bạn nhớ ngay đến người ấy?'),
+  ('daily-emotion-12', 'daily', 'emotion', 3, 'Khi chúng mình có chút hiểu lầm hoặc bất đồng, điều gì giúp bạn dễ nguôi ngoai nhất?'),
+  ('daily-emotion-13', 'daily', 'emotion', 2, 'Bạn thấy người ấy cuốn hút và đáng yêu nhất vào thời điểm nào trong ngày?'),
+  ('daily-emotion-14', 'daily', 'emotion', 3, 'Có khi nào bạn cảm thấy biết ơn vì số phận đã đưa người ấy bước vào cuộc đời mình chưa?'),
+  ('daily-emotion-15', 'daily', 'emotion', 3, 'Điều gì bạn rất muốn nói với người ấy hôm nay nhưng chưa có dịp mở lời?'),
+  ('daily-emotion-16', 'daily', 'emotion', 2, 'Một thói quen đáng yêu của người ấy mà chỉ có bạn mới nhận ra là gì?'),
+  ('daily-emotion-17', 'daily', 'emotion', 3, 'Cảm giác bình yên nhất trong tình yêu của hai đứa mình đối với bạn là gì?'),
+  ('daily-emotion-18', 'daily', 'emotion', 3, 'Nếu hôm nay chỉ được nói một câu nhắn nhủ tới người ấy, bạn sẽ nói điều gì?'),
+  -- Daily: Sâu sắc (deep)
+  ('daily-deep-01', 'daily', 'deep', 4, 'Một điều bạn mong ước hai đứa mình cùng nhau thực hiện được trong năm tới là gì?'),
+  ('daily-deep-02', 'daily', 'deep', 4, 'Theo bạn, thử thách lớn nhất mà hai đứa đã cùng nhau vượt qua là gì?'),
+  ('daily-deep-03', 'daily', 'deep', 3, 'Ngôi nhà lý tưởng trong tương lai của hai đứa mình trong tưởng tượng của bạn như thế nào?'),
+  ('daily-deep-04', 'daily', 'deep', 4, 'Điều gì trong mối quan hệ này giúp bạn trưởng thành và hoàn thiện bản thân hơn mỗi ngày?'),
+  ('daily-deep-05', 'daily', 'deep', 4, 'Khi chúng ta già đi, bạn hình dung một buổi chiều của hai đứa sẽ như thế nào?'),
+  ('daily-deep-06', 'daily', 'deep', 4, 'Quan điểm của bạn về sự tha thứ và bao dung trong tình yêu đôi lứa?'),
+  ('daily-deep-07', 'daily', 'deep', 4, 'Nỗi bất an lớn nhất của bạn về tương lai là gì, và người ấy có thể đồng hành cùng bạn ra sao?'),
+  ('daily-deep-08', 'daily', 'deep', 4, 'Điều gì là nền tảng quan trọng nhất giữ cho tình yêu của hai ta luôn bền chặt?'),
+  ('daily-deep-09', 'daily', 'deep', 4, 'Một bài học sâu sắc nhất về tình cảm mà bạn đã chiêm nghiệm được qua mối quan hệ này?'),
+  ('daily-deep-10', 'daily', 'deep', 4, 'Bạn mong muốn hai đứa mình sẽ cân bằng giữa sự nghiệp cá nhân và thời gian bên nhau thế nào?'),
+  ('daily-deep-11', 'daily', 'deep', 3, 'Nếu có một điều bạn có thể thay đổi để giúp hai đứa thấu hiểu nhau hơn nữa, đó là gì?'),
+  ('daily-deep-12', 'daily', 'deep', 4, 'Định nghĩa của bạn về một "người bạn đời đích thực" là như thế nào?'),
+  ('daily-deep-13', 'daily', 'deep', 4, 'Kỷ niệm khó khăn nào từng khiến bạn lo lắng, nhưng giờ nhìn lại lại thấy trân quý vì đã gắn kết hai đứa hơn?'),
+  ('daily-deep-14', 'daily', 'deep', 4, 'Bạn tin rằng điều gì làm nên sức mạnh để hai người có thể bên nhau trọn đời?'),
+  ('daily-deep-15', 'daily', 'deep', 4, 'Một giá trị sống cốt lõi nào bạn muốn cả hai cùng vun đắp và giữ gìn cho tổ ấm sau này?'),
+  ('daily-deep-16', 'daily', 'deep', 4, 'Khoảnh khắc nào khiến bạn nhận ra người ấy chính là người bạn muốn gắn bó lâu dài?'),
+  ('daily-deep-17', 'daily', 'deep', 4, 'Nếu được gửi một bức thư cho phiên bản của hai đứa mình 10 năm sau, bạn muốn viết gì?'),
+  ('daily-deep-18', 'daily', 'deep', 4, 'Điều gì khiến bạn tin tưởng vững chắc nhất vào tương lai của hai đứa mình?')
+on conflict (external_key) do update set text = excluded.text;
+
+
+  -- Truth: Thật (42 câu)
+insert into public.questions (external_key, kind, category, intimacy_level, text) values
+  ('truth-01', 'truth', 'fun', 1, 'Món ăn kỳ lạ hoặc kết hợp kỳ quặc nhất bạn từng thử lén ăn là gì?'),
+  ('truth-02', 'truth', 'fun', 1, 'Bạn đã bao giờ giả vờ thích một món quà hoặc một bộ phim để làm vui lòng người khác chưa?'),
+  ('truth-03', 'truth', 'fun', 1, 'Nếu bị phát hiện lịch sử tìm kiếm gần nhất trên điện thoại, bạn có thấy ngượng không?'),
+  ('truth-04', 'truth', 'fun', 1, 'Thói quen lười biếng nhất bạn hay làm khi không có ai ở nhà?'),
+  ('truth-05', 'truth', 'fun', 1, 'Bạn có bao giờ vô tình "stalk" trang cá nhân của ai đó đến vài năm trước chưa?'),
+  ('truth-06', 'truth', 'fun', 1, 'Nếu được hóa thân thành một nhân vật phản diện, bạn muốn là ai?'),
+  ('truth-07', 'truth', 'fun', 1, 'Điều ngốc nghếch nhất bạn từng làm chỉ để gây sự chú ý với một ai đó?'),
+  ('truth-08', 'truth', 'fun', 1, 'Lần gần nhất bạn nói dối vô hại (white lie) là về chuyện gì?'),
+  ('truth-09', 'truth', 'fun', 1, 'Món đồ chơi hay gấu bông thời thơ ấu nào bạn vẫn còn giữ hoặc nhớ mãi?'),
+  ('truth-10', 'truth', 'fun', 1, 'Bạn sợ con vật gì nhất trên đời dù nó hoàn toàn vô hại?'),
+  ('truth-11', 'truth', 'discover', 2, 'Ấn tượng đầu tiên của bạn về người ấy khác với thực tế sau khi yêu nhau ở điểm nào?'),
+  ('truth-12', 'truth', 'discover', 2, 'Khoảnh khắc chính xác nào khiến bạn nhận ra "thôi xong, mình đổ người này rồi"?'),
+  ('truth-13', 'truth', 'discover', 2, 'Trước buổi hẹn hò đầu tiên với người ấy, bạn đã thay bao nhiêu bộ quần áo?'),
+  ('truth-14', 'truth', 'discover', 2, 'Bạn đã từng chụp lén người ấy lúc ngủ hay lúc ngơ ngác chưa?'),
+  ('truth-15', 'truth', 'discover', 2, 'Điều gì ở người ấy từng khiến bạn cảm thấy hơi bối rối hoặc ngượng ngùng lúc mới quen?'),
+  ('truth-16', 'truth', 'discover', 2, 'Bạn lưu tên người ấy trong danh bạ điện thoại chính xác là gì?'),
+  ('truth-17', 'truth', 'discover', 2, 'Mỗi khi hai đứa giận nhau, bạn thường giữ giận được tối đa bao lâu trước khi nhớ người ấy?'),
+  ('truth-18', 'truth', 'discover', 2, 'Có tin nhắn nào của người ấy mà bạn đã chụp màn hình lại để đọc lại nhiều lần không?'),
+  ('truth-19', 'truth', 'discover', 2, 'Bộ phận nào trên gương mặt người ấy bạn thấy thu hút và thích ngắm nhất?'),
+  ('truth-20', 'truth', 'discover', 2, 'Lần đầu tiên người ấy chủ động nắm tay hoặc ôm, tim bạn đập nhanh thế nào?'),
+  ('truth-21', 'truth', 'emotion', 3, 'Có điều gì về bản thân mà bạn từng rất tự ti nhưng chưa từng kể với ai ngoại trừ người ấy?'),
+  ('truth-22', 'truth', 'emotion', 3, 'Có bao giờ bạn ghen nhưng lại cố tỏ ra là mình hoàn toàn bình thường không?'),
+  ('truth-23', 'truth', 'emotion', 3, 'Hành động nhỏ nào của người ấy khiến bạn dễ xúc động hoặc thấy yếu lòng nhất?'),
+  ('truth-24', 'truth', 'emotion', 3, 'Khi nào bạn cảm thấy nhớ người ấy đến mức chỉ muốn chạy ngay đến ôm một cái?'),
+  ('truth-25', 'truth', 'emotion', 3, 'Có thói quen hay sở thích nào của bạn đã thay đổi tích cực kể từ khi có người ấy bên cạnh?'),
+  ('truth-26', 'truth', 'emotion', 3, 'Điều gì ở người ấy khiến bạn thấy mình thật may mắn khi có được người yêu như vậy?'),
+  ('truth-27', 'truth', 'emotion', 3, 'Nếu một ngày bạn có chuyện buồn, bạn muốn được người ấy ôm im lặng hay lắng nghe tâm sự?'),
+  ('truth-28', 'truth', 'emotion', 3, 'Lần gần nhất bạn rơi nước mắt vì xúc động trước tình cảm của người ấy là khi nào?'),
+  ('truth-29', 'truth', 'emotion', 3, 'Có điều gì bạn mong người ấy khen ngợi hoặc công nhận mình nhiều hơn không?'),
+  ('truth-30', 'truth', 'emotion', 3, 'Bạn cảm nhận được tình yêu thương của người ấy rõ nhất qua hành động cụ thể nào?'),
+  ('truth-31', 'truth', 'deep', 4, 'Nỗi sợ lớn nhất của bạn trong mối quan hệ của hai đứa mình là gì?'),
+  ('truth-32', 'truth', 'deep', 4, 'Có bí mật hay suy nghĩ nào bạn từng ngần ngại chưa dám chia sẻ vì sợ người ấy lo lắng?'),
+  ('truth-33', 'truth', 'deep', 4, 'Điều gì về tương lai của hai đứa khiến bạn hào hứng nhất mỗi khi nghĩ tới?'),
+  ('truth-34', 'truth', 'deep', 4, 'Nếu có thể nhắn nhủ một điều chân thành nhất từ đáy lòng tới người ấy lúc này, đó là gì?'),
+  ('truth-35', 'truth', 'deep', 4, 'Bạn nghĩ điều gì đã giữ cho ngọn lửa tình cảm của hai ta luôn ấm áp qua thời gian?'),
+  ('truth-36', 'truth', 'deep', 4, 'Khi tưởng tượng về mái ấm gia đình tương lai, hình ảnh nào xuất hiện đầu tiên?'),
+  ('truth-37', 'truth', 'deep', 4, 'Điều khó khăn nhất trong quá khứ đã giúp bạn trân trọng tình yêu hiện tại như thế nào?'),
+  ('truth-38', 'truth', 'deep', 4, 'Bạn sẵn sàng thay đổi điều gì ở bản thân để mối quan hệ này ngày càng hòa hợp và bền vững?'),
+  ('truth-39', 'truth', 'deep', 4, 'Điều gì khiến bạn hoàn toàn tin tưởng trao trọn niềm tin cho người ấy?'),
+  ('truth-40', 'truth', 'deep', 4, 'Khoảnh khắc nào làm bạn tin rằng người ấy sẽ là bạn đời tuyệt vời của mình?'),
+  ('truth-41', 'truth', 'emotion', 3, 'Nếu được quay lại ngày đầu tiên gặp nhau, bạn có làm điều gì khác đi không?'),
+  ('truth-42', 'truth', 'deep', 4, 'Bạn trân trọng nhất đức tính nào ở người ấy mà bạn chưa từng thấy ở ai khác?')
+on conflict (external_key) do update set text = excluded.text;
+
+  -- Dare: Thách (42 câu)
+insert into public.questions (external_key, kind, category, intimacy_level, text) values
+  ('dare-01', 'dare', 'fun', 1, 'Nhắn cho người ấy một chuỗi 10 emoji mô tả lại cảm xúc của bạn lúc này.'),
+  ('dare-02', 'dare', 'fun', 1, 'Bắt chước một thói quen hoặc giọng điệu đặc trưng của người ấy trong 15 giây.'),
+  ('dare-03', 'dare', 'fun', 1, 'Chụp một bức ảnh tự sướng với biểu cảm mặt xấu hài hước nhất và gửi ngay cho người ấy.'),
+  ('dare-04', 'dare', 'fun', 1, 'Hát chay một câu điệp khúc trong bài hát tình yêu mà cả hai đứa đều thích.'),
+  ('dare-05', 'dare', 'fun', 1, 'Đọc to 3 tin nhắn ngọt ngào đầu tiên mà hai người từng nhắn cho nhau.'),
+  ('dare-06', 'dare', 'fun', 1, 'Làm biểu cảm hình trái tim bằng tay và nháy mắt đáng yêu với người ấy.'),
+  ('dare-07', 'dare', 'fun', 1, 'Nói câu "Em/Anh yêu người ấy nhất trên đời" bằng chất giọng hoạt hình ngộ nghĩnh.'),
+  ('dare-08', 'dare', 'fun', 1, 'Tìm một vật màu hồng trong phòng và giải thích vì sao nó tượng trưng cho tình yêu của hai đứa.'),
+  ('dare-09', 'dare', 'fun', 1, 'Bắt chước tiếng một con vật dễ thương (mèo con, cún con) để xin người ấy một cái ôm.'),
+  ('dare-10', 'dare', 'fun', 1, 'Tự chụp một góc bàn làm việc hoặc căn phòng kèm một lời chúc ngọt ngào gửi người ấy.'),
+  ('dare-11', 'dare', 'discover', 2, 'Kể tên 5 điều về thói quen ăn uống của người ấy mà bạn nhớ rõ như lòng bàn tay.'),
+  ('dare-12', 'dare', 'discover', 2, 'Gửi cho người ấy một bài hát trên Spotify/YouTube kèm lời nhắn: "Bài này làm tớ nhớ cậu".'),
+  ('dare-13', 'dare', 'discover', 2, 'Đổi biệt danh của người ấy trên ứng dụng nhắn tin thành một cái tên siêu ngọt ngào trong 24 giờ.'),
+  ('dare-14', 'dare', 'discover', 2, 'Kể lại chi tiết trang phục người ấy mặc trong buổi hẹn hò gần đây nhất.'),
+  ('dare-15', 'dare', 'discover', 2, 'Ghi âm một đoạn voice note 10 giây chúc người ấy một ngày thật tuyệt vời.'),
+  ('dare-16', 'dare', 'discover', 2, 'Lấy điện thoại ra chụp ảnh bàn tay của người ấy (hoặc bàn tay hai đứa đan vào nhau).'),
+  ('dare-17', 'dare', 'discover', 2, 'Viết nhanh 3 tính từ mô tả chính xác nhất sức hút của người ấy.'),
+  ('dare-18', 'dare', 'discover', 2, 'Tìm lại bức ảnh chụp chung đầu tiên của hai đứa và gửi lại vào tin nhắn.'),
+  ('dare-19', 'dare', 'discover', 2, 'Nhắm mắt lại và để người ấy chạm nhẹ vào trán hoặc mũi bạn trong 5 giây.'),
+  ('dare-20', 'dare', 'discover', 2, 'Hứa sẽ chuẩn bị một món ăn hoặc thức uống người ấy thích trong buổi gặp tới.'),
+  ('dare-21', 'dare', 'emotion', 3, 'Mát-xa vai hoặc gáy cho người ấy nhẹ nhàng trong vòng 2 phút.'),
+  ('dare-22', 'dare', 'emotion', 3, 'Nhìn thẳng vào mắt người ấy trong 30 giây không chớp mắt và mỉm cười.'),
+  ('dare-23', 'dare', 'emotion', 3, 'Dành cho người ấy một cái ôm thật chặt từ phía sau (hoặc ôm ấm áp) trong 20 giây.'),
+  ('dare-24', 'dare', 'emotion', 3, 'Hôn nhẹ lên trán hoặc má người ấy và nói lời cảm ơn vì đã luôn ở bên.'),
+  ('dare-25', 'dare', 'emotion', 3, 'Kể 3 điều cụ thể mà bạn vô cùng biết ơn người ấy trong tuần vừa qua.'),
+  ('dare-26', 'dare', 'emotion', 3, 'Thì thầm vào tai người ấy một điều ngọt ngào mà bạn chưa từng thổ lộ trước đây.'),
+  ('dare-27', 'dare', 'emotion', 3, 'Nắm chặt tay người ấy và đặt lên ngực mình để người ấy cảm nhận nhịp đập.'),
+  ('dare-28', 'dare', 'emotion', 3, 'Vuốt nhẹ mái tóc người ấy và nói một lời khen ngợi chân thành nhất.'),
+  ('dare-29', 'dare', 'emotion', 3, 'Viết một mẩu giấy nhỏ (hoặc tin nhắn ghi nhớ) với lời chúc yêu thương giấu vào túi áo người ấy.'),
+  ('dare-30', 'dare', 'emotion', 3, 'Để người ấy chọn trang phục hoặc kiểu tóc cho bạn trong buổi hẹn hò tiếp theo.'),
+  ('dare-31', 'dare', 'deep', 4, 'Viết một đoạn văn ngắn 3-4 câu bày tỏ lý do bạn chọn đồng hành cùng người ấy.'),
+  ('dare-32', 'dare', 'deep', 4, 'Cùng người ấy nhắm mắt tưởng tượng về chuyến du lịch trăng mật trong mơ và kể lại.'),
+  ('dare-33', 'dare', 'deep', 4, 'Nói lời xin lỗi chân thành về một lần bạn từng vô tâm hoặc làm người ấy buồn.'),
+  ('dare-34', 'dare', 'deep', 4, 'Bật một bản nhạc không lời nhẹ nhàng và cùng người ấy khiêu vũ chậm rãi trong phòng.'),
+  ('dare-35', 'dare', 'deep', 4, 'Kể cho người ấy nghe về khoảnh khắc bạn nhận ra tình cảm của mình dành cho họ là thật lòng.'),
+  ('dare-36', 'dare', 'deep', 4, 'Trao cho người ấy "quyền năng đặc biệt" được yêu cầu bạn làm một điều bất kỳ trong ngày mai.'),
+  ('dare-37', 'dare', 'deep', 4, 'Tựa đầu vào vai người ấy và cùng lắng nghe hơi thở bình yên trong 1 phút.'),
+  ('dare-38', 'dare', 'deep', 4, 'Nói một lời hứa chân thành về tương lai mà bạn quyết tâm sẽ thực hiện cho người ấy.'),
+  ('dare-39', 'dare', 'deep', 4, 'Chia sẻ một ước mơ thầm kín nhất của bạn và đề nghị người ấy cùng bạn chinh phục nó.'),
+  ('dare-40', 'dare', 'deep', 4, 'Cùng người ấy lập một danh sách 3 điều hai đứa sẽ cùng thực hiện trước khi hết năm nay.'),
+  ('dare-41', 'dare', 'emotion', 3, 'Lấy tay xoa ấm bàn tay người ấy và đặt lên má mình.'),
+  ('dare-42', 'dare', 'deep', 4, 'Trao một nụ hôn nồng nàn kéo dài ít nhất 10 giây.')
+on conflict (external_key) do update set text = excluded.text;
 
 -- ---------- Learn: một bài 10 từ chủ đề Communication ----------
 insert into public.vocabulary_words
@@ -175,3 +334,164 @@ select l.id, w.id, k.pos
   join public.vocabulary_words w on w.external_key = k.key
   join public.daily_lessons l on l.lesson_date = (now() at time zone 'Asia/Ho_Chi_Minh')::date
 on conflict do nothing;
+
+-- ---------- Learn: Chủ đề 2 - Cảm xúc (emotions) ----------
+insert into public.vocabulary_words
+  (external_key, word, ipa, part_of_speech, meaning_vi, example_en, example_vi, topic, level) values
+  ('emotions-grateful',   'grateful',   '/ˈɡreɪtfl/',   'adjective', 'Biết ơn, cảm kích',        'I feel so grateful to have you by my side.',               'Tôi cảm thấy rất biết ơn khi có bạn bên cạnh.',                 'emotions', 'A2'),
+  ('emotions-cherish',    'cherish',    '/ˈtʃerɪʃ/',    'verb',      'Trân quý, nâng niu',       'I cherish every moment we spend together.',                 'Tôi trân quý từng khoảnh khắc chúng ta bên nhau.',              'emotions', 'B1'),
+  ('emotions-comfort',    'comfort',    '/ˈkʌmfət/',    'noun',      'Sự an ủi, niềm an tâm',    'Your gentle hug brought me great comfort.',                 'Cái ôm dịu dàng của bạn mang lại cho tôi niềm an ủi to lớn.',   'emotions', 'B1'),
+  ('emotions-anxious',    'anxious',    '/ˈæŋkʃəs/',    'adjective', 'Lo lắng, bồn chồn',        'He felt anxious before their first date.',                  'Anh ấy cảm thấy bồn chồn trước buổi hẹn đầu tiên.',             'emotions', 'B1'),
+  ('emotions-passionate', 'passionate', '/ˈpæʃənət/',   'adjective', 'Đam mê, nồng nhiệt',       'They shared a passionate love story.',                      'Họ đã sẻ chia một câu chuyện tình yêu nồng nhiệt.',             'emotions', 'B2'),
+  ('emotions-relieved',   'relieved',   '/rɪˈliːvd/',   'adjective', 'Nhẹ nhõm, an lòng',        'I was relieved to hear your sweet voice.',                  'Tôi thấy thật nhẹ nhõm khi được nghe giọng nói ngọt ngào của bạn.', 'emotions', 'A2'),
+  ('emotions-affection',  'affection',  '/əˈfekʃn/',    'noun',      'Tình cảm tha thiết, trìu mến','She showed her affection with a warm smile.',            'Cô ấy thể hiện sự trìu mến bằng một nụ cười ấm áp.',            'emotions', 'B1'),
+  ('emotions-cheerful',   'cheerful',   '/ˈtʃɪəfl/',    'adjective', 'Vui tươi, rạng rỡ',        'Your cheerful laughter always brightens my day.',           'Tiếng cười vui tươi của bạn luôn làm ngày của tôi sáng bừng.',  'emotions', 'A2'),
+  ('emotions-sympathy',   'sympathy',   '/ˈsɪmpəθi/',   'noun',      'Sự đồng cảm, trắc ẩn',     'He listened to her worries with deep sympathy.',            'Anh ấy lắng nghe những muộn phiền của cô với sự đồng cảm sâu sắc.', 'emotions', 'B1'),
+  ('emotions-touched',    'touched',    '/tʌtʃt/',      'adjective', 'Xúc động, cảm động',       'She was deeply touched by his thoughtful surprise.',        'Cô ấy vô cùng cảm động trước bất ngờ chu đáo của anh.',         'emotions', 'B1')
+on conflict (external_key) do nothing;
+
+insert into public.vocabulary_collocations (word_id, phrase, position)
+select w.id, c.phrase, c.pos
+  from (values
+    ('emotions-grateful',   'feel grateful', 1),        ('emotions-grateful',   'deeply grateful', 2),
+    ('emotions-cherish',    'cherish the moment', 1),   ('emotions-cherish',    'cherish a memory', 2),
+    ('emotions-comfort',    'bring comfort', 1),        ('emotions-comfort',    'find comfort', 2),
+    ('emotions-anxious',    'feel anxious', 1),         ('emotions-anxious',    'anxious about something', 2),
+    ('emotions-passionate', 'passionate love', 1),      ('emotions-passionate', 'passionate about life', 2),
+    ('emotions-relieved',   'feel relieved', 1),        ('emotions-relieved',   'greatly relieved', 2),
+    ('emotions-affection',  'show affection', 1),       ('emotions-affection',  'deep affection', 2),
+    ('emotions-cheerful',   'cheerful smile', 1),       ('emotions-cheerful',   'cheerful mood', 2),
+    ('emotions-sympathy',   'feel sympathy', 1),        ('emotions-sympathy',   'express sympathy', 2),
+    ('emotions-touched',    'deeply touched', 1),       ('emotions-touched',    'touched by kindness', 2)
+  ) as c(key, phrase, pos)
+  join public.vocabulary_words w on w.external_key = c.key
+on conflict (word_id, phrase) do nothing;
+
+
+-- ---------- Learn: Chủ đề 3 - Hẹn hò (dating) ----------
+insert into public.vocabulary_words
+  (external_key, word, ipa, part_of_speech, meaning_vi, example_en, example_vi, topic, level) values
+  ('dating-attracted',   'attracted',   '/əˈtræktɪd/',   'adjective', 'Bị cuốn hút, say mê',      'I was attracted to your kind eyes from the start.',         'Tôi đã bị cuốn hút bởi ánh mắt hiền từ của bạn ngay từ đầu.',   'dating', 'A2'),
+  ('dating-confess',     'confess',     '/kənˈfes/',     'verb',      'Thổ lộ, bày tỏ tình cảm',   'It took courage to confess my true feelings to you.',       'Tôi đã phải lấy hết can đảm để thổ lộ tình cảm thật lòng với bạn.', 'dating', 'B1'),
+  ('dating-memorable',   'memorable',   '/ˈmemərəbl/',   'adjective', 'Đáng nhớ, khó quên',       'Our first anniversary was a truly memorable evening.',      'Kỷ niệm một năm ngày yêu của chúng mình là một buổi tối khó quên.', 'dating', 'B1'),
+  ('dating-appointment', 'appointment', '/əˈpɔɪntmənt/', 'noun',      'Cuộc hẹn, buổi hẹn',       'We made an appointment for a romantic rooftop dinner.',     'Chúng mình đã lên lịch hẹn ăn tối lãng mạn trên tầng thượng.',  'dating', 'A2'),
+  ('dating-romantic',    'romantic',    '/rəʊˈmæntɪk/',  'adjective', 'Lãng mạn, nên thơ',        'Walking under the autumn leaves was so romantic.',          'Đi dạo dưới hàng cây mùa thu thật là lãng mạn.',                'dating', 'A2'),
+  ('dating-promise',     'promise',     '/ˈprɒmɪs/',     'noun',      'Lời hứa, lời hẹn ước',     'A promise to stay together through thick and thin.',        'Một lời hứa sẽ luôn bên nhau dù thuận lợi hay khó khăn.',       'dating', 'A2'),
+  ('dating-intimate',    'intimate',    '/ˈɪntɪmət/',    'adjective', 'Thân mật, gần gũi',        'They enjoyed an intimate candlelit dinner.',                'Họ tận hưởng một bữa tối thân mật dưới ánh nến.',               'dating', 'B2'),
+  ('dating-compliment',  'compliment',  '/ˈkɒmplɪmənt/', 'noun',      'Lời khen ngợi',            'He paid her a sincere compliment on her pretty dress.',     'Anh ấy dành cho cô một lời khen chân thành về chiếc váy xinh.', 'dating', 'B1'),
+  ('dating-admire',      'admire',      '/ədˈmaɪər/',    'verb',      'Ngưỡng mộ, trân trọng',    'I always admire your patience and gentle heart.',           'Tôi luôn ngưỡng mộ sự kiên nhẫn và trái tim dịu dàng của bạn.', 'dating', 'B1'),
+  ('dating-commitment',  'commitment',  '/kəˈmɪtmənt/',  'noun',      'Sự cam kết, gắn bó',       'True love requires trust and long-term commitment.',        'Tình yêu đích thực cần sự tin tưởng và cam kết gắn bó lâu dài.','dating', 'B2')
+on conflict (external_key) do nothing;
+
+insert into public.vocabulary_collocations (word_id, phrase, position)
+select w.id, c.phrase, c.pos
+  from (values
+    ('dating-attracted',   'attracted to someone', 1),   ('dating-attracted',   'deeply attracted', 2),
+    ('dating-confess',     'confess love', 1),           ('dating-confess',     'confess feelings', 2),
+    ('dating-memorable',   'memorable experience', 1),   ('dating-memorable',   'memorable trip', 2),
+    ('dating-appointment', 'make an appointment', 1),    ('dating-appointment', 'keep an appointment', 2),
+    ('dating-romantic',    'romantic dinner', 1),        ('dating-romantic',    'romantic gesture', 2),
+    ('dating-promise',     'keep a promise', 1),         ('dating-promise',     'make a promise', 2),
+    ('dating-intimate',    'intimate moment', 1),        ('dating-intimate',    'intimate atmosphere', 2),
+    ('dating-compliment',  'pay a compliment', 1),       ('dating-compliment',  'receive a compliment', 2),
+    ('dating-admire',      'admire someone', 1),         ('dating-admire',      'admire the view', 2),
+    ('dating-commitment',  'make a commitment', 1),      ('dating-commitment',  'long-term commitment', 2)
+  ) as c(key, phrase, pos)
+  join public.vocabulary_words w on w.external_key = c.key
+on conflict (word_id, phrase) do nothing;
+-- ---------- Learn: Chủ đề 4 - Ăn uống (food_dining) ----------
+insert into public.vocabulary_words
+  (external_key, word, ipa, part_of_speech, meaning_vi, example_en, example_vi, topic, level) values
+  ('food-delicious',  'delicious',  '/dɪˈlɪʃəs/',    'adjective', 'Thơm ngon, đậm đà',         'This homemade pasta tastes absolutely delicious.',         'Món mì ý tự làm này có hương vị thực sự thơm ngon.',            'food_dining', 'A1'),
+  ('food-flavor',     'flavor',     '/ˈfleɪvər/',    'noun',      'Hương vị, mùi vị',          'The ice cream has a rich chocolate flavor.',               'Cây kem có hương vị sô-cô-la đậm đà.',                          'food_dining', 'A2'),
+  ('food-recipe',     'recipe',     '/ˈresəpi/',     'noun',      'Công thức nấu ăn',          'Let us try cooking a new recipe together this weekend.',   'Cuối tuần này chúng mình hãy cùng thử nấu một công thức mới nhé.', 'food_dining', 'A2'),
+  ('food-ingredient', 'ingredient', '/ɪnˈɡriːdiənt/','noun',      'Nguyên liệu món ăn',        'Fresh ingredients make the soup taste wonderful.',         'Các nguyên liệu tươi ngon làm cho món súp có vị tuyệt vời.',    'food_dining', 'B1'),
+  ('food-beverage',   'beverage',   '/ˈbevərɪdʒ/',   'noun',      'Đồ uống, thức uống',        'Would you like a hot beverage on this chilly evening?',    'Bạn có muốn dùng một món đồ uống ấm vào buổi tối se lạnh này không?', 'food_dining', 'B1'),
+  ('food-cuisine',    'cuisine',    '/kwɪˈziːn/',    'noun',      'Ẩm thực, phong cách ẩm thực','Vietnamese cuisine is famous for fresh flavors.',          'Ẩm thực Việt Nam nổi tiếng với hương vị thanh tươi đặc trưng.', 'food_dining', 'B1'),
+  ('food-appetite',   'appetite',   '/ˈæpɪtaɪt/',    'noun',      'Sự ngon miệng, khẩu vị',    'Walking around the night market gave us a big appetite.',  'Đi dạo quanh chợ đêm khiến chúng mình ăn rất ngon miệng.',      'food_dining', 'B1'),
+  ('food-spicy',      'spicy',      '/ˈspaɪsi/',     'adjective', 'Cay nồng, đậm gia vị',      'Do you prefer sweet or spicy street food?',                'Bạn thích ăn món ăn đường phố ngọt hay cay hơn?',               'food_dining', 'A2'),
+  ('food-dessert',    'dessert',    '/dɪˈzɜːt/',     'noun',      'Món tráng miệng',           'We ordered a slice of cheesecake for dessert.',            'Chúng mình đã gọi một phần bánh phô mai làm món tráng miệng.',  'food_dining', 'A2'),
+  ('food-atmosphere', 'atmosphere', '/ˈætməsfɪər/',  'noun',      'Bầu không khí, không gian', 'This little cafe has such a cozy atmosphere.',             'Quán cà phê nhỏ này có một bầu không khí thật ấm cúng.',        'food_dining', 'B1')
+on conflict (external_key) do nothing;
+
+insert into public.vocabulary_collocations (word_id, phrase, position)
+select w.id, c.phrase, c.pos
+  from (values
+    ('food-delicious',  'delicious food', 1),       ('food-delicious',  'look delicious', 2),
+    ('food-flavor',     'rich flavor', 1),          ('food-flavor',     'subtle flavor', 2),
+    ('food-recipe',     'secret recipe', 1),        ('food-recipe',     'follow a recipe', 2),
+    ('food-ingredient', 'fresh ingredients', 1),    ('food-ingredient', 'key ingredient', 2),
+    ('food-beverage',   'hot beverage', 1),         ('food-beverage',   'cold beverage', 2),
+    ('food-cuisine',    'traditional cuisine', 1),  ('food-cuisine',    'local cuisine', 2),
+    ('food-appetite',   'good appetite', 1),        ('food-appetite',   'spoil your appetite', 2),
+    ('food-spicy',      'spicy food', 1),           ('food-spicy',      'spicy dish', 2),
+    ('food-dessert',    'order dessert', 1),        ('food-dessert',    'sweet dessert', 2),
+    ('food-atmosphere', 'cozy atmosphere', 1),      ('food-atmosphere', 'romantic atmosphere', 2)
+  ) as c(key, phrase, pos)
+  join public.vocabulary_words w on w.external_key = c.key
+on conflict (word_id, phrase) do nothing;
+-- ---------- Learn: Chủ đề 5 - Du lịch (travel) ----------
+insert into public.vocabulary_words
+  (external_key, word, ipa, part_of_speech, meaning_vi, example_en, example_vi, topic, level) values
+  ('travel-destination', 'destination', '/ˌdestɪˈneɪʃn/', 'noun',      'Điểm đến, đích đến',        'Da Lat is our favorite travel destination.',               'Đà Lạt là điểm đến du lịch yêu thích của hai đứa mình.',        'travel', 'A2'),
+  ('travel-scenery',     'scenery',     '/ˈsiːnəri/',     'noun',      'Phong cảnh, cảnh sắc',      'The mountain scenery at sunrise was breathtaking.',        'Phong cảnh núi non lúc bình minh đẹp đến ngỡ ngàng.',           'travel', 'B1'),
+  ('travel-journey',     'journey',     '/ˈdʒɜːni/',      'noun',      'Hành trình, chuyến đi',     'Life is a beautiful journey when I travel with you.',       'Cuộc sống là một hành trình tươi đẹp khi tôi được đi cùng bạn.','travel', 'A2'),
+  ('travel-explore',     'explore',     '/ɪkˈsplɔːr/',    'verb',      'Khám phá, thám hiểm',       'We love to explore quiet alleys and hidden cafes.',        'Chúng mình thích khám phá những con hẻm yên tĩnh và quán cafe ẩn mình.', 'travel', 'A2'),
+  ('travel-luggage',     'luggage',     '/ˈlʌɡɪdʒ/',      'noun',      'Hành lý, va li',            'Let me help carry your heavy luggage.',                    'Để tôi giúp bạn xách chỗ hành lý nặng này nhé.',                'travel', 'A2'),
+  ('travel-souvenir',    'souvenir',    '/ˌsuːvəˈnɪər/',  'noun',      'Quà lưu niệm, kỷ vật',      'We bought a handmade souvenir to remember our beach trip.','Chúng mình đã mua quà lưu niệm thủ công để nhớ chuyến đi biển.','travel', 'A2'),
+  ('travel-itinerary',   'itinerary',   '/aɪˈtɪnərəri/',  'noun',      'Lịch trình chuyến đi',      'She carefully planned a three-day travel itinerary.',       'Cô ấy đã lên kế hoạch tỉ mỉ cho lịch trình chuyến đi 3 ngày.',  'travel', 'B1'),
+  ('travel-adventure',   'adventure',   '/ədˈventʃər/',   'noun',      'Cuộc phiêu lưu',            'Every trip with you feels like an exciting adventure.',     'Mỗi chuyến đi cùng bạn đều giống như một cuộc phiêu lưu kỳ thú.','travel', 'A2'),
+  ('travel-breathtaking','breathtaking','/ˈbreθteɪkɪŋ/',  'adjective', 'Đẹp ngoạn mục, choáng ngợp','The view of the ocean from the cliff was breathtaking.',   'Cảnh biển nhìn từ vách đá đẹp ngoạn mục đến nghẹt thở.',       'travel', 'B2'),
+  ('travel-wander',      'wander',      '/ˈwɒndər/',      'verb',      'Tản bộ, đi dạo thong dong', 'We spent the afternoon wandering through the old town.',    'Chúng mình đã dành buổi chiều tản bộ qua từng góc phố cổ.',     'travel', 'B1')
+on conflict (external_key) do nothing;
+
+insert into public.vocabulary_collocations (word_id, phrase, position)
+select w.id, c.phrase, c.pos
+  from (values
+    ('travel-destination', 'popular destination', 1),   ('travel-destination', 'final destination', 2),
+    ('travel-scenery',     'beautiful scenery', 1),     ('travel-scenery',     'mountain scenery', 2),
+    ('travel-journey',     'long journey', 1),          ('travel-journey',     'safe journey', 2),
+    ('travel-explore',     'explore the city', 1),      ('travel-explore',     'explore nature', 2),
+    ('travel-luggage',     'pack luggage', 1),          ('travel-luggage',     'carry luggage', 2),
+    ('travel-souvenir',    'buy a souvenir', 1),        ('travel-souvenir',    'souvenir shop', 2),
+    ('travel-itinerary',   'travel itinerary', 1),      ('travel-itinerary',   'plan an itinerary', 2),
+    ('travel-adventure',   'exciting adventure', 1),    ('travel-adventure',   'embark on an adventure', 2),
+    ('travel-breathtaking','breathtaking view', 1),     ('travel-breathtaking','breathtaking sunset', 2),
+    ('travel-wander',      'wander around', 1),         ('travel-wander',      'wander through the streets', 2)
+  ) as c(key, phrase, pos)
+  join public.vocabulary_words w on w.external_key = c.key
+on conflict (word_id, phrase) do nothing;
+
+-- ---------- Learn: Chủ đề 6 - Công việc & Học tập (work_study) ----------
+insert into public.vocabulary_words
+  (external_key, word, ipa, part_of_speech, meaning_vi, example_en, example_vi, topic, level) values
+  ('work-achieve',      'achieve',      '/əˈtʃiːv/',      'verb',      'Đạt được, gặt hái',         'Together we can achieve all our personal goals.',           'Cùng nhau chúng ta có thể đạt được mọi mục tiêu cá nhân.',      'work_study', 'A2'),
+  ('work-concentrate',  'concentrate',  '/ˈkɒnsntreɪt/',  'verb',      'Tập trung cao độ',          'I find it easier to concentrate when we study side by side.','Tôi thấy dễ tập trung hơn khi hai đứa cùng ngồi học cạnh nhau.','work_study', 'A2'),
+  ('work-schedule',     'schedule',     '/ˈʃedjuːl/',     'noun',      'Lịch trình, thời gian biểu','We should balance our work schedule to spend time together.','Chúng mình nên cân đối lịch làm việc để dành thời gian cho nhau.','work_study', 'A2'),
+  ('work-encourage',    'encourage',    '/ɪnˈkʌrɪdʒ/',    'verb',      'Động viên, khích lệ',       'You always encourage me whenever I face challenges at work.','Bạn luôn động viên tôi mỗi khi tôi gặp khó khăn trong công việc.','work_study', 'B1'),
+  ('work-progress',     'progress',     '/ˈprəʊɡres/',    'noun',      'Sự tiến bộ, tiến triển',    'We are making great progress in learning English every day.','Chúng mình đang đạt được sự tiến bộ tuyệt vời khi học tiếng Anh.', 'work_study', 'A2'),
+  ('work-deadline',     'deadline',     '/ˈdedlaɪn/',     'noun',      'Hạn chót, thời hạn nộp',    'After finishing a tight deadline, we celebrated together.', 'Sau khi vượt qua hạn chót gấp gáp, chúng mình đã ăn mừng cùng nhau.','work_study', 'B1'),
+  ('work-effort',       'effort',       '/ˈefət/',        'noun',      'Nỗ lực, sự cố gắng',        'Success comes from daily continuous effort.',               'Thành công đến từ nỗ lực không ngừng mỗi ngày.',                 'work_study', 'A2'),
+  ('work-priority',     'priority',     '/praɪˈɒrəti/',   'noun',      'Sự ưu tiên hàng đầu',       'Family and our relationship will always be my top priority.','Gia đình và tình cảm của hai ta sẽ luôn là ưu tiên hàng đầu của tôi.','work_study', 'B1'),
+  ('work-inspire',      'inspire',      '/ɪnˈspaɪər/',    'verb',      'Truyền cảm hứng',           'Your hardworking attitude inspires me to do my best.',      'Tinh thần chăm chỉ của bạn truyền cảm hứng để tôi nỗ lực hết mình.','work_study', 'B1'),
+  ('work-productivity', 'productivity', '/ˌprɒdʌkˈtɪvəti/','noun',     'Năng suất, hiệu quả làm việc','Studying in a quiet space greatly improves our productivity.','Học trong không gian yên tĩnh giúp cải thiện đáng kể năng suất.',  'work_study', 'B2')
+on conflict (external_key) do nothing;
+
+insert into public.vocabulary_collocations (word_id, phrase, position)
+select w.id, c.phrase, c.pos
+  from (values
+    ('work-achieve',      'achieve a goal', 1),         ('work-achieve',      'achieve success', 2),
+    ('work-concentrate',  'concentrate on studying', 1),('work-concentrate',  'help concentrate', 2),
+    ('work-schedule',     'busy schedule', 1),          ('work-schedule',     'tight schedule', 2),
+    ('work-encourage',    'encourage each other', 1),   ('work-encourage',    'strongly encourage', 2),
+    ('work-progress',     'make progress', 1),          ('work-progress',     'steady progress', 2),
+    ('work-deadline',     'meet a deadline', 1),        ('work-deadline',     'tight deadline', 2),
+    ('work-effort',       'make an effort', 1),         ('work-effort',       'put effort into', 2),
+    ('work-priority',     'top priority', 1),           ('work-priority',     'give priority to', 2),
+    ('work-inspire',      'inspire someone', 1),        ('work-inspire',      'deeply inspire', 2),
+    ('work-productivity', 'boost productivity', 1),     ('work-productivity', 'increase productivity', 2)
+  ) as c(key, phrase, pos)
+  join public.vocabulary_words w on w.external_key = c.key
+on conflict (word_id, phrase) do nothing;
+
+

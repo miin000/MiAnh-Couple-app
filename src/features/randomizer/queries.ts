@@ -1,6 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { RandomItem, DatePlan, DatePlanItem, DiscoverKind } from "@/types/discover";
 
+import { PriceLevelConfig } from "@/types/discover";
+import { DEFAULT_PRICE_LEVEL_CONFIGS } from "./components/discover-helpers";
+
 export async function getRandomItems(kind?: DiscoverKind): Promise<RandomItem[]> {
   const supabase = await createClient();
 
@@ -22,6 +25,48 @@ export async function getRandomItems(kind?: DiscoverKind): Promise<RandomItem[]>
 
   return data as RandomItem[];
 }
+export async function getPriceLevelConfigs(): Promise<PriceLevelConfig[]> {
+  try {
+    const supabase = await createClient();
+
+    // 1. Try querying table price_level_configs
+    const { data: tableData, error: tableError } = await supabase
+      .from("price_level_configs")
+      .select("*")
+      .order("level", { ascending: true });
+
+    if (!tableError && tableData && tableData.length === 4) {
+      return tableData.map((row) => ({
+        level: row.level,
+        label: row.label,
+        badge: row.badge,
+        rangeText: row.range_text,
+        minCost: row.min_cost !== null ? Number(row.min_cost) : null,
+        maxCost: row.max_cost !== null ? Number(row.max_cost) : null,
+        description: row.description,
+      }));
+    }
+
+    // 2. Fallback to Supabase storage system_configs/price_levels.json
+    const { data: storageFile, error: storageError } = await supabase.storage
+      .from("system_configs")
+      .download("price_levels.json");
+
+    if (!storageError && storageFile) {
+      const text = await storageFile.text();
+      const parsed = JSON.parse(text);
+      if (Array.isArray(parsed) && parsed.length === 4) {
+        return parsed as PriceLevelConfig[];
+      }
+    }
+  } catch (err) {
+    console.error("Error reading price_level_configs:", err);
+  }
+
+  // 3. Fallback to default constants
+  return DEFAULT_PRICE_LEVEL_CONFIGS;
+}
+
 
 export async function getRandomSuggestionForHome(): Promise<RandomItem | null> {
   const items = await getRandomItems();

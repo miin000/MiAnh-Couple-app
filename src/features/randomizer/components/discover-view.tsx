@@ -1,8 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { RandomItem, DatePlan, DiscoverKind } from "@/types/discover";
-import { CATEGORY_ITEMS } from "./discover-helpers";
+import { RandomItem, DatePlan, DiscoverKind, PriceLevelConfig } from "@/types/discover";
+import {
+  CATEGORY_ITEMS,
+  buildPriceFilterOptions,
+} from "./discover-helpers";
+
 import { SlotMachine } from "./slot-machine";
 import { SpinResultCard } from "./spin-result-card";
 import { DatePlanManager } from "./date-plan-manager";
@@ -17,11 +21,13 @@ import {
   Sparkles,
   Compass,
   Wallet,
+  Coins,
 } from "lucide-react";
 
 interface DiscoverViewProps {
   initialItems: RandomItem[];
   plans: DatePlan[];
+  priceConfigs?: PriceLevelConfig[];
   isPaired: boolean;
   coupleInitials?: [string, string];
 }
@@ -32,18 +38,27 @@ type DiscoverStep = "categories" | "spin" | "result";
 export function DiscoverView({
   initialItems,
   plans,
+  priceConfigs,
   isPaired,
   coupleInitials = ["M", "A"],
 }: DiscoverViewProps) {
   const [activeTab, setActiveTab] = useState<TabType>("random");
   const [step, setStep] = useState<DiscoverStep>("categories");
   const [selectedKind, setSelectedKind] = useState<DiscoverKind>("food");
+  const [selectedPriceLevel, setSelectedPriceLevel] = useState<number | "all">("all");
   const [isSpinning, setIsSpinning] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [showAddToPlanModal, setShowAddToPlanModal] = useState(false);
 
-  const filteredItems = initialItems.filter((it) => it.kind === selectedKind);
+  const priceOptions = buildPriceFilterOptions(priceConfigs);
+
+
+  const filteredItems = initialItems
+    .filter((it) => it.kind === selectedKind)
+    .filter((it) =>
+      selectedPriceLevel === "all" ? true : it.price_level === selectedPriceLevel
+    );
   const selectedCategory =
     CATEGORY_ITEMS.find((c) => c.id === selectedKind) || CATEGORY_ITEMS[0];
   const currentItem =
@@ -75,6 +90,7 @@ export function DiscoverView({
 
   const handleSelectCategory = (kind: DiscoverKind) => {
     setSelectedKind(kind);
+    setSelectedPriceLevel("all");
     setCurrentIndex(0);
     setStep("spin");
   };
@@ -171,7 +187,7 @@ export function DiscoverView({
           )}
 
           {step === "spin" && (
-            <div className="space-y-6 animate-in fade-in duration-200">
+            <div className="space-y-5 animate-in fade-in duration-200">
               <PageHeader
                 category="LỰA CHỌN NGẪU NHIÊN"
                 title={selectedCategory.question}
@@ -179,15 +195,85 @@ export function DiscoverView({
                 onBack={() => setStep("categories")}
               />
 
-              <div className="py-2">
-                <SlotMachine
-                  items={filteredItems}
-                  currentIndex={currentIndex}
-                  isSpinning={isSpinning}
-                />
+              {/* Price Filter Selector */}
+              <div className="bg-white rounded-2xl p-3.5 border border-[#F2EAE5] shadow-xs space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#201A1D]">
+                    <Coins className="w-3.5 h-3.5 text-[#FA5271]" />
+                    <span>Mức giá mong muốn:</span>
+                  </div>
+                  <span className="text-[11px] font-medium text-[#FA5271]">
+                    {priceOptions.find((o) => o.value === selectedPriceLevel)?.rangeText}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5">
+                  {priceOptions.map((opt) => {
+                    const isSelected = selectedPriceLevel === opt.value;
+                    const count = initialItems
+                      .filter((it) => it.kind === selectedKind)
+                      .filter((it) =>
+                        opt.value === "all" ? true : it.price_level === opt.value
+                      ).length;
+
+                    return (
+                      <button
+                        key={String(opt.value)}
+                        type="button"
+                        disabled={isSpinning}
+                        onClick={() => {
+                          setSelectedPriceLevel(opt.value);
+                          setCurrentIndex(0);
+                        }}
+                        className={`py-2 px-1.5 rounded-xl text-center transition-all ${
+                          isSelected
+                            ? "bg-[#FA5271] text-white shadow-xs font-bold"
+                            : "bg-[#F7F2EF] text-[#52464D] hover:bg-[#EFE7E2] font-medium"
+                        } disabled:opacity-50`}
+                      >
+                        <div className="text-xs truncate">{opt.label}</div>
+                        <div
+                          className={`text-[10px] mt-0.5 ${
+                            isSelected ? "text-white/80" : "text-[#9E9096]"
+                          }`}
+                        >
+                          {count} gợi ý
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              <div className="space-y-4 pt-2">
+              <div className="py-1">
+                {filteredItems.length > 0 ? (
+                  <SlotMachine
+                    items={filteredItems}
+                    currentIndex={currentIndex}
+                    isSpinning={isSpinning}
+                  />
+                ) : (
+                  <div className="bg-white rounded-3xl border border-[#F2EAE5] p-8 text-center space-y-2">
+                    <p className="text-2xl">🔍</p>
+                    <p className="text-sm font-bold text-[#201A1D]">
+                      Chưa có gợi ý trong tầm giá này
+                    </p>
+                    <p className="text-xs text-[#786D73]">
+                      Hãy thử chọn &quot;Tất cả mức giá&quot; hoặc mức giá khác nhé.
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSelectedPriceLevel("all")}
+                      className="mt-2 rounded-xl text-xs"
+                    >
+                      Xem tất cả mức giá
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-4 pt-1">
                 <div className="flex items-center justify-center gap-2 text-xs text-[#786D73]">
                   <CoupleAvatars initials={coupleInitials} size="sm" />
                   <span>Cùng chờ xem vận may chọn gì nhé</span>
@@ -206,7 +292,7 @@ export function DiscoverView({
                   ) : (
                     <>
                       <RefreshCw className="w-5 h-5" />
-                      Quay ngẫu nhiên
+                      Quay ngẫu nhiên ({filteredItems.length} lựa chọn)
                     </>
                   )}
                 </Button>
@@ -225,6 +311,7 @@ export function DiscoverView({
               <SpinResultCard
                 item={currentItem}
                 categoryLabel={selectedCategory.title}
+                priceConfigs={priceConfigs}
                 onSpinAgain={() => {
                   setStep("spin");
                   handleStartSpin();
