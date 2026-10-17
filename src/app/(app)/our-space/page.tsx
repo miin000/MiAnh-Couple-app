@@ -11,7 +11,7 @@ export default async function OurSpacePage() {
       {data ? (
         <OurSpaceView {...data} />
       ) : (
-        <div className="rounded-2xl border border-[#F6D0D6] bg-white p-5 text-sm text-[#C23958]">
+        <div className="rounded-2xl border border-[#F6D0D6] bg-white p-5 text-sm text-[#6840B8]">
           Không thể tải dữ liệu Không gian của hai đứa. Vui lòng thử lại.
         </div>
       )}

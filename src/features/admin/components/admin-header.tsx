@@ -24,7 +24,7 @@ export function AdminHeader({ userEmail }: AdminHeaderProps) {
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#F2EAE5]">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#FFEBF0] text-[#FA5271] flex items-center justify-center shadow-2xs">
+          <div className="w-9 h-9 rounded-xl bg-[#F0E9FF] text-[#7C4DFF] flex items-center justify-center shadow-2xs">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
@@ -32,7 +32,7 @@ export function AdminHeader({ userEmail }: AdminHeaderProps) {
               <h1 className="text-base font-extrabold text-[#201A1D]">
                 Quản trị Mi & Anh
               </h1>
-              <span className="bg-[#FFEBF0] text-[#FA5271] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+              <span className="bg-[#F0E9FF] text-[#7C4DFF] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
                 Admin
               </span>
             </div>
@@ -49,7 +49,7 @@ export function AdminHeader({ userEmail }: AdminHeaderProps) {
             <Button
               variant="outline"
               size="sm"
-              className="rounded-xl text-xs gap-1.5 h-8 border-[#F2EAE5] text-[#52464D] hover:text-[#FA5271]"
+              className="rounded-xl text-xs gap-1.5 h-8 border-[#F2EAE5] text-[#52464D] hover:text-[#7C4DFF]"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Về App đôi</span>
@@ -59,7 +59,7 @@ export function AdminHeader({ userEmail }: AdminHeaderProps) {
             variant="ghost"
             size="sm"
             onClick={handleSignOut}
-            className="rounded-xl text-xs gap-1.5 h-8 text-[#786D73] hover:text-[#D84557] hover:bg-[#FFEBF0]"
+            className="rounded-xl text-xs gap-1.5 h-8 text-[#786D73] hover:text-[#6B46C1] hover:bg-[#F0E9FF]"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Đăng xuất</span>

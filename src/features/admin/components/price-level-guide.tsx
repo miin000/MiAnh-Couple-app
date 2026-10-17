@@ -97,7 +97,7 @@ export function PriceLevelGuide({
             <h4 className="text-sm font-extrabold text-[#201A1D] uppercase tracking-wider">
               Quy chuẩn 4 mức chi tiêu hẹn hò
             </h4>
-            <span className="text-[11px] font-bold text-[#FA5271] px-2 py-0.5 rounded-full bg-[#FFF2EB]">
+            <span className="text-[11px] font-bold text-[#7C4DFF] px-2 py-0.5 rounded-full bg-[#FFF2EB]">
               Tùy chỉnh hệ thống
             </span>
           </div>
@@ -114,7 +114,7 @@ export function PriceLevelGuide({
                   size="sm"
                   variant="outline"
                   onClick={handleStartEdit}
-                  className="rounded-xl border-[#F2EAE5] text-stone-700 hover:text-[#FA5271] hover:bg-[#FFF2EB] text-xs font-bold gap-1.5 h-8 px-3"
+                  className="rounded-xl border-[#F2EAE5] text-stone-700 hover:text-[#7C4DFF] hover:bg-[#FFF2EB] text-xs font-bold gap-1.5 h-8 px-3"
                 >
                   <Edit3 className="w-3.5 h-3.5" /> Điều chỉnh quy chuẩn
                 </Button>
@@ -135,7 +135,7 @@ export function PriceLevelGuide({
                   size="sm"
                   onClick={handleSave}
                   disabled={isPending}
-                  className="rounded-xl bg-[#FA5271] hover:bg-[#E03A59] text-white text-xs font-bold gap-1 h-8 px-3 shadow-xs"
+                  className="rounded-xl bg-[#7C4DFF] hover:bg-[#E03A59] text-white text-xs font-bold gap-1 h-8 px-3 shadow-xs"
                 >
                   <Check className="w-3.5 h-3.5" />
                   {isPending ? "Đang lưu..." : "Lưu thay đổi"}
@@ -193,7 +193,7 @@ export function PriceLevelGuide({
                 onSelectLevel ? "cursor-pointer" : ""
               } ${
                 isSelected
-                  ? "border-[#FA5271] bg-[#FFF2EB] shadow-xs"
+                  ? "border-[#7C4DFF] bg-[#FFF2EB] shadow-xs"
                   : "border-[#F2EAE5] bg-stone-50/50 hover:bg-stone-50"
               }`}
             >
@@ -201,7 +201,7 @@ export function PriceLevelGuide({
                 <span className="font-black text-xs text-[#201A1D]">
                   Mức {cfg.level}: {cfg.label}
                 </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white border border-[#F2EAE5] text-[#FA5271]">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white border border-[#F2EAE5] text-[#7C4DFF]">
                   {cfg.rangeText}
                 </span>
               </div>

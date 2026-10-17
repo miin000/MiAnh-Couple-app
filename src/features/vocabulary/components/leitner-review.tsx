@@ -121,7 +121,7 @@ export function LeitnerReview({
       <div className="rounded-3xl bg-white border border-[#EFE5E0] p-4 shadow-2xs space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5 text-xs font-bold text-[#201A1D]">
-            <Layers className="w-4 h-4 text-[#FA5271]" />
+            <Layers className="w-4 h-4 text-[#7C4DFF]" />
             <span>Phân bố 5 hộp Leitner</span>
           </div>
           <span className="text-[11px] text-[#786D73]">Khoảng cách nhớ</span>
@@ -139,7 +139,7 @@ export function LeitnerReview({
               key={item.box}
               className={`p-2 rounded-2xl border text-center transition-all ${
                 item.box === 5
-                  ? "bg-[#FFF0F3] border-[#FFEBF0]"
+                  ? "bg-[#F5F0FF] border-[#F0E9FF]"
                   : "bg-[#FBF7F5] border-[#EFE5E0]"
               }`}
             >
@@ -178,7 +178,7 @@ export function LeitnerReview({
               <span className="text-xs font-bold text-[#201A1D]">
                 Cần ôn hôm nay:
               </span>
-              <span className="px-2 py-0.5 rounded-full text-[11px] font-black bg-[#FFEBF0] text-[#FA5271]">
+              <span className="px-2 py-0.5 rounded-full text-[11px] font-black bg-[#F0E9FF] text-[#7C4DFF]">
                 {totalDue} từ
               </span>
             </div>
@@ -189,7 +189,7 @@ export function LeitnerReview({
                 onClick={() => setMode("card")}
                 className={`px-2.5 py-1 rounded-lg transition-all ${
                   mode === "card"
-                    ? "bg-white text-[#FA5271] shadow-2xs"
+                    ? "bg-white text-[#7C4DFF] shadow-2xs"
                     : "text-[#786D73]"
                 }`}
               >
@@ -200,7 +200,7 @@ export function LeitnerReview({
                 onClick={() => setMode("quiz")}
                 className={`px-2.5 py-1 rounded-lg transition-all ${
                   mode === "quiz"
-                    ? "bg-white text-[#FA5271] shadow-2xs"
+                    ? "bg-white text-[#7C4DFF] shadow-2xs"
                     : "text-[#786D73]"
                 }`}
               >
@@ -251,7 +251,7 @@ export function LeitnerReview({
                   type="button"
                   disabled={isPending}
                   onClick={() => handleReviewWord(true)}
-                  className="h-12 rounded-2xl font-bold text-xs sm:text-sm bg-[#FA5271] text-white hover:bg-[#e04563] active:scale-98 shadow-sm transition-all gap-1.5"
+                  className="h-12 rounded-2xl font-bold text-xs sm:text-sm bg-[#7C4DFF] text-white hover:bg-[#e04563] active:scale-98 shadow-sm transition-all gap-1.5"
                 >
                   <Check className="w-4 h-4" />
                   Đã nhớ (Lên Hộp)

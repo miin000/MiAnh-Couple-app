@@ -252,7 +252,10 @@ export async function updateCoupleSettingsAction(
   // Update profile display name
   const { error: profileError } = await supabase
     .from("profiles")
-    .update({ display_name: parsed.data.displayName })
+    .update({
+      display_name: parsed.data.displayName,
+      avatar_url: parsed.data.avatarUrl || null,
+    })
     .eq("id", user.id);
 
   if (profileError) {

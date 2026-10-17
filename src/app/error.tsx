@@ -15,7 +15,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <main className="min-h-screen bg-[#FAF6F2] px-6 flex items-center justify-center text-center">
+    <main className="min-h-screen bg-[#FAF8FF] px-6 flex items-center justify-center text-center">
       <div className="max-w-sm space-y-4">
         <h1 className="text-2xl font-extrabold">Có lỗi xảy ra</h1>
         <p className="text-sm text-[#73696E]">MiAnh chưa thể tải phần này. Bạn thử lại nhé.</p>

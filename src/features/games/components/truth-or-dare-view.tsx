@@ -111,7 +111,7 @@ export function TruthOrDareView({ initialQuestion }: TruthOrDareViewProps) {
           type="button"
           onClick={() => handleKindChange("truth")}
           className={`min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all ${
-            kind === "truth" ? "bg-white text-[#FA5271] shadow-2xs" : "text-[#786D73] hover:text-[#201A1D]"
+            kind === "truth" ? "bg-white text-[#7C4DFF] shadow-2xs" : "text-[#786D73] hover:text-[#201A1D]"
           }`}
         >
           <HelpCircle className="w-4 h-4" /> Thật (Nói thật 🤫)
@@ -120,7 +120,7 @@ export function TruthOrDareView({ initialQuestion }: TruthOrDareViewProps) {
           type="button"
           onClick={() => handleKindChange("dare")}
           className={`min-h-[44px] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all ${
-            kind === "dare" ? "bg-white text-[#FA5271] shadow-2xs" : "text-[#786D73] hover:text-[#201A1D]"
+            kind === "dare" ? "bg-white text-[#7C4DFF] shadow-2xs" : "text-[#786D73] hover:text-[#201A1D]"
           }`}
         >
           <Zap className="w-4 h-4" /> Thách (Hành động ⚡)

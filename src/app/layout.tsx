@@ -16,7 +16,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#FAF6F2",
+  themeColor: "#FAF8FF",
 };
 
 export const metadata: Metadata = {
@@ -39,7 +39,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" suppressHydrationWarning className={`${appFont.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[#FAF6F2] text-[#201A1D]">
+      <body className="min-h-full flex flex-col bg-[#FAF8FF] text-[#201A1D]">
         <PwaRegister />
         {children}
       </body>

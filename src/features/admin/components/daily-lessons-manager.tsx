@@ -65,7 +65,7 @@ export function DailyLessonsManager({
         </div>
         <div className="grid max-h-72 gap-2 overflow-y-auto sm:grid-cols-2">
           {words.filter((word) => word.is_active).map((word) => (
-            <button key={word.id} type="button" onClick={() => toggleWord(word.id)} className={`rounded-xl border px-3 py-2 text-left text-xs ${selected.includes(word.id) ? "border-[#FA5271] bg-[#FFF0F3]" : "border-[#F2EAE5] bg-white"}`}>
+            <button key={word.id} type="button" onClick={() => toggleWord(word.id)} className={`rounded-xl border px-3 py-2 text-left text-xs ${selected.includes(word.id) ? "border-[#7C4DFF] bg-[#F5F0FF]" : "border-[#F2EAE5] bg-white"}`}>
               <span className="font-bold">{selected.includes(word.id) ? `${selected.indexOf(word.id) + 1}. ` : ""}{word.word}</span>
               <span className="ml-1 text-stone-500">— {word.meaning_vi}</span>
             </button>
@@ -75,7 +75,7 @@ export function DailyLessonsManager({
           <span className="text-xs font-semibold text-stone-500">{selected.length}/10 từ</span>
           <Button type="button" size="sm" onClick={submit}>Lưu bài học</Button>
         </div>
-        {message && <p role="status" className="text-xs font-semibold text-[#C23958]">{message}</p>}
+        {message && <p role="status" className="text-xs font-semibold text-[#6840B8]">{message}</p>}
       </Card>
       <div className="space-y-2">
         {lessons.map((lesson) => (

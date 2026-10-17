@@ -54,7 +54,7 @@ export const createDatePlanItemSchema = z.object({
   random_item_id: z.string().uuid().optional().nullable(),
   estimated_cost: z.coerce
     .number()
-    .nonnegative("Chi phí ước tính không được âm")
+    .nonnegative("Chi phí Æ°ớc tính không được âm")
     .optional()
     .default(0),
   actual_cost: z.coerce
@@ -76,7 +76,7 @@ export const updateDatePlanItemSchema = z.object({
     .optional(),
   estimated_cost: z.coerce
     .number()
-    .nonnegative("Chi phí ước tính không được âm")
+    .nonnegative("Chi phí Æ°ớc tính không được âm")
     .optional(),
   actual_cost: z.coerce
     .number()

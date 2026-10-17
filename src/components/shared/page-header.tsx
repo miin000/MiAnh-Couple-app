@@ -33,7 +33,7 @@ export function PageHeader({
               {backHref ? (
                 <Link
                   href={backHref}
-                  className="w-10 h-10 rounded-full bg-white border border-[#EFE5E0] shadow-2xs flex items-center justify-center text-[#4B3E45] hover:text-[#FA5271] active:scale-95 transition-all"
+                  className="w-10 h-10 rounded-full bg-white border border-[#EFE5E0] shadow-2xs flex items-center justify-center text-[#4B3E45] hover:text-[#7C4DFF] active:scale-95 transition-all"
                   aria-label="Quay lại"
                 >
                   <ArrowLeft className="w-5 h-5" />
@@ -42,7 +42,7 @@ export function PageHeader({
                 <button
                   type="button"
                   onClick={onBack}
-                  className="w-10 h-10 rounded-full bg-white border border-[#EFE5E0] shadow-2xs flex items-center justify-center text-[#4B3E45] hover:text-[#FA5271] active:scale-95 transition-all"
+                  className="w-10 h-10 rounded-full bg-white border border-[#EFE5E0] shadow-2xs flex items-center justify-center text-[#4B3E45] hover:text-[#7C4DFF] active:scale-95 transition-all"
                   aria-label="Quay lại"
                 >
                   <ArrowLeft className="w-5 h-5" />

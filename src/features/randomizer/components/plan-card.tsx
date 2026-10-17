@@ -68,7 +68,7 @@ export function PlanCard({
   return (
     <Card
       className={`overflow-hidden transition-all border ${
-        isExpanded ? "border-[#FA5271]/40 shadow-sm" : "border-[#F2EAE5]"
+        isExpanded ? "border-[#7C4DFF]/40 shadow-sm" : "border-[#F2EAE5]"
       }`}
     >
       <div
@@ -99,7 +99,7 @@ export function PlanCard({
               </span>
               <span className="text-xs text-[#52464D]">
                 Đã chi:{" "}
-                <strong className="text-[#FA5271]">
+                <strong className="text-[#7C4DFF]">
                   {formatVND(plan.total_actual || 0)}
                 </strong>
               </span>
@@ -107,7 +107,7 @@ export function PlanCard({
                 <span
                   className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
                     isOverBudget
-                      ? "bg-[#FFEBF0] text-[#D84557]"
+                      ? "bg-[#F0E9FF] text-[#6B46C1]"
                       : "bg-[#E8F8F2] text-[#1B9B68]"
                   }`}
                 >
@@ -138,7 +138,7 @@ export function PlanCard({
                 handleDeletePlan();
               }}
               disabled={isPending}
-              className="p-1.5 text-[#9E9096] hover:text-[#D84557] rounded-lg"
+              className="p-1.5 text-[#9E9096] hover:text-[#6B46C1] rounded-lg"
               title="Xóa kế hoạch"
             >
               <Trash2 className="w-4 h-4" />
@@ -174,7 +174,7 @@ export function PlanCard({
           </div>
 
           {showAddForm ? (
-            <div className="bg-white rounded-xl p-3 border border-[#FA5271]/50 space-y-2">
+            <div className="bg-white rounded-xl p-3 border border-[#7C4DFF]/50 space-y-2">
               <Input
                 placeholder="Tên món ăn / vé xem phim / hoạt động..."
                 value={newTitle}
@@ -184,7 +184,7 @@ export function PlanCard({
               <div className="flex gap-2">
                 <Input
                   type="number"
-                  placeholder="Chi phí ước tính..."
+                  placeholder="Chi phí Æ°ớc tính..."
                   value={newCost}
                   onChange={(e) => setNewCost(e.target.value)}
                   className="text-xs h-8 flex-1"
@@ -216,7 +216,7 @@ export function PlanCard({
                 setNewTitle("");
                 setNewCost("");
               }}
-              className="w-full h-8 text-xs border-dashed text-[#786D73] rounded-xl hover:text-[#FA5271]"
+              className="w-full h-8 text-xs border-dashed text-[#786D73] rounded-xl hover:text-[#7C4DFF]"
             >
               <Plus className="w-3.5 h-3.5 mr-1" /> Thêm mục chi phí
             </Button>

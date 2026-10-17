@@ -50,6 +50,7 @@ export function DiscoverView({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [showAddToPlanModal, setShowAddToPlanModal] = useState(false);
+  const [spinItems, setSpinItems] = useState<RandomItem[]>([]);
 
   const priceOptions = buildPriceFilterOptions(priceConfigs);
 
@@ -61,8 +62,7 @@ export function DiscoverView({
     );
   const selectedCategory =
     CATEGORY_ITEMS.find((c) => c.id === selectedKind) || CATEGORY_ITEMS[0];
-  const currentItem =
-    filteredItems[currentIndex % Math.max(filteredItems.length, 1)];
+  const currentItem = spinItems[currentIndex % Math.max(spinItems.length, 1)];
 
   const showNotification = (msg: string) => {
     setToastMessage(msg);
@@ -73,16 +73,38 @@ export function DiscoverView({
 
   const handleStartSpin = () => {
     if (filteredItems.length === 0) return;
+    const now = Date.now();
+    const cooldownKey = "mianh-discover-cooldown";
+    let cooldown: Record<string, number> = {};
+    try {
+      cooldown = JSON.parse(localStorage.getItem(cooldownKey) || "{}") as Record<string, number>;
+    } catch {
+      cooldown = {};
+    }
+    const available = filteredItems.filter((item) => !cooldown[item.id] || now - cooldown[item.id] >= 30 * 60 * 1000);
+    const options = available.length > 0 ? available : filteredItems;
+    if (available.length === 0) {
+      showNotification("Các lựa chọn vừa quay vẫn đang được tạm nghỉ; MiAnh sẽ chọn lại sau nhé.");
+    }
+    setSpinItems(options);
     setIsSpinning(true);
+    setCurrentIndex(0);
 
     const spinSteps = 12 + Math.floor(Math.random() * 8);
     let stepCount = 0;
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % filteredItems.length);
+      setCurrentIndex((prev) => (prev + 1) % options.length);
       stepCount++;
       if (stepCount >= spinSteps) {
         clearInterval(interval);
         setIsSpinning(false);
+        const result = options[(stepCount) % options.length];
+        try {
+          const current = JSON.parse(localStorage.getItem(cooldownKey) || "{}") as Record<string, number>;
+          localStorage.setItem(cooldownKey, JSON.stringify({ ...current, [result.id]: Date.now() }));
+        } catch {
+          showNotification("Đã chọn xong, nhưng không lưu được lịch tránh trùng trên thiết bị.");
+        }
         setStep("result");
       }
     }, 90);
@@ -92,6 +114,7 @@ export function DiscoverView({
     setSelectedKind(kind);
     setSelectedPriceLevel("all");
     setCurrentIndex(0);
+    setSpinItems([]);
     setStep("spin");
   };
 
@@ -100,7 +123,7 @@ export function DiscoverView({
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#201A1D] text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-top-3">
-          <Sparkles className="w-4 h-4 text-[#FA5271]" />
+          <Sparkles className="w-4 h-4 text-[#7C4DFF]" />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -115,7 +138,7 @@ export function DiscoverView({
           }}
           className={`flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold transition-all ${
             activeTab === "random"
-              ? "bg-white text-[#FA5271] shadow-2xs"
+              ? "bg-white text-[#7C4DFF] shadow-2xs"
               : "text-[#786D73] hover:text-[#201A1D]"
           }`}
         >
@@ -127,7 +150,7 @@ export function DiscoverView({
           onClick={() => setActiveTab("plans")}
           className={`flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold transition-all ${
             activeTab === "plans"
-              ? "bg-white text-[#FA5271] shadow-2xs"
+              ? "bg-white text-[#7C4DFF] shadow-2xs"
               : "text-[#786D73] hover:text-[#201A1D]"
           }`}
         >
@@ -180,7 +203,7 @@ export function DiscoverView({
               </div>
 
               <div className="pt-2 text-center text-xs text-[#9E9096] flex items-center justify-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-[#FA5271]" />
+                <Sparkles className="w-3.5 h-3.5 text-[#7C4DFF]" />
                 <span>Một chút ngẫu nhiên, thêm nhiều niềm vui.</span>
               </div>
             </div>
@@ -199,10 +222,10 @@ export function DiscoverView({
               <div className="bg-white rounded-2xl p-3.5 border border-[#F2EAE5] shadow-xs space-y-2.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-xs font-bold text-[#201A1D]">
-                    <Coins className="w-3.5 h-3.5 text-[#FA5271]" />
+                    <Coins className="w-3.5 h-3.5 text-[#7C4DFF]" />
                     <span>Mức giá mong muốn:</span>
                   </div>
-                  <span className="text-[11px] font-medium text-[#FA5271]">
+                  <span className="text-[11px] font-medium text-[#7C4DFF]">
                     {priceOptions.find((o) => o.value === selectedPriceLevel)?.rangeText}
                   </span>
                 </div>
@@ -227,7 +250,7 @@ export function DiscoverView({
                         }}
                         className={`py-2 px-1.5 rounded-xl text-center transition-all ${
                           isSelected
-                            ? "bg-[#FA5271] text-white shadow-xs font-bold"
+                            ? "bg-[#7C4DFF] text-white shadow-xs font-bold"
                             : "bg-[#F7F2EF] text-[#52464D] hover:bg-[#EFE7E2] font-medium"
                         } disabled:opacity-50`}
                       >
@@ -248,7 +271,7 @@ export function DiscoverView({
               <div className="py-1">
                 {filteredItems.length > 0 ? (
                   <SlotMachine
-                    items={filteredItems}
+                    items={spinItems.length > 0 ? spinItems : filteredItems}
                     currentIndex={currentIndex}
                     isSpinning={isSpinning}
                   />
@@ -282,7 +305,7 @@ export function DiscoverView({
                 <Button
                   onClick={handleStartSpin}
                   disabled={isSpinning || filteredItems.length === 0}
-                  className="w-full h-13 rounded-2xl bg-[#FA5271] hover:bg-[#FA5271]/90 text-white font-bold text-sm shadow-[0_6px_20px_rgba(250,82,113,0.3)] gap-2"
+                  className="w-full h-13 rounded-2xl bg-[#7C4DFF] hover:bg-[#7C4DFF]/90 text-white font-bold text-sm shadow-[0_6px_20px_rgba(250,82,113,0.3)] gap-2"
                 >
                   {isSpinning ? (
                     <>

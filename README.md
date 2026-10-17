@@ -58,6 +58,28 @@ set is_admin = true
 where id = 'UUID_CUA_TAI_KHOAN';
 ```
 
+### Phase 6B — Bản đồ và chia sẻ vị trí
+
+Migration `20261018000016_location_sharing.sql` tạo bảng private và các RPC
+`start_location_sharing`, `stop_location_sharing`, `update_my_location`,
+`get_partner_location`, `get_my_sharing_status`. Chỉ chạy migration sau các
+migration nền tảng hiện có. Tab Bản đồ dùng Leaflet + OpenStreetMap, không cần
+API key; tile công cộng không bị service worker cache. Vị trí chỉ được gửi khi
+người dùng đã đồng ý, đang chia sẻ và tab trình duyệt còn hiển thị.
+
+Production nên chạy `purge_expired_locations()` mỗi 5 phút bằng pg_cron:
+
+```sql
+select cron.schedule(
+  'mianh-purge-expired-locations',
+  '*/5 * * * *',
+  $$select public.purge_expired_locations();$$
+);
+```
+
+Nếu project chưa bật pg_cron, bật extension trong Supabase Dashboard trước.
+Không gọi hàm purge từ client; chỉ cron/server-side được phép chạy hàm này.
+
 Đăng xuất/đăng nhập lại để tải role mới. Không cấp quyền bằng cách đưa
 service-role key vào trình duyệt.
 

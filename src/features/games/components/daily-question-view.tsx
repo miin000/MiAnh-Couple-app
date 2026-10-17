@@ -13,7 +13,7 @@ interface DailyQuestionViewProps {
 const CATEGORY_MAP: Record<string, { label: string; bg: string; text: string }> = {
   fun: { label: "Vui vẻ", bg: "bg-[#FFF8E2]", text: "text-[#B88812]" },
   discover: { label: "Tìm hiểu", bg: "bg-[#E8F0FE]", text: "text-[#1A73E8]" },
-  emotion: { label: "Cảm xúc", bg: "bg-[#FFEBF0]", text: "text-[#FA5271]" },
+  emotion: { label: "Cảm xúc", bg: "bg-[#F0E9FF]", text: "text-[#7C4DFF]" },
   deep: { label: "Sâu sắc", bg: "bg-[#F3E8FF]", text: "text-[#8B5CF6]" },
 };
 
@@ -36,7 +36,7 @@ export function DailyQuestionView({ initialData }: DailyQuestionViewProps) {
             >
               {categoryInfo.label}
             </span>
-            <div className="flex items-center text-[#FA5271] text-xs font-semibold px-2 py-0.5 rounded-full bg-[#FFEBF0]">
+            <div className="flex items-center text-[#7C4DFF] text-xs font-semibold px-2 py-0.5 rounded-full bg-[#F0E9FF]">
               <Flame className="w-3 h-3 mr-0.5 fill-current" />
               <span>Cấp {question.intimacy_level}</span>
             </div>

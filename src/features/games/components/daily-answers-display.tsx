@@ -21,7 +21,7 @@ export function DailyAnswersDisplay({ data }: DailyAnswersDisplayProps) {
         <div className="p-4 rounded-2xl bg-white border border-[#EAE2DC] space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[#201A1D] flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#FA5271]"></span>
+              <span className="w-2 h-2 rounded-full bg-[#7C4DFF]"></span>
               Câu trả lời của bạn
             </span>
             <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-1">
@@ -41,7 +41,7 @@ export function DailyAnswersDisplay({ data }: DailyAnswersDisplayProps) {
 
         {/* Waiting Box */}
         <Card className="p-6 bg-gradient-to-br from-[#FFF8E2] to-[#FFF1F4] border border-[#F5E2E6] text-center space-y-3 rounded-3xl">
-          <div className="w-12 h-12 rounded-full bg-white shadow-xs mx-auto flex items-center justify-center text-[#FA5271] animate-pulse">
+          <div className="w-12 h-12 rounded-full bg-white shadow-xs mx-auto flex items-center justify-center text-[#7C4DFF] animate-pulse">
             <Clock className="w-6 h-6" />
           </div>
           <div className="space-y-1">
@@ -56,7 +56,7 @@ export function DailyAnswersDisplay({ data }: DailyAnswersDisplayProps) {
             variant="outline"
             size="sm"
             onClick={() => router.refresh()}
-            className="mt-2 text-xs bg-white/90 border-[#E5D7D9] text-[#52464D] hover:text-[#FA5271] min-h-[44px]"
+            className="mt-2 text-xs bg-white/90 border-[#E5D7D9] text-[#52464D] hover:text-[#7C4DFF] min-h-[44px]"
           >
             <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
             Kiểm tra trạng thái
@@ -80,7 +80,7 @@ export function DailyAnswersDisplay({ data }: DailyAnswersDisplayProps) {
         <Card className="p-4 bg-white border border-[#E9DFDA] rounded-2xl space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[#201A1D] flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#FA5271]"></span>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#7C4DFF]"></span>
               {myProfile?.display_name || "Bạn"}
             </span>
             <span className="text-[10px] text-[#A89DA3]">
@@ -105,7 +105,7 @@ export function DailyAnswersDisplay({ data }: DailyAnswersDisplayProps) {
         {/* Partner Answer */}
         <Card className="p-4 bg-gradient-to-br from-white to-[#FFF7F9] border border-[#F3E2E6] rounded-2xl space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#FA5271] flex items-center gap-1.5">
+            <span className="text-xs font-bold text-[#7C4DFF] flex items-center gap-1.5">
               <Heart className="w-3.5 h-3.5 fill-current" />
               {partnerProfile?.display_name || "Người ấy"}
             </span>

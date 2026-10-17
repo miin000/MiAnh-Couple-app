@@ -43,7 +43,7 @@ export default async function PairPage({ searchParams }: PairPageProps) {
   const initialTab = resolvedParams?.tab === "join" ? "join" : "create";
 
   return (
-    <div className="min-h-screen bg-[#FAF6F2] flex justify-center p-4">
+    <div className="min-h-screen bg-[#FAF8FF] flex justify-center p-4">
       <div className="w-full max-w-md flex flex-col justify-between py-4">
         <PairView
           initialCoupleInfo={coupleInfo as CoupleInfo | null}

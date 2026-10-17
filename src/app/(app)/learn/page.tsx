@@ -37,7 +37,7 @@ export default async function LearnPage() {
 
       {!isPaired ? (
         <div className="rounded-3xl bg-white border border-[#EFE5E0] p-6 text-center space-y-4">
-          <div className="w-14 h-14 rounded-2xl bg-[#FFEBF0] text-[#FA5271] flex items-center justify-center mx-auto">
+          <div className="w-14 h-14 rounded-2xl bg-[#F0E9FF] text-[#7C4DFF] flex items-center justify-center mx-auto">
             <Sparkles className="w-7 h-7" />
           </div>
           <div className="space-y-1">
@@ -48,7 +48,7 @@ export default async function LearnPage() {
               Khi hai bạn đã kết nối, cả hai sẽ cùng học chung bộ 10 từ mỗi ngày, cùng làm thử thách đôi và theo dõi tiến độ của nhau.
             </p>
           </div>
-          <Button asChild className="rounded-xl text-xs font-bold gap-1.5 bg-[#FA5271] text-white">
+          <Button asChild className="rounded-xl text-xs font-bold gap-1.5 bg-[#7C4DFF] text-white">
             <Link href="/settings">
               <UserPlus className="w-4 h-4" />
               Kết nối ngay

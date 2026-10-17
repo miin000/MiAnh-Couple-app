@@ -31,6 +31,7 @@ export interface BucketListItem {
 export interface OurSpaceData {
   coupleId: string;
   startDate: string | null;
+  timezone: string;
   memories: Memory[];
   anniversaries: Anniversary[];
   bucketList: BucketListItem[];

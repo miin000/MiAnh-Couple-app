@@ -68,7 +68,7 @@ export function UsersManager({ initialUsers, currentUserId }: UsersManagerProps)
 
       {/* Info Banner for Admin Accounts */}
       <Card className="p-4 bg-[#FFF2EB] border-[#F2EAE5] rounded-3xl flex items-start gap-3">
-        <div className="w-8 h-8 rounded-xl bg-white text-[#FA5271] flex items-center justify-center shrink-0 shadow-2xs mt-0.5">
+        <div className="w-8 h-8 rounded-xl bg-white text-[#7C4DFF] flex items-center justify-center shrink-0 shadow-2xs mt-0.5">
           <KeyRound className="w-4 h-4" />
         </div>
         <div className="text-xs space-y-1 text-[#201A1D]">
@@ -77,7 +77,7 @@ export function UsersManager({ initialUsers, currentUserId }: UsersManagerProps)
             • admin1@mianh.app (Pass: AdminPassword@123)<br />
             • admin2@mianh.app (Pass: AdminPassword@123)
           </div>
-          <div className="text-[11px] text-[#FA5271] font-medium pt-0.5">
+          <div className="text-[11px] text-[#7C4DFF] font-medium pt-0.5">
             Bạn có thể dùng tài khoản trên để đăng nhập hoặc quản lý phân quyền cho tài khoản khác.
           </div>
         </div>
@@ -91,7 +91,7 @@ export function UsersManager({ initialUsers, currentUserId }: UsersManagerProps)
             placeholder="Tìm theo email hoặc tên hiển thị..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-white border border-[#F2EAE5] rounded-xl text-xs focus:border-[#FA5271]"
+            className="w-full pl-9 pr-3 py-2 bg-white border border-[#F2EAE5] rounded-xl text-xs focus:border-[#7C4DFF]"
           />
         </div>
       </div>
@@ -106,7 +106,7 @@ export function UsersManager({ initialUsers, currentUserId }: UsersManagerProps)
             <Card key={user.id} className="p-3 bg-white border border-[#F2EAE5] rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0">
                 <div className={`w-9 h-9 rounded-2xl flex items-center justify-center text-xs font-black shrink-0 ${
-                  user.is_admin ? "bg-[#FFEBF0] text-[#FA5271] border border-[#FA5271]/20" : "bg-stone-100 text-stone-600"
+                  user.is_admin ? "bg-[#F0E9FF] text-[#7C4DFF] border border-[#7C4DFF]/20" : "bg-stone-100 text-stone-600"
                 }`}>
                   {user.display_name ? user.display_name.charAt(0).toUpperCase() : "U"}
                 </div>
@@ -114,7 +114,7 @@ export function UsersManager({ initialUsers, currentUserId }: UsersManagerProps)
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-xs text-[#201A1D] truncate">{user.display_name || "Chưa đặt tên"}</span>
                     {user.is_admin ? (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-[#FFEBF0] text-[#FA5271] flex items-center gap-1">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-[#F0E9FF] text-[#7C4DFF] flex items-center gap-1">
                         <ShieldCheck className="w-3 h-3" /> Admin
                       </span>
                     ) : (
@@ -135,7 +135,7 @@ export function UsersManager({ initialUsers, currentUserId }: UsersManagerProps)
                   size="sm"
                   disabled={user.id === currentUserId && user.is_admin}
                   onClick={() => handleToggleAdmin(user)}
-                  className={`rounded-xl text-xs h-8 gap-1 ${user.is_admin ? "text-stone-500 hover:text-red-600" : "text-[#FA5271] hover:bg-[#FFEBF0]"}`}
+                  className={`rounded-xl text-xs h-8 gap-1 ${user.is_admin ? "text-stone-500 hover:text-red-600" : "text-[#7C4DFF] hover:bg-[#F0E9FF]"}`}
                 >
                   {user.is_admin ? (
                     <><ShieldAlert className="w-3.5 h-3.5" /> Thu hồi Admin</>

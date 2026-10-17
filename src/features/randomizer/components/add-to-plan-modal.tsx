@@ -102,7 +102,7 @@ export function AddToPlanModal({
         </div>
 
         {errorMsg && (
-          <div className="rounded-xl bg-[#FFEBF0] text-[#D84557] p-2.5 text-xs font-medium">
+          <div className="rounded-xl bg-[#F0E9FF] text-[#6B46C1] p-2.5 text-xs font-medium">
             {errorMsg}
           </div>
         )}
@@ -125,7 +125,7 @@ export function AddToPlanModal({
                   onClick={() => setMode("select")}
                   className={`py-1.5 rounded-lg transition-all ${
                     mode === "select"
-                      ? "bg-white text-[#FA5271] shadow-2xs"
+                      ? "bg-white text-[#7C4DFF] shadow-2xs"
                       : "text-[#786D73]"
                   }`}
                 >
@@ -136,7 +136,7 @@ export function AddToPlanModal({
                   onClick={() => setMode("create")}
                   className={`py-1.5 rounded-lg transition-all ${
                     mode === "create"
-                      ? "bg-white text-[#FA5271] shadow-2xs"
+                      ? "bg-white text-[#7C4DFF] shadow-2xs"
                       : "text-[#786D73]"
                   }`}
                 >
@@ -153,7 +153,7 @@ export function AddToPlanModal({
                 <select
                   value={selectedPlanId}
                   onChange={(e) => setSelectedPlanId(e.target.value)}
-                  className="w-full rounded-xl border border-[#E5DAD5] px-3 py-2 text-xs text-[#201A1D] bg-white focus:outline-none focus:border-[#FA5271]"
+                  className="w-full rounded-xl border border-[#E5DAD5] px-3 py-2 text-xs text-[#201A1D] bg-white focus:outline-none focus:border-[#7C4DFF]"
                 >
                   {plans.map((p) => (
                     <option key={p.id} value={p.id}>
@@ -206,7 +206,7 @@ export function AddToPlanModal({
 
             <div>
               <label className="text-xs font-semibold text-[#52464D] block mb-1">
-                Chi phí ước tính cho mục này (₫)
+                Chi phí Æ°ớc tính cho mục này (₫)
               </label>
               <Input
                 type="number"

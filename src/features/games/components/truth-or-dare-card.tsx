@@ -40,10 +40,10 @@ export function TruthOrDareCard({
   return (
     <Card className="p-6 bg-gradient-to-br from-white via-white to-[#FFF5F8] border border-[#F2EAE5] shadow-xs rounded-3xl space-y-4">
       <div className="flex items-center justify-between">
-        <span className="text-[11px] font-bold uppercase tracking-wider text-[#FA5271] bg-[#FFEBF0] px-2.5 py-0.5 rounded-full">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-[#7C4DFF] bg-[#F0E9FF] px-2.5 py-0.5 rounded-full">
           {kind === "truth" ? "Câu hỏi Thật" : "Thử thách Thách"}
         </span>
-        <div className="flex items-center text-xs font-semibold text-[#FA5271] bg-[#FFEBF0] px-2 py-0.5 rounded-full">
+        <div className="flex items-center text-xs font-semibold text-[#7C4DFF] bg-[#F0E9FF] px-2 py-0.5 rounded-full">
           <Flame className="w-3.5 h-3.5 mr-0.5 fill-current" />
           <span>Mức {question.intimacy_level}</span>
         </div>
@@ -59,7 +59,7 @@ export function TruthOrDareCard({
           value={answerText}
           onChange={(e) => setAnswerText(e.target.value)}
           placeholder="Ghi lại câu trả lời (tùy chọn hoặc trả lời trực tiếp)..."
-          className="w-full h-11 px-3.5 text-xs rounded-xl border border-[#E9DFDA] bg-white placeholder:text-[#A89DA3] focus:outline-none focus:border-[#FA5271]"
+          className="w-full h-11 px-3.5 text-xs rounded-xl border border-[#E9DFDA] bg-white placeholder:text-[#A89DA3] focus:outline-none focus:border-[#7C4DFF]"
           disabled={isPending}
         />
       )}

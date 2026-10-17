@@ -17,7 +17,7 @@ export function LearnStatsCard({ stats }: LearnStatsCardProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-[#FFF0F3] text-[#FA5271] flex items-center justify-center">
+          <div className="w-8 h-8 rounded-xl bg-[#F5F0FF] text-[#7C4DFF] flex items-center justify-center">
             <TrendingUp className="w-4 h-4" />
           </div>
           <div>
@@ -30,7 +30,7 @@ export function LearnStatsCard({ stats }: LearnStatsCardProps) {
           </div>
         </div>
 
-        <span className="text-[11px] font-bold text-[#FA5271] bg-[#FFEBF0] px-2.5 py-1 rounded-full">
+        <span className="text-[11px] font-bold text-[#7C4DFF] bg-[#F0E9FF] px-2.5 py-1 rounded-full">
           Leitner 5 Hộp
         </span>
       </div>
@@ -41,7 +41,7 @@ export function LearnStatsCard({ stats }: LearnStatsCardProps) {
         <div className="p-3.5 rounded-2xl bg-[#FBF7F5] border border-[#EFE5E0] space-y-2.5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[#201A1D]">Bạn</span>
-            <span className="text-[10px] font-bold text-[#FA5271] bg-white px-2 py-0.5 rounded-full border border-[#EFE5E0]">
+            <span className="text-[10px] font-bold text-[#7C4DFF] bg-white px-2 py-0.5 rounded-full border border-[#EFE5E0]">
               Cá nhân
             </span>
           </div>
@@ -57,7 +57,7 @@ export function LearnStatsCard({ stats }: LearnStatsCardProps) {
             </div>
             <div className="flex items-center justify-between text-[#786D73]">
               <span>Cần ôn hôm nay:</span>
-              <span className="font-bold text-[#FA5271]">{myStats.dueReviewsCount} từ</span>
+              <span className="font-bold text-[#7C4DFF]">{myStats.dueReviewsCount} từ</span>
             </div>
             <div className="flex items-center justify-between text-[#786D73] pt-1 border-t border-[#EFE5E0]">
               <span>Quiz gần nhất:</span>
@@ -71,10 +71,10 @@ export function LearnStatsCard({ stats }: LearnStatsCardProps) {
         </div>
 
         {/* Cột Partner */}
-        <div className="p-3.5 rounded-2xl bg-[#FFF8FA] border border-[#FFEBF0] space-y-2.5">
+        <div className="p-3.5 rounded-2xl bg-[#FFF8FA] border border-[#F0E9FF] space-y-2.5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#FA5271]">{partnerName}</span>
-            <span className="text-[10px] font-bold text-[#FA5271] bg-white px-2 py-0.5 rounded-full border border-[#FFEBF0]">
+            <span className="text-xs font-bold text-[#7C4DFF]">{partnerName}</span>
+            <span className="text-[10px] font-bold text-[#7C4DFF] bg-white px-2 py-0.5 rounded-full border border-[#F0E9FF]">
               Đối phương
             </span>
           </div>
@@ -98,7 +98,7 @@ export function LearnStatsCard({ stats }: LearnStatsCardProps) {
                 {partnerStats ? "Đang học" : "Đang chờ"}
               </span>
             </div>
-            <div className="flex items-center justify-between text-[#786D73] pt-1 border-t border-[#FFEBF0]">
+            <div className="flex items-center justify-between text-[#786D73] pt-1 border-t border-[#F0E9FF]">
               <span>Quiz gần nhất:</span>
               <span className="font-bold text-[#201A1D]">
                 {partnerStats?.latestQuiz

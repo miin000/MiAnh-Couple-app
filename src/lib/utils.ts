@@ -5,6 +5,25 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function getBusinessDate(timeZone = "Asia/Ho_Chi_Minh", date = new Date()): string {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+export function getDaysTogether(startDate: string | null, timeZone = "Asia/Ho_Chi_Minh"): number | null {
+  if (!startDate) return null;
+  const today = getBusinessDate(timeZone);
+  const startUtc = Date.parse(`${startDate}T00:00:00Z`);
+  const todayUtc = Date.parse(`${today}T00:00:00Z`);
+  return Math.max(1, Math.floor((todayUtc - startUtc) / 86400000) + 1);
+}
+
 export const RPC_ERROR_MAP: Record<string, string> = {
   NOT_AUTHENTICATED: "Bạn cần đăng nhập lại.",
   NOT_IN_COUPLE: "Bạn chưa có không gian chung.",

@@ -157,12 +157,12 @@ export function PairView({ initialCoupleInfo, userDisplayName, initialTab = "cre
         </div>
 
         {inviteCode ? (
-          <Card className="p-6 text-center space-y-4 border-[#FA5271]/30">
+          <Card className="p-6 text-center space-y-4 border-[#7C4DFF]/30">
             <p className="text-xs font-bold text-[#8E8287] uppercase tracking-wider">
               Mã ghép đôi của hai bạn
             </p>
 
-            <div className="inline-flex items-center justify-center tracking-widest text-3xl font-extrabold text-[#FA5271] font-mono bg-[#FFEBF0] px-6 py-3 rounded-2xl border border-[#FA5271]/30 select-all">
+            <div className="inline-flex items-center justify-center tracking-widest text-3xl font-extrabold text-[#7C4DFF] font-mono bg-[#F0E9FF] px-6 py-3 rounded-2xl border border-[#7C4DFF]/30 select-all">
               {inviteCode}
             </div>
 
@@ -231,7 +231,7 @@ export function PairView({ initialCoupleInfo, userDisplayName, initialTab = "cre
           <form action={logoutAction}>
             <button
               type="submit"
-              className="w-full py-2.5 text-xs font-semibold text-[#8E8287] hover:text-[#FA5271] flex items-center justify-center gap-1.5 transition-colors"
+              className="w-full py-2.5 text-xs font-semibold text-[#8E8287] hover:text-[#7C4DFF] flex items-center justify-center gap-1.5 transition-colors"
             >
               <LogOut className="w-3.5 h-3.5" />
               Đăng xuất
@@ -251,7 +251,7 @@ export function PairView({ initialCoupleInfo, userDisplayName, initialTab = "cre
             setIsJoiningInstead(false);
             setServerError(null);
           }}
-          className="text-xs font-bold text-[#FA5271] hover:underline flex items-center gap-1"
+          className="text-xs font-bold text-[#7C4DFF] hover:underline flex items-center gap-1"
         >
           ← Quay lại xem mã mời của bạn
         </button>
@@ -268,7 +268,7 @@ export function PairView({ initialCoupleInfo, userDisplayName, initialTab = "cre
           type="button"
           onClick={() => { setActiveTab("create"); setServerError(null); }}
           className={`py-2 rounded-xl text-xs font-bold transition-all ${
-            activeTab === "create" ? "bg-white text-[#FA5271] shadow-2xs" : "text-[#786D73]"
+            activeTab === "create" ? "bg-white text-[#7C4DFF] shadow-2xs" : "text-[#786D73]"
           }`}
         >
           Tạo mã mới
@@ -277,7 +277,7 @@ export function PairView({ initialCoupleInfo, userDisplayName, initialTab = "cre
           type="button"
           onClick={() => { setActiveTab("join"); setServerError(null); }}
           className={`py-2 rounded-xl text-xs font-bold transition-all ${
-            activeTab === "join" ? "bg-white text-[#FA5271] shadow-2xs" : "text-[#786D73]"
+            activeTab === "join" ? "bg-white text-[#7C4DFF] shadow-2xs" : "text-[#786D73]"
           }`}
         >
           Nhập mã có sẵn
@@ -292,8 +292,8 @@ export function PairView({ initialCoupleInfo, userDisplayName, initialTab = "cre
 
       {activeTab === "create" ? (
         <Card className="p-5 space-y-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#FFEBF0] text-[#FA5271] flex items-center justify-center mx-auto">
-            <Heart className="w-6 h-6 fill-[#FA5271]" />
+          <div className="w-12 h-12 rounded-2xl bg-[#F0E9FF] text-[#7C4DFF] flex items-center justify-center mx-auto">
+            <Heart className="w-6 h-6 fill-[#7C4DFF]" />
           </div>
 
           <div className="text-center">
@@ -352,7 +352,7 @@ export function PairView({ initialCoupleInfo, userDisplayName, initialTab = "cre
       <form action={logoutAction} className="pt-4">
         <button
           type="submit"
-          className="w-full py-2.5 text-xs font-semibold text-[#8E8287] hover:text-[#FA5271] flex items-center justify-center gap-1.5 transition-colors"
+          className="w-full py-2.5 text-xs font-semibold text-[#8E8287] hover:text-[#7C4DFF] flex items-center justify-center gap-1.5 transition-colors"
         >
           <LogOut className="w-3.5 h-3.5" />
           Đăng xuất tài khoản

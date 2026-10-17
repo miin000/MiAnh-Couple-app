@@ -54,6 +54,7 @@ export const updateProfileSchema = z.object({
     .min(1, "Vui lòng nhập tên hiển thị.")
     .max(50, "Tên hiển thị tối đa 50 ký tự."),
   startDate: z.string().min(1, "Vui lòng chọn ngày kỷ niệm bắt đầu."),
+  avatarUrl: z.union([z.literal(""), z.string().url("Ảnh đại diện phải là URL hợp lệ.")]).optional(),
 });
 
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;

@@ -42,7 +42,7 @@ export function UserEditModal({ user, onClose, onSuccess }: UserEditModalProps) 
       <div className="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-xl border border-[#F2EAE5]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <User className="w-4 h-4 text-[#FA5271]" />
+            <User className="w-4 h-4 text-[#7C4DFF]" />
             <h3 className="text-sm font-extrabold text-[#201A1D]">Sửa tên người dùng</h3>
           </div>
           <button onClick={onClose} className="w-7 h-7 rounded-full bg-stone-100 flex items-center justify-center">
@@ -68,7 +68,7 @@ export function UserEditModal({ user, onClose, onSuccess }: UserEditModalProps) 
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="VD: Anh Minh, Bé Linh..."
-              className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#FA5271]"
+              className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#7C4DFF]"
             />
           </div>
 
@@ -76,7 +76,7 @@ export function UserEditModal({ user, onClose, onSuccess }: UserEditModalProps) 
             <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting} className="rounded-xl h-9 text-xs">
               Hủy
             </Button>
-            <Button type="submit" disabled={isSubmitting} className="rounded-xl bg-[#FA5271] text-white font-bold h-9 px-4 text-xs">
+            <Button type="submit" disabled={isSubmitting} className="rounded-xl bg-[#7C4DFF] text-white font-bold h-9 px-4 text-xs">
               {isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}
             </Button>
           </div>

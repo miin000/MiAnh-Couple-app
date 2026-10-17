@@ -23,8 +23,8 @@ export function LoadingState({
           className
         )}
       >
-        <div className="w-9 h-9 rounded-full bg-[#FFEBF0] text-[#FA5271] flex items-center justify-center mb-2">
-          <Loader2 className="w-5 h-5 animate-spin text-[#FA5271]" />
+        <div className="w-9 h-9 rounded-full bg-[#F0E9FF] text-[#7C4DFF] flex items-center justify-center mb-2">
+          <Loader2 className="w-5 h-5 animate-spin text-[#7C4DFF]" />
         </div>
         <p className="text-sm font-bold text-[#201A1D]">{title}</p>
         <p className="text-xs text-[#8E8287] mt-0.5">{description}</p>
@@ -39,8 +39,8 @@ export function LoadingState({
         className
       )}
     >
-      <div className="w-16 h-16 rounded-full bg-[#FFEBF0] text-[#FA5271] flex items-center justify-center mb-4">
-        <Loader2 className="w-8 h-8 animate-spin text-[#FA5271]" />
+      <div className="w-16 h-16 rounded-full bg-[#F0E9FF] text-[#7C4DFF] flex items-center justify-center mb-4">
+        <Loader2 className="w-8 h-8 animate-spin text-[#7C4DFF]" />
       </div>
       <h3 className="text-lg font-bold text-[#201A1D] mb-1">{title}</h3>
       <p className="text-sm text-[#8E8287] max-w-xs">{description}</p>

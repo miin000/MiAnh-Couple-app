@@ -74,7 +74,7 @@ export function DailyAnswerForm({ sessionId }: DailyAnswerFormProps) {
           value={answerText}
           onChange={(e) => setAnswerText(e.target.value)}
           placeholder="Viết câu trả lời chân thật nhất của bạn..."
-          className="w-full rounded-2xl border border-[#E9DFDA] bg-white p-4 text-sm text-[#201A1D] placeholder:text-[#A89DA3] shadow-2xs focus:outline-none focus:border-[#FA5271] focus:ring-2 focus:ring-[#FA5271]/20 resize-none transition-all"
+          className="w-full rounded-2xl border border-[#E9DFDA] bg-white p-4 text-sm text-[#201A1D] placeholder:text-[#A89DA3] shadow-2xs focus:outline-none focus:border-[#7C4DFF] focus:ring-2 focus:ring-[#7C4DFF]/20 resize-none transition-all"
           disabled={isPending}
         />
       </div>

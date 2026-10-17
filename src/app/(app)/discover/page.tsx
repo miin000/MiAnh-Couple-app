@@ -2,6 +2,8 @@ import { getRandomItems, getDatePlans, getPriceLevelConfigs } from "@/features/r
 import { getCurrentCouple } from "@/features/couple/queries";
 import { DiscoverView } from "@/features/randomizer/components/discover-view";
 
+export const dynamic = "force-dynamic";
+
 export default async function DiscoverPage() {
   const [items, plans, coupleInfo, priceConfigs] = await Promise.all([
     getRandomItems(),
@@ -26,5 +28,4 @@ export default async function DiscoverPage() {
     />
   );
 }
-
 

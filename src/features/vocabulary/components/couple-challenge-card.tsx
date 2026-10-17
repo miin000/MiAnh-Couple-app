@@ -69,7 +69,7 @@ export function CoupleChallengeCard({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-[#FFF0F3] text-[#FA5271] flex items-center justify-center">
+          <div className="w-8 h-8 rounded-xl bg-[#F5F0FF] text-[#7C4DFF] flex items-center justify-center">
             <Heart className="w-4 h-4 fill-current" />
           </div>
           <div>
@@ -96,13 +96,13 @@ export function CoupleChallengeCard({
       </div>
 
       {/* Đề bài thử thách */}
-      <div className="p-3.5 rounded-2xl bg-[#FFF8FA] border border-[#FFEBF0] space-y-2">
+      <div className="p-3.5 rounded-2xl bg-[#FFF8FA] border border-[#F0E9FF] space-y-2">
         <p className="text-xs font-semibold text-[#201A1D] leading-relaxed">
           {challenge.prompt}
         </p>
 
         {words.length > 0 && (
-          <div className="pt-1 border-t border-[#FFEBF0]">
+          <div className="pt-1 border-t border-[#F0E9FF]">
             <span className="text-[10px] font-bold text-[#9E9096] block mb-1">
               Gợi ý từ mới bài hôm nay:
             </span>
@@ -112,7 +112,7 @@ export function CoupleChallengeCard({
                   key={w.id}
                   type="button"
                   onClick={() => !hasMySub && setContent((prev) => `${prev} ${w.word} `)}
-                  className="px-2 py-0.5 rounded-lg text-[10px] font-medium bg-white text-[#FA5271] border border-[#FFEBF0] hover:bg-[#FFEBF0] transition-colors"
+                  className="px-2 py-0.5 rounded-lg text-[10px] font-medium bg-white text-[#7C4DFF] border border-[#F0E9FF] hover:bg-[#F0E9FF] transition-colors"
                 >
                   +{w.word}
                 </button>
@@ -132,7 +132,7 @@ export function CoupleChallengeCard({
               placeholder="Nhập câu trả lời hoặc đoạn văn của bạn ở đây (tối đa 2000 ký tự)..."
               rows={4}
               maxLength={2000}
-              className="w-full rounded-2xl border border-[#EFE5E0] p-3.5 text-xs text-[#201A1D] placeholder:text-[#9E9096] focus:outline-none focus:ring-2 focus:ring-[#FA5271]/20 focus:border-[#FA5271] resize-none"
+              className="w-full rounded-2xl border border-[#EFE5E0] p-3.5 text-xs text-[#201A1D] placeholder:text-[#9E9096] focus:outline-none focus:ring-2 focus:ring-[#7C4DFF]/20 focus:border-[#7C4DFF] resize-none"
             />
             <div className="flex items-center justify-between text-[10px] text-[#9E9096] px-1">
               <span>Chia sẻ suy nghĩ chân thật cùng người ấy</span>
@@ -147,7 +147,7 @@ export function CoupleChallengeCard({
           <Button
             type="submit"
             disabled={!content.trim() || isPending}
-            className="w-full h-11 rounded-2xl font-bold text-xs bg-[#FA5271] text-white hover:bg-[#e04563] shadow-sm gap-1.5 transition-all"
+            className="w-full h-11 rounded-2xl font-bold text-xs bg-[#7C4DFF] text-white hover:bg-[#e04563] shadow-sm gap-1.5 transition-all"
           >
             <Send className="w-4 h-4" />
             {isPending ? "Đang gửi bài..." : "Gửi câu trả lời của tôi"}
@@ -172,9 +172,9 @@ export function CoupleChallengeCard({
 
           {/* Bài của partner */}
           {partnerSubmission ? (
-            <div className="p-3.5 rounded-2xl bg-[#FFF8FA] border border-[#FFEBF0] space-y-1.5 animate-in fade-in duration-300">
+            <div className="p-3.5 rounded-2xl bg-[#FFF8FA] border border-[#F0E9FF] space-y-1.5 animate-in fade-in duration-300">
               <div className="flex items-center justify-between text-xs">
-                <span className="font-bold text-[#FA5271] flex items-center gap-1.5">
+                <span className="font-bold text-[#7C4DFF] flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5" />
                   Bài của {partnerName}
                 </span>

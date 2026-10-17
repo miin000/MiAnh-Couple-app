@@ -2,12 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { getErrorMessage } from "@/lib/utils";
-import { anniversarySchema, bucketItemSchema, memorySchema, validateMemoryPhoto } from "./validations";
+import { anniversarySchema, bucketItemSchema, memorySchema } from "./validations";
 
 export interface MemoryActionResult {
   success: boolean;
   message: string;
+  memoryId?: string;
+  coupleId?: string;
 }
 
 async function currentUserAndCouple() {
@@ -32,31 +33,8 @@ export async function createMemoryAction(formData: FormData): Promise<MemoryActi
   }).select("id").single();
   if (error || !memory) return { success: false, message: "Không thể lưu kỷ niệm." };
 
-  const uploadedPaths: string[] = [];
-  try {
-    for (const entry of formData.getAll("photos")) {
-      if (!(entry instanceof File) || entry.size === 0) continue;
-      const validationError = validateMemoryPhoto(entry);
-      if (validationError) throw new Error(validationError);
-      const safeName = entry.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-      const path = `${coupleId}/${memory.id}/${crypto.randomUUID()}-${safeName}`;
-      const upload = await supabase.storage.from("memories").upload(path, entry, { contentType: entry.type, upsert: false });
-      if (upload.error) throw new Error("Không thể tải ảnh lên. Vui lòng thử lại.");
-      uploadedPaths.push(path);
-    }
-    if (uploadedPaths.length) {
-      const { error: photoError } = await supabase.from("memory_photos").insert(
-        uploadedPaths.map((storage_path) => ({ memory_id: memory.id, couple_id: coupleId, storage_path })),
-      );
-      if (photoError) throw new Error("Không thể lưu thông tin ảnh.");
-    }
-  } catch (error) {
-    await supabase.storage.from("memories").remove(uploadedPaths);
-    await supabase.from("memories").delete().eq("id", memory.id);
-    return { success: false, message: getErrorMessage(error, "Không thể lưu kỷ niệm.") };
-  }
   revalidatePath("/our-space");
-  return { success: true, message: "Đã lưu kỷ niệm." };
+  return { success: true, message: "Đã lưu kỷ niệm.", memoryId: memory.id, coupleId };
 }
 
 export async function deleteMemoryAction(id: string): Promise<MemoryActionResult> {

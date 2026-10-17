@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 
 export default function OfflinePage() {
   return (
-    <main className="min-h-screen bg-[#FAF6F2] px-6 flex items-center justify-center text-center">
+    <main className="min-h-screen bg-[#FAF8FF] px-6 flex items-center justify-center text-center">
       <div className="max-w-sm space-y-4">
-        <div className="mx-auto w-16 h-16 rounded-3xl bg-[#FFEBF0] text-[#FA5271] flex items-center justify-center">
+        <div className="mx-auto w-16 h-16 rounded-3xl bg-[#F0E9FF] text-[#7C4DFF] flex items-center justify-center">
           <WifiOff className="w-8 h-8" />
         </div>
         <h1 className="text-2xl font-extrabold">Không có kết nối</h1>

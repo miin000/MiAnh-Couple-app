@@ -55,13 +55,13 @@ export function PlanItemRow({ item }: PlanItemRowProps) {
               value={actualCost}
               onChange={(e) => setActualCost(e.target.value)}
               placeholder="Thực tế..."
-              className="w-24 px-2 py-1 border border-[#FA5271] rounded-lg text-xs"
+              className="w-24 px-2 py-1 border border-[#7C4DFF] rounded-lg text-xs"
               autoFocus
             />
             <button
               onClick={handleSaveActualCost}
               disabled={isPending}
-              className="p-1 bg-[#FA5271] text-white rounded-lg hover:opacity-90"
+              className="p-1 bg-[#7C4DFF] text-white rounded-lg hover:opacity-90"
               title="Lưu"
             >
               <Check className="w-3.5 h-3.5" />
@@ -81,11 +81,11 @@ export function PlanItemRow({ item }: PlanItemRowProps) {
             className="text-right group cursor-pointer"
           >
             {item.actual_cost !== null ? (
-              <span className="font-extrabold text-[#FA5271] block">
+              <span className="font-extrabold text-[#7C4DFF] block">
                 {formatVND(item.actual_cost)}
               </span>
             ) : (
-              <span className="text-[11px] text-[#9E9096] italic underline hover:text-[#FA5271]">
+              <span className="text-[11px] text-[#9E9096] italic underline hover:text-[#7C4DFF]">
                 + Nhập chi phí thực tế
               </span>
             )}
@@ -96,7 +96,7 @@ export function PlanItemRow({ item }: PlanItemRowProps) {
           type="button"
           onClick={handleDelete}
           disabled={isPending}
-          className="text-[#A89DA3] hover:text-[#D84557] p-1 rounded transition-colors"
+          className="text-[#A89DA3] hover:text-[#6B46C1] p-1 rounded transition-colors"
           title="Xóa mục"
         >
           <Trash2 className="w-3.5 h-3.5" />

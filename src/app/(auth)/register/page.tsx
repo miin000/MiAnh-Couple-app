@@ -48,7 +48,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF6F2] flex justify-center p-4">
+    <div className="min-h-screen bg-[#FAF8FF] flex justify-center p-4">
       <div className="w-full max-w-md flex flex-col justify-between py-6">
         <div>
           <PageHeader
@@ -143,7 +143,7 @@ export default function RegisterPage() {
 
         <div className="text-center text-xs text-[#8E8287] pt-4">
           Đã có tài khoản?{" "}
-          <Link href="/login" className="font-bold text-[#FA5271]">
+          <Link href="/login" className="font-bold text-[#7C4DFF]">
             Đăng nhập
           </Link>
         </div>

@@ -41,8 +41,8 @@ export function SpinResultCard({
     <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-300">
       {/* Celebration Header */}
       <div className="text-center pt-2">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-[#FA5271] mb-1">
-          ✨ VŨ TRỤ ĐÃ CHỌN
+        <p className="text-[11px] font-bold uppercase tracking-wider text-[#7C4DFF] mb-1">
+          ✨ VŨ TRỤ Đà CHỌN
         </p>
         <h2 className="text-2xl font-black text-[#201A1D]">
           Gợi ý tuyệt vời cho hai đứa!
@@ -72,7 +72,7 @@ export function SpinResultCard({
         )}
 
         <div>
-          <div className="inline-block text-[11px] font-bold text-[#FA5271] bg-[#FFEBF0] px-3 py-1 rounded-full uppercase tracking-wider mb-1.5">
+          <div className="inline-block text-[11px] font-bold text-[#7C4DFF] bg-[#F0E9FF] px-3 py-1 rounded-full uppercase tracking-wider mb-1.5">
             {categoryLabel} · {getPriceLevelText(item.price_level, priceConfigs)}
           </div>
           <h3 className="text-xl font-extrabold text-[#201A1D] mt-1">
@@ -130,7 +130,7 @@ export function SpinResultCard({
         <Button
           type="button"
           onClick={onSelect}
-          className="rounded-2xl h-12 text-xs font-bold gap-2 bg-[#FA5271] hover:bg-[#FA5271]/90 text-white shadow-md shadow-[#FA5271]/20"
+          className="rounded-2xl h-12 text-xs font-bold gap-2 bg-[#7C4DFF] hover:bg-[#7C4DFF]/90 text-white shadow-md shadow-[#7C4DFF]/20"
         >
           <Check className="w-4 h-4" /> Chọn cái này
         </Button>

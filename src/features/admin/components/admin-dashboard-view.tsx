@@ -83,7 +83,7 @@ export function AdminDashboardView({
               className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
                 isActive
                   ? "bg-[#201A1D] text-white shadow-xs"
-                  : "bg-white text-stone-600 hover:text-[#FA5271] hover:bg-[#FFEBF0]/50 border border-[#F2EAE5]"
+                  : "bg-white text-stone-600 hover:text-[#7C4DFF] hover:bg-[#F0E9FF]/50 border border-[#F2EAE5]"
               }`}
             >
               {tab.icon}

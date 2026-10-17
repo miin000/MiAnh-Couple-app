@@ -94,7 +94,7 @@ export function QuestionsManager({ initialQuestions }: QuestionsManagerProps) {
   const getKindLabel = (kind: QuestionItem["kind"]) => {
     switch (kind) {
       case "daily":
-        return { label: "Hằng ngày", bg: "bg-[#FFEBF0] text-[#FA5271]" };
+        return { label: "Hằng ngày", bg: "bg-[#F0E9FF] text-[#7C4DFF]" };
       case "truth":
         return { label: "Nói thật", bg: "bg-[#EDF3FC] text-[#2F6BE6]" };
       case "dare":
@@ -142,7 +142,7 @@ export function QuestionsManager({ initialQuestions }: QuestionsManagerProps) {
             placeholder="Tìm theo nội dung câu hỏi, mã key..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-white border border-[#F2EAE5] rounded-xl text-xs focus:border-[#FA5271]"
+            className="w-full pl-9 pr-3 py-2 bg-white border border-[#F2EAE5] rounded-xl text-xs focus:border-[#7C4DFF]"
           />
         </div>
         <Button
@@ -150,7 +150,7 @@ export function QuestionsManager({ initialQuestions }: QuestionsManagerProps) {
             setEditingQuestion(null);
             setIsModalOpen(true);
           }}
-          className="rounded-xl bg-[#FA5271] hover:bg-[#E03A58] text-white text-xs font-bold gap-1.5 h-9 shrink-0 cursor-pointer"
+          className="rounded-xl bg-[#7C4DFF] hover:bg-[#6937D5] text-white text-xs font-bold gap-1.5 h-9 shrink-0 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>Thêm câu hỏi mới</span>
@@ -198,7 +198,7 @@ export function QuestionsManager({ initialQuestions }: QuestionsManagerProps) {
                 onClick={() => setSelectedCategory(c.id)}
                 className={`px-2.5 py-0.5 rounded-lg text-[11px] transition-colors shrink-0 cursor-pointer ${
                   selectedCategory === c.id
-                    ? "bg-[#FA5271] text-white font-bold"
+                    ? "bg-[#7C4DFF] text-white font-bold"
                     : "bg-stone-100 text-stone-600 hover:bg-stone-200"
                 }`}
               >
@@ -229,7 +229,7 @@ export function QuestionsManager({ initialQuestions }: QuestionsManagerProps) {
       {/* Questions list */}
       <div className="space-y-2">
         <div className="text-[11px] font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5">
-          <MessageCircleQuestion className="w-3.5 h-3.5 text-[#FA5271]" />
+          <MessageCircleQuestion className="w-3.5 h-3.5 text-[#7C4DFF]" />
           Kho câu hỏi ({filtered.length} câu)
         </div>
 
@@ -286,7 +286,7 @@ export function QuestionsManager({ initialQuestions }: QuestionsManagerProps) {
                         setEditingQuestion(q);
                         setIsModalOpen(true);
                       }}
-                      className="p-1.5 rounded-lg text-stone-500 hover:text-[#FA5271] hover:bg-[#FFEBF0]/50 transition-colors cursor-pointer"
+                      className="p-1.5 rounded-lg text-stone-500 hover:text-[#7C4DFF] hover:bg-[#F0E9FF]/50 transition-colors cursor-pointer"
                       title="Chỉnh sửa câu hỏi"
                     >
                       <Edit2 className="w-4 h-4" />

@@ -158,7 +158,7 @@ export function LearnQuiz({
     return (
       <div className="space-y-4 animate-in fade-in duration-300">
         <div className="rounded-3xl bg-white border border-[#EFE5E0] p-6 text-center space-y-4 shadow-2xs">
-          <div className="w-16 h-16 rounded-3xl bg-[#FFF0F3] text-[#FA5271] flex items-center justify-center mx-auto shadow-sm">
+          <div className="w-16 h-16 rounded-3xl bg-[#F5F0FF] text-[#7C4DFF] flex items-center justify-center mx-auto shadow-sm">
             <Trophy className="w-8 h-8" />
           </div>
 
@@ -202,7 +202,7 @@ export function LearnQuiz({
             {onFinish && (
               <Button
                 onClick={onFinish}
-                className="rounded-xl text-xs font-bold bg-[#FA5271] text-white hover:bg-[#e04563]"
+                className="rounded-xl text-xs font-bold bg-[#7C4DFF] text-white hover:bg-[#e04563]"
               >
                 Tiếp tục học
               </Button>
@@ -230,7 +230,7 @@ export function LearnQuiz({
                     <button
                       type="button"
                       onClick={() => handleSpeak(item.word)}
-                      className="text-[#786D73] hover:text-[#FA5271] transition-colors"
+                      className="text-[#786D73] hover:text-[#7C4DFF] transition-colors"
                       title="Nghe phát âm"
                     >
                       <Volume2 className="w-3.5 h-3.5" />
@@ -280,7 +280,7 @@ export function LearnQuiz({
       <div className="space-y-1.5">
         <div className="flex items-center justify-between text-xs px-1">
           <div className="flex items-center gap-1.5">
-            <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-[#FFEBF0] text-[#FA5271]">
+            <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-[#F0E9FF] text-[#7C4DFF]">
               {questionTypeLabel}
             </span>
           </div>
@@ -290,7 +290,7 @@ export function LearnQuiz({
         </div>
         <div className="h-1.5 rounded-full bg-[#EFE5E0] overflow-hidden">
           <div
-            className="h-full bg-[#FA5271] rounded-full transition-all duration-300"
+            className="h-full bg-[#7C4DFF] rounded-full transition-all duration-300"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
@@ -309,7 +309,7 @@ export function LearnQuiz({
                 <button
                   type="button"
                   onClick={() => handleSpeak(currentQ.word)}
-                  className="p-1.5 rounded-full text-[#FA5271] bg-[#FFEBF0] hover:bg-[#ffd5df] transition-colors"
+                  className="p-1.5 rounded-full text-[#7C4DFF] bg-[#F0E9FF] hover:bg-[#ffd5df] transition-colors"
                   title="Nghe phát âm"
                 >
                   <Volume2 className="w-4 h-4" />
@@ -348,7 +348,7 @@ export function LearnQuiz({
                 btnStyle = "border-[#EFE5E0] bg-white text-[#8E8287] opacity-60";
               }
             } else if (isSelected) {
-              btnStyle = "border-[#FA5271] bg-[#FFF0F3] text-[#FA5271] font-bold";
+              btnStyle = "border-[#7C4DFF] bg-[#F5F0FF] text-[#7C4DFF] font-bold";
             }
 
             return (
@@ -385,7 +385,7 @@ export function LearnQuiz({
           <Button
             type="button"
             onClick={handleNext}
-            className="w-full h-11 rounded-2xl font-bold text-xs bg-[#FA5271] text-white hover:bg-[#e04563] shadow-sm gap-1.5 animate-in fade-in duration-200"
+            className="w-full h-11 rounded-2xl font-bold text-xs bg-[#7C4DFF] text-white hover:bg-[#e04563] shadow-sm gap-1.5 animate-in fade-in duration-200"
           >
             <span>{currentIndex < totalQ - 1 ? "Câu tiếp theo" : "Xem kết quả"}</span>
             <ArrowRight className="w-4 h-4" />

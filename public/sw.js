@@ -1,4 +1,4 @@
-const CACHE_NAME = "mianh-public-shell-v1";
+const CACHE_NAME = "mianh-public-shell-v2";
 const PUBLIC_ASSETS = [
   "/offline.html",
   "/manifest.webmanifest",
@@ -43,16 +43,15 @@ self.addEventListener("fetch", (event) => {
 
   if (isPublicAsset) {
     event.respondWith(
-      caches.match(request).then((cached) => {
-        const network = fetch(request).then((response) => {
+      fetch(request)
+        .then((response) => {
           if (response.ok) {
             const copy = response.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
           }
           return response;
-        });
-        return cached || network;
-      })
+        })
+        .catch(() => caches.match(request))
     );
     return;
   }

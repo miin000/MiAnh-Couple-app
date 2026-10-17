@@ -68,7 +68,7 @@ export function LearnFlipCard({
           }`}
         >
           <div className="w-full flex items-center justify-between">
-            <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-[#FA5271] bg-[#FFEBF0] px-3 py-1 rounded-full">
+            <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-[#7C4DFF] bg-[#F0E9FF] px-3 py-1 rounded-full">
               <Sparkles className="w-3 h-3" />
               Từ mới hôm nay
             </span>
@@ -91,8 +91,8 @@ export function LearnFlipCard({
             <button
               type="button"
               onClick={handleSpeak}
-              className={`w-12 h-12 rounded-full bg-[#FA5271] text-white flex items-center justify-center mt-6 shadow-[0_4px_14px_rgba(250,82,113,0.35)] transition-all ${
-                isPlaying ? "scale-110 ring-4 ring-[#FFEBF0]" : "active:scale-95"
+              className={`w-12 h-12 rounded-full bg-[#7C4DFF] text-white flex items-center justify-center mt-6 shadow-[0_4px_14px_rgba(250,82,113,0.35)] transition-all ${
+                isPlaying ? "scale-110 ring-4 ring-[#F0E9FF]" : "active:scale-95"
               }`}
               aria-label={`Phát âm ${word.word}`}
             >
@@ -113,13 +113,13 @@ export function LearnFlipCard({
             backfaceVisibility: "hidden",
             WebkitBackfaceVisibility: "hidden",
           }}
-          className={`absolute inset-0 w-full h-full rounded-3xl bg-white border border-[#FA5271]/25 shadow-xs p-5 sm:p-6 flex flex-col justify-between text-left overflow-y-auto no-scrollbar transition-all duration-500 ease-in-out ${
+          className={`absolute inset-0 w-full h-full rounded-3xl bg-white border border-[#7C4DFF]/25 shadow-xs p-5 sm:p-6 flex flex-col justify-between text-left overflow-y-auto no-scrollbar transition-all duration-500 ease-in-out ${
             flipped ? "opacity-100 visible z-10" : "pointer-events-none opacity-0 invisible"
           }`}
         >
           <div className="space-y-3">
             <div className="flex items-center justify-between border-b border-[#F6EFF0] pb-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#FA5271] bg-[#FFEBF0] px-2.5 py-0.5 rounded-full">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#7C4DFF] bg-[#F0E9FF] px-2.5 py-0.5 rounded-full">
                 {POS_MAP[word.part_of_speech] || word.part_of_speech}
               </span>
               <span className="text-base font-bold text-[#201A1D]">{word.word}</span>
@@ -143,7 +143,7 @@ export function LearnFlipCard({
                   {word.collocations.map((p, idx) => (
                     <span
                       key={idx}
-                      className="text-xs font-medium bg-[#FAF6F2] border border-[#EFE6E2] text-[#362B30] px-2.5 py-0.5 rounded-lg"
+                      className="text-xs font-medium bg-[#FAF8FF] border border-[#EFE6E2] text-[#362B30] px-2.5 py-0.5 rounded-lg"
                     >
                       {p}
                     </span>
@@ -153,7 +153,7 @@ export function LearnFlipCard({
             )}
 
             {word.example_en && (
-              <div className="rounded-xl bg-[#FFF9FA] border border-[#FFEBF0] p-3 text-xs sm:text-sm space-y-1">
+              <div className="rounded-xl bg-[#FFF9FA] border border-[#F0E9FF] p-3 text-xs sm:text-sm space-y-1">
                 <p className="font-semibold text-[#201A1D] italic">&ldquo;{word.example_en}&rdquo;</p>
                 {word.example_vi && <p className="text-[#786D73]">{word.example_vi}</p>}
               </div>

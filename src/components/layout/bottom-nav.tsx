@@ -8,7 +8,7 @@ import {
   Play,
   BookOpen,
   CalendarHeart,
-  Settings,
+  Map,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -24,7 +24,7 @@ const NAV_TABS: NavTab[] = [
   { href: "/play", label: "Chơi", icon: Play },
   { href: "/learn", label: "Học", icon: BookOpen },
   { href: "/our-space", label: "Kỷ niệm", icon: CalendarHeart },
-  { href: "/settings", label: "Cài đặt", icon: Settings },
+  { href: "/map", label: "Bản đồ", icon: Map },
 ];
 
 export function BottomNav() {
@@ -49,7 +49,7 @@ export function BottomNav() {
                 className={cn(
                   "relative flex flex-col items-center justify-center h-full min-h-[48px] py-1 transition-all select-none touch-manipulation group",
                   isActive
-                    ? "text-[#FA5271]"
+                    ? "text-[#7C4DFF]"
                     : "text-[#8E8287] hover:text-[#201A1D]"
                 )}
                 aria-current={isActive ? "page" : undefined}
@@ -58,7 +58,7 @@ export function BottomNav() {
                 <div
                   className={cn(
                     "flex items-center justify-center w-10 h-7 rounded-full transition-colors",
-                    isActive ? "bg-[#FFEBF0]" : "group-hover:bg-[#FAF6F2]"
+                    isActive ? "bg-[#F0E9FF]" : "group-hover:bg-[#FAF8FF]"
                   )}
                 >
                   <Icon
@@ -71,7 +71,7 @@ export function BottomNav() {
                 <span
                   className={cn(
                     "text-[10px] leading-tight font-medium tracking-tight mt-0.5",
-                    isActive ? "font-bold text-[#FA5271]" : "text-[#8E8287]"
+                    isActive ? "font-bold text-[#7C4DFF]" : "text-[#8E8287]"
                   )}
                 >
                   {tab.label}

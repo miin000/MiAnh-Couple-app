@@ -37,6 +37,7 @@ export default async function SettingsPage() {
   return (
     <SettingsView
       initialDisplayName={currentDisplayName}
+      initialAvatarUrl={profile?.avatar_url}
       initialStartDate={coupleInfo.start_date || new Date().toISOString().split("T")[0]}
       memberCount={coupleInfo.member_count || 1}
       members={coupleInfo.members || []}
@@ -45,4 +46,3 @@ export default async function SettingsPage() {
     />
   );
 }
-

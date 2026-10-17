@@ -62,7 +62,7 @@ export function HomePairCard({ inviteCode: initialCode }: HomePairCardProps) {
 
   return (
     <div className="space-y-3">
-      <div className="rounded-3xl bg-gradient-to-br from-[#FA5271] via-[#F45B69] to-[#FF758F] text-white p-5 shadow-[0_8px_20px_rgba(250,82,113,0.25)] text-center space-y-2">
+      <div className="rounded-3xl bg-gradient-to-br from-[#7C4DFF] via-[#F45B69] to-[#FF758F] text-white p-5 shadow-[0_8px_20px_rgba(250,82,113,0.25)] text-center space-y-2">
         <div className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-white/20 mx-auto">
           <HeartHandshake className="w-5 h-5 text-white" />
         </div>
@@ -86,7 +86,7 @@ export function HomePairCard({ inviteCode: initialCode }: HomePairCardProps) {
               <span className="text-[11px] text-[#A66E38]">48 giờ</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex-1 py-2 px-3 bg-[#FFEBF0] rounded-xl text-center font-mono font-extrabold text-[#FA5271] text-base tracking-widest border border-[#FA5271]/20 select-all">
+              <div className="flex-1 py-2 px-3 bg-[#F0E9FF] rounded-xl text-center font-mono font-extrabold text-[#7C4DFF] text-base tracking-widest border border-[#7C4DFF]/20 select-all">
                 {inviteCode}
               </div>
               <Button
@@ -118,7 +118,7 @@ export function HomePairCard({ inviteCode: initialCode }: HomePairCardProps) {
             <button
               type="button"
               onClick={() => setShowJoinInput(true)}
-              className="w-full py-1 text-xs font-bold text-[#FA5271] hover:underline text-center"
+              className="w-full py-1 text-xs font-bold text-[#7C4DFF] hover:underline text-center"
             >
               Bạn có mã từ người ấy? Bấm vào đây để nhập mã →
             </button>

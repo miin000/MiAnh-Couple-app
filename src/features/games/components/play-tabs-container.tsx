@@ -28,14 +28,14 @@ export function PlayTabsContainer({
           onClick={() => setActiveTab("daily")}
           className={`pb-3 text-sm font-bold transition-all relative min-h-[44px] flex items-center gap-1.5 ${
             activeTab === "daily"
-              ? "text-[#FA5271]"
+              ? "text-[#7C4DFF]"
               : "text-[#786D73] hover:text-[#201A1D]"
           }`}
         >
           <MessageCircleHeart className="w-4 h-4" />
           Câu hỏi hôm nay
           {activeTab === "daily" && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FA5271] rounded-full" />
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#7C4DFF] rounded-full" />
           )}
         </button>
 
@@ -44,14 +44,14 @@ export function PlayTabsContainer({
           onClick={() => setActiveTab("truth_or_dare")}
           className={`pb-3 text-sm font-bold transition-all relative min-h-[44px] flex items-center gap-1.5 ${
             activeTab === "truth_or_dare"
-              ? "text-[#FA5271]"
+              ? "text-[#7C4DFF]"
               : "text-[#786D73] hover:text-[#201A1D]"
           }`}
         >
           <Sparkles className="w-4 h-4" />
           Thật hay Thách
           {activeTab === "truth_or_dare" && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FA5271] rounded-full" />
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#7C4DFF] rounded-full" />
           )}
         </button>
       </div>
@@ -60,7 +60,7 @@ export function PlayTabsContainer({
       {activeTab === "daily" ? (
         !isInCouple || !dailyData ? (
           <div className="p-8 text-center bg-white border border-[#F2EAE5] rounded-3xl space-y-3">
-            <MessageCircleHeart className="w-10 h-10 text-[#FA5271] mx-auto opacity-70" />
+            <MessageCircleHeart className="w-10 h-10 text-[#7C4DFF] mx-auto opacity-70" />
             <h3 className="text-base font-bold text-[#201A1D]">
               Chưa kết nối với người ấy
             </h3>

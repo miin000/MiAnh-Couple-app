@@ -5,11 +5,11 @@ import { getUpcomingAnniversary } from "@/features/memories/queries";
 import { getTodaysLesson, getLearnStats } from "@/features/vocabulary/queries";
 import { getItemEmoji, formatGoogleMapsUrl } from "@/features/randomizer/components/discover-helpers";
 import { PageHeader } from "@/components/shared/page-header";
-import { CoupleAvatars } from "@/components/shared/couple-avatars";
 import { Card } from "@/components/ui/card";
 import { HomePairCard } from "@/features/couple/components/home-pair-card";
 import { Sparkles, MessageCircle, BookOpen, Compass, ArrowRight, MapPin, CheckCircle2, Clock, Trophy, Layers } from "lucide-react";
 import Link from "next/link";
+import { getDaysTogether } from "@/lib/utils";
 
 interface Member {
   user_id: string;
@@ -29,10 +29,7 @@ export default async function HomePage() {
   const isPaired = Boolean(coupleInfo && coupleInfo.member_count >= 2);
 
   const startDateStr = coupleInfo?.start_date || new Date().toISOString().split("T")[0];
-  const startDate = new Date(startDateStr);
-  const today = new Date();
-  const diffTime = Math.max(0, today.getTime() - startDate.getTime());
-  const daysTogether = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  const daysTogether = getDaysTogether(startDateStr, coupleInfo?.timezone || "Asia/Ho_Chi_Minh");
 
   const [y, m, d] = startDateStr.split("-");
   const formattedStartDate = `${d}.${m}.${y}`;
@@ -42,11 +39,6 @@ export default async function HomePage() {
     ? members.map((mem) => mem.display_name).join(" & ")
     : members[0]?.display_name || "Bạn";
 
-  const initials: [string, string] = [
-    members[0]?.display_name?.[0]?.toUpperCase() || "B",
-    members[1]?.display_name?.[0]?.toUpperCase() || "?",
-  ];
-
   const suggestionEmoji = randomSuggestion ? getItemEmoji(randomSuggestion) : "✨";
 
   return (
@@ -54,12 +46,11 @@ export default async function HomePage() {
       <PageHeader
         category="HÔM NAY"
         title={`Chào ${coupleNames}`}
-        rightAction={<CoupleAvatars initials={initials} size="md" />}
       />
 
       {/* Hero Days Together Card (Only when fully paired) */}
       {isPaired ? (
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#FA5271] via-[#F45B69] to-[#FF758F] text-white p-6 shadow-[0_10px_25px_rgba(250,82,113,0.35)]">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#7C4DFF] via-[#F45B69] to-[#FF758F] text-white p-6 shadow-[0_10px_25px_rgba(250,82,113,0.35)]">
           <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10 blur-xl pointer-events-none" />
           <div className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full bg-white/10 blur-lg pointer-events-none" />
 
@@ -69,7 +60,7 @@ export default async function HomePage() {
               Ngày bên nhau
             </p>
             <div className="text-5xl font-extrabold tracking-tight my-2 font-mono">
-              {daysTogether.toLocaleString("vi-VN")}
+              {(daysTogether ?? 0).toLocaleString("vi-VN")}
             </div>
             <p className="text-xs text-white/90 font-medium">
               Kể từ ngày {formattedStartDate}
@@ -85,8 +76,8 @@ export default async function HomePage() {
       )}
 
       {isPaired && upcomingAnniversary && (
-        <Card className="border-[#FAD8E0] bg-[#FFF0F3] p-4">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-[#C23958]">
+        <Card className="border-[#E5D8FF] bg-[#F5F0FF] p-4">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-[#6840B8]">
             NGÀY ĐẶC BIỆT SẮP TỚI
           </p>
           <div className="mt-1 flex items-center justify-between gap-3">
@@ -96,7 +87,7 @@ export default async function HomePage() {
                 {upcomingAnniversary.days_left === 0 ? "Hôm nay rồi!" : `Còn ${upcomingAnniversary.days_left} ngày`}
               </p>
             </div>
-            <Link href="/our-space" className="text-xs font-bold text-[#FA5271]">Xem chi tiết →</Link>
+            <Link href="/our-space" className="text-xs font-bold text-[#7C4DFF]">Xem chi tiết →</Link>
           </div>
         </Card>
       )}
@@ -110,12 +101,12 @@ export default async function HomePage() {
             </p>
             <Link
               href="/discover"
-              className="text-[11px] font-semibold text-[#FA5271] flex items-center gap-0.5 hover:underline"
+              className="text-[11px] font-semibold text-[#7C4DFF] flex items-center gap-0.5 hover:underline"
             >
               Quay thêm <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
-          <Card className="p-4 hover:border-[#FA5271]/40 transition-colors bg-white">
+          <Card className="p-4 hover:border-[#7C4DFF]/40 transition-colors bg-white">
             <div className="flex items-start gap-3">
               {randomSuggestion.image_url ? (
                 <div className="w-14 h-14 rounded-2xl overflow-hidden bg-stone-100 shrink-0 border border-[#F2EAE5]">
@@ -163,7 +154,7 @@ export default async function HomePage() {
                 )}
                 <Link
                   href="/discover"
-                  className="text-xs font-semibold text-[#FA5271] mt-2 inline-flex items-center gap-1"
+                  className="text-xs font-semibold text-[#7C4DFF] mt-2 inline-flex items-center gap-1"
                 >
                   <Compass className="w-3.5 h-3.5" /> Khám phá & Lên lịch hẹn →
                 </Link>
@@ -189,7 +180,7 @@ export default async function HomePage() {
                 <Clock className="w-2.5 h-2.5" /> Chờ đối phương
               </span>
             ) : (
-              <span className="text-[10px] font-semibold text-[#FA5271] bg-[#FFEBF0] px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-semibold text-[#7C4DFF] bg-[#F0E9FF] px-2 py-0.5 rounded-full">
                 Chưa trả lời
               </span>
             )
@@ -202,7 +193,7 @@ export default async function HomePage() {
 
         <Card className="p-4 bg-white border border-[#F2EAE5] shadow-2xs hover:shadow-xs transition-shadow">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#FFEBF0] text-[#FA5271] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-[#F0E9FF] text-[#7C4DFF] flex items-center justify-center shrink-0">
               <MessageCircle className="w-5 h-5" />
             </div>
             <div className="flex-1 min-w-0">
@@ -222,7 +213,7 @@ export default async function HomePage() {
                   </p>
                   <Link
                     href="/play"
-                    className="text-xs font-semibold text-[#FA5271] mt-2 inline-flex items-center gap-1"
+                    className="text-xs font-semibold text-[#7C4DFF] mt-2 inline-flex items-center gap-1"
                   >
                     {dailyQuestionData.status === "completed"
                       ? "Xem đáp án của nhau →"
@@ -241,7 +232,7 @@ export default async function HomePage() {
                   </p>
                   <Link
                     href="/play"
-                    className="text-xs font-semibold text-[#FA5271] mt-2 inline-flex items-center gap-1"
+                    className="text-xs font-semibold text-[#7C4DFF] mt-2 inline-flex items-center gap-1"
                   >
                     Đến trang Chơi →
                   </Link>
@@ -259,11 +250,11 @@ export default async function HomePage() {
             TIẾN ĐỘ HỌC HÔM NAY
           </p>
           {learnStats ? (
-            <span className="text-[10px] font-bold text-[#FA5271] bg-[#FFEBF0] px-2 py-0.5 rounded-full">
+            <span className="text-[10px] font-bold text-[#7C4DFF] bg-[#F0E9FF] px-2 py-0.5 rounded-full">
               {learnStats.myStats.totalLearned} từ • {learnStats.myStats.masteredCount} nhớ tốt
             </span>
           ) : lessonData ? (
-            <span className="text-[10px] font-bold text-[#FA5271] bg-[#FFEBF0] px-2 py-0.5 rounded-full">
+            <span className="text-[10px] font-bold text-[#7C4DFF] bg-[#F0E9FF] px-2 py-0.5 rounded-full">
               {lessonData.myProgress.learned_count}/10 từ đã học
             </span>
           ) : (
@@ -274,7 +265,7 @@ export default async function HomePage() {
         </div>
         <Card className="p-4 bg-white border border-[#EFE5E0] shadow-2xs hover:shadow-sm transition-shadow">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#FFF0F3] text-[#FA5271] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-[#F5F0FF] text-[#7C4DFF] flex items-center justify-center shrink-0">
               <BookOpen className="w-5 h-5" />
             </div>
             <div className="flex-1 min-w-0">
@@ -307,7 +298,7 @@ export default async function HomePage() {
 
                     {/* Nhắc ôn tập nếu có từ đến hạn */}
                     {learnStats && learnStats.myStats.dueReviewsCount > 0 && (
-                      <p className="text-[11px] font-bold text-[#FA5271] flex items-center gap-1">
+                      <p className="text-[11px] font-bold text-[#7C4DFF] flex items-center gap-1">
                         <Layers className="w-3.5 h-3.5" />
                         <span>Có {learnStats.myStats.dueReviewsCount} từ cần ôn tập cách quãng hôm nay!</span>
                       </p>
@@ -315,7 +306,7 @@ export default async function HomePage() {
                   </div>
                   <Link
                     href="/learn"
-                    className="text-xs font-semibold text-[#FA5271] mt-2.5 inline-flex items-center gap-1"
+                    className="text-xs font-semibold text-[#7C4DFF] mt-2.5 inline-flex items-center gap-1"
                   >
                     Vào học & làm quiz <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
@@ -330,7 +321,7 @@ export default async function HomePage() {
                   </p>
                   <Link
                     href="/learn"
-                    className="text-xs font-semibold text-[#FA5271] mt-2 inline-flex items-center gap-1"
+                    className="text-xs font-semibold text-[#7C4DFF] mt-2 inline-flex items-center gap-1"
                   >
                     Khám phá góc học →
                   </Link>

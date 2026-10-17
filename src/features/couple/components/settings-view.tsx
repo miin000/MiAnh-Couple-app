@@ -14,6 +14,8 @@ import { CoupleAvatars } from "@/components/shared/couple-avatars";
 import { User, Calendar, KeyRound, LogOut, Save, Copy, Check, RefreshCw, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { PwaInstallGuide } from "@/components/pwa-install-guide";
+import { LocationPrivacyCard } from "@/features/map/components/location-privacy-card";
+import { createClient } from "@/lib/supabase/client";
 
 export interface CoupleMember {
   user_id: string;
@@ -26,6 +28,7 @@ export interface CoupleMember {
 export interface SettingsViewProps {
   initialDisplayName: string;
   initialStartDate: string;
+  initialAvatarUrl?: string | null;
   memberCount: number;
   members: CoupleMember[];
   activeInviteCode?: string | null;
@@ -35,6 +38,7 @@ export interface SettingsViewProps {
 export function SettingsView({
   initialDisplayName,
   initialStartDate,
+  initialAvatarUrl,
   memberCount,
   members,
   activeInviteCode,
@@ -46,19 +50,40 @@ export function SettingsView({
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [partnerCode, setPartnerCode] = React.useState("");
   const [isJoining, setIsJoining] = React.useState(false);
+  const [avatarFile, setAvatarFile] = React.useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = React.useState(initialAvatarUrl || "");
 
 
   const { register, handleSubmit, formState: { errors } } = useForm<UpdateProfileInput>({
     resolver: zodResolver(updateProfileSchema),
-    defaultValues: { displayName: initialDisplayName, startDate: initialStartDate },
+    defaultValues: { displayName: initialDisplayName, startDate: initialStartDate, avatarUrl: initialAvatarUrl || "" },
   });
 
   const onSubmit = async (data: UpdateProfileInput) => {
     try {
       setIsSubmitting(true);
       setServerMessage(null);
-      const res = await updateCoupleSettingsAction(data);
+      let avatarUrl = data.avatarUrl || "";
+      if (avatarFile) {
+        const supabase = createClient();
+        const { data: authData } = await supabase.auth.getUser();
+        if (!authData.user) {
+          setServerMessage({ type: "error", text: "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại." });
+          return;
+        }
+        const extension = avatarFile.type.split("/")[1] || "jpg";
+        const path = `${authData.user.id}/avatar-${crypto.randomUUID()}.${extension}`;
+        const upload = await supabase.storage.from("avatars").upload(path, avatarFile, { contentType: avatarFile.type, upsert: false });
+        if (upload.error) {
+          setServerMessage({ type: "error", text: "Không thể tải ảnh đại diện lên. Vui lòng thử lại." });
+          return;
+        }
+        avatarUrl = supabase.storage.from("avatars").getPublicUrl(path).data.publicUrl;
+      }
+      const res = await updateCoupleSettingsAction({ ...data, avatarUrl });
       if (res.success) {
+        setAvatarFile(null);
+        setAvatarPreview(avatarUrl);
         setServerMessage({ type: "success", text: "Đã lưu thay đổi thành công!" });
       } else {
         setServerMessage({ type: "error", text: res.error || "Không thể lưu thay đổi." });
@@ -160,7 +185,7 @@ export function SettingsView({
               htmlFor="displayName"
               className="block text-xs font-bold text-[#52464D] mb-1.5 flex items-center gap-1.5"
             >
-              <User className="w-3.5 h-3.5 text-[#FA5271]" />
+              <User className="w-3.5 h-3.5 text-[#7C4DFF]" />
               Tên hiển thị của bạn
             </label>
             <Input id="displayName" placeholder="VD: Minh" {...register("displayName")} />
@@ -170,11 +195,37 @@ export function SettingsView({
           </div>
 
           <div>
+            <label htmlFor="avatarUrl" className="block text-xs font-bold text-[#52464D] mb-1.5 flex items-center gap-1.5">
+              <User className="w-3.5 h-3.5 text-[#7C4DFF]" />
+              Ảnh đại diện
+            </label>
+            <div className="flex items-center gap-3">
+              <div className="h-16 w-16 overflow-hidden rounded-full bg-[#F0E9FF] text-center text-xl font-extrabold leading-[4rem] text-[#6E56B8]">
+                {avatarPreview ? <img src={avatarPreview} alt="Ảnh đại diện xem trước" className="h-full w-full object-cover" /> : initials[0]}
+              </div>
+              <label htmlFor="avatarFile" className="flex min-h-11 flex-1 cursor-pointer items-center justify-center rounded-xl border border-dashed border-[#D8C8F5] bg-[#F8F5FF] px-3 text-xs font-bold text-[#6E56B8]">
+                Chọn ảnh từ thiết bị
+                <input id="avatarFile" type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(event) => {
+                  const file = event.target.files?.[0];
+                  if (!file) return;
+                  if (file.size > 5 * 1024 * 1024) {
+                    setServerMessage({ type: "error", text: "Ảnh đại diện tối đa 5 MB." });
+                    return;
+                  }
+                  setAvatarFile(file);
+                  setAvatarPreview(URL.createObjectURL(file));
+                }} />
+              </label>
+            </div>
+            <p className="text-[11px] text-[#8E8287] mt-1">Ảnh được tải trực tiếp lên kho lưu trữ riêng của ứng dụng.</p>
+          </div>
+
+          <div>
             <label
               htmlFor="startDate"
               className="block text-xs font-bold text-[#52464D] mb-1.5 flex items-center gap-1.5"
             >
-              <Calendar className="w-3.5 h-3.5 text-[#FA5271]" />
+              <Calendar className="w-3.5 h-3.5 text-[#7C4DFF]" />
               Ngày bắt đầu mối quan hệ
             </label>
             <Input id="startDate" type="date" {...register("startDate")} />
@@ -195,11 +246,11 @@ export function SettingsView({
           <Card className="p-5 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-[#52464D] flex items-center gap-1.5">
-                <KeyRound className="w-3.5 h-3.5 text-[#FA5271]" />
+                <KeyRound className="w-3.5 h-3.5 text-[#7C4DFF]" />
                 Mã ghép đôi của bạn
               </span>
               {inviteCode && (
-                <span className="font-mono font-extrabold text-[#FA5271] text-sm">
+                <span className="font-mono font-extrabold text-[#7C4DFF] text-sm">
                   {inviteCode}
                 </span>
               )}
@@ -273,9 +324,9 @@ export function SettingsView({
       )}
 
       {isAdmin && (
-        <Card className="p-4 bg-gradient-to-r from-[#FFEBF0] to-[#FFF2EB] border-[#FA5271]/30 rounded-2xl flex items-center justify-between">
+        <Card className="p-4 bg-gradient-to-r from-[#F0E9FF] to-[#FFF2EB] border-[#7C4DFF]/30 rounded-2xl flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-white text-[#FA5271] flex items-center justify-center shadow-2xs">
+            <div className="w-9 h-9 rounded-xl bg-white text-[#7C4DFF] flex items-center justify-center shadow-2xs">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
@@ -284,7 +335,7 @@ export function SettingsView({
             </div>
           </div>
           <Link href="/admin">
-            <Button size="sm" className="rounded-xl bg-[#FA5271] hover:bg-[#E03A58] text-white text-xs font-bold h-8">
+            <Button size="sm" className="rounded-xl bg-[#7C4DFF] hover:bg-[#6937D5] text-white text-xs font-bold h-8">
               Mở Dashboard
             </Button>
           </Link>
@@ -292,13 +343,14 @@ export function SettingsView({
       )}
 
       <PwaInstallGuide />
+      <LocationPrivacyCard />
 
       <div className="pt-2">
         <form action={logoutAction}>
           <Button
             type="submit"
             variant="secondary"
-            className="w-full text-[#FA5271] hover:bg-[#FFEBF0] hover:text-[#FA5271] border-[#FA5271]/20"
+            className="w-full text-[#7C4DFF] hover:bg-[#F0E9FF] hover:text-[#7C4DFF] border-[#7C4DFF]/20"
           >
             <LogOut className="w-4 h-4 mr-2" />
             Đăng xuất tài khoản

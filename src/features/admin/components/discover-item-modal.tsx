@@ -209,7 +209,7 @@ export function DiscoverItemModal({ item, priceConfigs, onClose, onSuccess }: Di
                   key={c.id}
                   onClick={() => setKind(c.id as DiscoverKind)}
                   className={`p-2 rounded-xl border text-center font-semibold ${
-                    kind === c.id ? "border-[#FA5271] bg-[#FFF2EB] text-[#FA5271]" : "border-[#F2EAE5] bg-white"
+                    kind === c.id ? "border-[#7C4DFF] bg-[#FFF2EB] text-[#7C4DFF]" : "border-[#F2EAE5] bg-white"
                   }`}
                 >
                   {c.label}
@@ -226,7 +226,7 @@ export function DiscoverItemModal({ item, priceConfigs, onClose, onSuccess }: Di
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="VD: Phở Bát Đàn, Cà phê Đinh..."
-              className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#FA5271]"
+              className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#7C4DFF]"
             />
           </div>
 
@@ -234,7 +234,7 @@ export function DiscoverItemModal({ item, priceConfigs, onClose, onSuccess }: Di
           <div className="space-y-2 p-3 rounded-2xl bg-[#FFFBF9] border border-[#F2EAE5]">
             <div className="flex items-center justify-between">
               <label className="font-bold text-[#201A1D] flex items-center gap-1.5">
-                <ImageIcon className="w-3.5 h-3.5 text-[#FA5271]" />
+                <ImageIcon className="w-3.5 h-3.5 text-[#7C4DFF]" />
                 Hình ảnh gợi ý (URL hoặc Tải lên)
               </label>
               {imageUrl && (
@@ -254,7 +254,7 @@ export function DiscoverItemModal({ item, priceConfigs, onClose, onSuccess }: Di
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
                 placeholder="Dán link ảnh (https://...)"
-                className="flex-1 p-2 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#FA5271] text-xs"
+                className="flex-1 p-2 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#7C4DFF] text-xs"
               />
               <input
                 ref={fileInputRef}
@@ -271,9 +271,9 @@ export function DiscoverItemModal({ item, priceConfigs, onClose, onSuccess }: Di
                 className="rounded-xl shrink-0 h-[34px] px-3 gap-1.5 text-xs border-[#F2EAE5]"
               >
                 {isUploadingImage ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#FA5271]" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#7C4DFF]" />
                 ) : (
-                  <Upload className="w-3.5 h-3.5 text-[#FA5271]" />
+                  <Upload className="w-3.5 h-3.5 text-[#7C4DFF]" />
                 )}
                 <span>{isUploadingImage ? "Đang tải..." : "Tải ảnh"}</span>
               </Button>
@@ -340,7 +340,7 @@ export function DiscoverItemModal({ item, priceConfigs, onClose, onSuccess }: Di
                     onClick={() => setPriceLevel(String(lvl))}
                     className={`p-2 rounded-xl border text-left ${
                       priceLevel === String(lvl)
-                        ? "border-[#FA5271] bg-[#FFF2EB] text-[#FA5271]"
+                        ? "border-[#7C4DFF] bg-[#FFF2EB] text-[#7C4DFF]"
                         : "border-[#F2EAE5] bg-white"
                     }`}
                   >
@@ -359,7 +359,7 @@ export function DiscoverItemModal({ item, priceConfigs, onClose, onSuccess }: Di
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Mô tả không gian, đặc trưng..."
-              className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#FA5271]"
+              className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#7C4DFF]"
             />
           </div>
 
@@ -370,7 +370,7 @@ export function DiscoverItemModal({ item, priceConfigs, onClose, onSuccess }: Di
               value={tip}
               onChange={(e) => setTip(e.target.value)}
               placeholder="VD: Nên ghé lúc 17h ngắm hoàng hôn"
-              className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#FA5271]"
+              className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#7C4DFF]"
             />
           </div>
 
@@ -380,7 +380,7 @@ export function DiscoverItemModal({ item, priceConfigs, onClose, onSuccess }: Di
               id="isActive"
               checked={isActive}
               onChange={(e) => setIsActive(e.target.checked)}
-              className="rounded accent-[#FA5271] w-4 h-4 cursor-pointer"
+              className="rounded accent-[#7C4DFF] w-4 h-4 cursor-pointer"
             />
             <label htmlFor="isActive" className="font-medium text-stone-700 cursor-pointer">
               Kích hoạt gợi ý này cho vòng quay
@@ -391,7 +391,7 @@ export function DiscoverItemModal({ item, priceConfigs, onClose, onSuccess }: Di
             <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting} className="rounded-xl h-9">
               Hủy
             </Button>
-            <Button type="submit" disabled={isSubmitting} className="rounded-xl bg-[#FA5271] text-white font-bold h-9 px-5">
+            <Button type="submit" disabled={isSubmitting} className="rounded-xl bg-[#7C4DFF] text-white font-bold h-9 px-5">
               {isSubmitting ? "Đang lưu..." : item ? "Cập nhật" : "Tạo mới"}
             </Button>
           </div>

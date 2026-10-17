@@ -103,12 +103,12 @@ export function DiscoverManager({ initialItems, initialPriceConfigs }: DiscoverM
             placeholder="Tìm theo tên món, địa điểm..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-white border border-[#F2EAE5] rounded-xl text-xs focus:border-[#FA5271]"
+            className="w-full pl-9 pr-3 py-2 bg-white border border-[#F2EAE5] rounded-xl text-xs focus:border-[#7C4DFF]"
           />
         </div>
         <Button
           onClick={() => { setEditingItem(null); setIsModalOpen(true); }}
-          className="rounded-xl bg-[#FA5271] hover:bg-[#E03A58] text-white text-xs font-bold gap-1.5 h-9 shrink-0"
+          className="rounded-xl bg-[#7C4DFF] hover:bg-[#6937D5] text-white text-xs font-bold gap-1.5 h-9 shrink-0"
         >
           <Plus className="w-4 h-4" />
           <span>Thêm gợi ý mới</span>
@@ -146,7 +146,7 @@ export function DiscoverManager({ initialItems, initialPriceConfigs }: DiscoverM
           <button
             onClick={() => setSelectedPrice("all")}
             className={`px-2.5 py-1 rounded-full font-medium shrink-0 ${
-              selectedPrice === "all" ? "bg-[#FA5271] text-white font-bold" : "bg-white text-stone-600 border border-[#F2EAE5]"
+              selectedPrice === "all" ? "bg-[#7C4DFF] text-white font-bold" : "bg-white text-stone-600 border border-[#F2EAE5]"
             }`}
           >
             Tất cả mức giá
@@ -158,7 +158,7 @@ export function DiscoverManager({ initialItems, initialPriceConfigs }: DiscoverM
                 key={level}
                 onClick={() => setSelectedPrice(String(level))}
                 className={`px-2.5 py-1 rounded-full font-medium shrink-0 ${
-                  selectedPrice === String(level) ? "bg-[#FA5271] text-white font-bold" : "bg-white text-stone-600 border border-[#F2EAE5]"
+                  selectedPrice === String(level) ? "bg-[#7C4DFF] text-white font-bold" : "bg-white text-stone-600 border border-[#F2EAE5]"
                 }`}
               >
                 Mức {level}: {cfg.label}
@@ -215,7 +215,7 @@ export function DiscoverManager({ initialItems, initialPriceConfigs }: DiscoverM
                           {item.kind === "food" ? "Đồ ăn" : item.kind === "drink" ? "Đồ uống" : item.kind === "place" ? "Địa điểm" : "Trải nghiệm"}
                         </span>
                         {priceOpt && (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-[#FFF2EB] text-[#FA5271]">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-[#FFF2EB] text-[#7C4DFF]">
                             Mức {item.price_level}: {priceOpt.label} ({priceOpt.rangeText})
                           </span>
                         )}
@@ -237,7 +237,7 @@ export function DiscoverManager({ initialItems, initialPriceConfigs }: DiscoverM
                         )}
                       </div>
                       {item.description && <p className="text-xs text-stone-600 line-clamp-1">{item.description}</p>}
-                      {item.tip && <p className="text-[11px] text-[#FA5271] italic line-clamp-1">💡 {item.tip}</p>}
+                      {item.tip && <p className="text-[11px] text-[#7C4DFF] italic line-clamp-1">💡 {item.tip}</p>}
                     </div>
                   </div>
 

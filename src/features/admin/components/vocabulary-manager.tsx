@@ -162,7 +162,7 @@ export function VocabularyManager({ initialWords }: VocabularyManagerProps) {
                       {w.collocations.map((col, cIdx) => (
                         <span
                           key={cIdx}
-                          className="text-[10px] px-2 py-0.5 rounded-md bg-[#FAF6F2] border border-[#EFE6E2] text-stone-600 font-medium"
+                          className="text-[10px] px-2 py-0.5 rounded-md bg-[#FAF8FF] border border-[#EFE6E2] text-stone-600 font-medium"
                         >
                           {col}
                         </span>

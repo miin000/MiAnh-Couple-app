@@ -21,7 +21,7 @@ interface AdminOverviewProps {
 export function AdminOverview({ stats, onNavigateTab }: AdminOverviewProps) {
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl bg-gradient-to-br from-[#FA5271] to-[#E03A58] p-6 text-white shadow-md space-y-2">
+      <div className="rounded-3xl bg-gradient-to-br from-[#7C4DFF] to-[#6937D5] p-6 text-white shadow-md space-y-2">
         <div className="flex items-center gap-2 text-white/80 text-xs font-semibold uppercase">
           <Sparkles className="w-4 h-4 text-[#FFF2EB]" />
           <span>Bảng điều khiển hệ thống</span>
@@ -35,9 +35,9 @@ export function AdminOverview({ stats, onNavigateTab }: AdminOverviewProps) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Card
           onClick={() => onNavigateTab("questions")}
-          className="p-4 bg-white border-[#F2EAE5] rounded-2xl cursor-pointer hover:border-[#FA5271]/50 space-y-1 transition-all"
+          className="p-4 bg-white border-[#F2EAE5] rounded-2xl cursor-pointer hover:border-[#7C4DFF]/50 space-y-1 transition-all"
         >
-          <div className="w-8 h-8 rounded-xl bg-[#FFEBF0] text-[#FA5271] flex items-center justify-center">
+          <div className="w-8 h-8 rounded-xl bg-[#F0E9FF] text-[#7C4DFF] flex items-center justify-center">
             <MessageCircleQuestion className="w-4 h-4" />
           </div>
           <div className="text-2xl font-black text-[#201A1D]">{stats.totalQuestions}</div>
@@ -46,7 +46,7 @@ export function AdminOverview({ stats, onNavigateTab }: AdminOverviewProps) {
 
         <Card
           onClick={() => onNavigateTab("vocabulary")}
-          className="p-4 bg-white border-[#F2EAE5] rounded-2xl cursor-pointer hover:border-[#FA5271]/50 space-y-1 transition-all"
+          className="p-4 bg-white border-[#F2EAE5] rounded-2xl cursor-pointer hover:border-[#7C4DFF]/50 space-y-1 transition-all"
         >
           <div className="w-8 h-8 rounded-xl bg-[#E8F8F2] text-[#1B9B68] flex items-center justify-center">
             <BookOpen className="w-4 h-4" />
@@ -57,9 +57,9 @@ export function AdminOverview({ stats, onNavigateTab }: AdminOverviewProps) {
 
         <Card
           onClick={() => onNavigateTab("discover")}
-          className="p-4 bg-white border-[#F2EAE5] rounded-2xl cursor-pointer hover:border-[#FA5271]/50 space-y-1 transition-all"
+          className="p-4 bg-white border-[#F2EAE5] rounded-2xl cursor-pointer hover:border-[#7C4DFF]/50 space-y-1 transition-all"
         >
-          <div className="w-8 h-8 rounded-xl bg-[#FFF2EB] text-[#FA5271] flex items-center justify-center">
+          <div className="w-8 h-8 rounded-xl bg-[#FFF2EB] text-[#7C4DFF] flex items-center justify-center">
             <Compass className="w-4 h-4" />
           </div>
           <div className="text-2xl font-black text-[#201A1D]">{stats.totalItems}</div>
@@ -68,7 +68,7 @@ export function AdminOverview({ stats, onNavigateTab }: AdminOverviewProps) {
 
         <Card
           onClick={() => onNavigateTab("users")}
-          className="p-4 bg-white border-[#F2EAE5] rounded-2xl cursor-pointer hover:border-[#FA5271]/50 space-y-1 transition-all"
+          className="p-4 bg-white border-[#F2EAE5] rounded-2xl cursor-pointer hover:border-[#7C4DFF]/50 space-y-1 transition-all"
         >
           <div className="w-8 h-8 rounded-xl bg-[#EDF3FC] text-[#2F6BE6] flex items-center justify-center">
             <Users className="w-4 h-4" />
@@ -83,19 +83,19 @@ export function AdminOverview({ stats, onNavigateTab }: AdminOverviewProps) {
         <Card className="p-5 bg-white border-[#F2EAE5] rounded-3xl space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-[#201A1D] flex items-center gap-2">
-              <MessageCircleQuestion className="w-4 h-4 text-[#FA5271]" />
+              <MessageCircleQuestion className="w-4 h-4 text-[#7C4DFF]" />
               Phân loại Câu hỏi & Thử thách
             </h3>
             <button
               onClick={() => onNavigateTab("questions")}
-              className="text-xs text-[#FA5271] font-semibold cursor-pointer hover:underline"
+              className="text-xs text-[#7C4DFF] font-semibold cursor-pointer hover:underline"
             >
               Quản lý
             </button>
           </div>
           <div className="grid grid-cols-3 gap-2 text-xs">
-            <div className="p-3 bg-[#FFEBF0] rounded-2xl flex flex-col justify-between">
-              <div className="flex items-center gap-1.5 text-[#FA5271] font-semibold">
+            <div className="p-3 bg-[#F0E9FF] rounded-2xl flex flex-col justify-between">
+              <div className="flex items-center gap-1.5 text-[#7C4DFF] font-semibold">
                 <HelpCircle className="w-3.5 h-3.5" />
                 <span>Daily</span>
               </div>
@@ -122,12 +122,12 @@ export function AdminOverview({ stats, onNavigateTab }: AdminOverviewProps) {
         <Card className="p-5 bg-white border-[#F2EAE5] rounded-3xl space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-[#201A1D] flex items-center gap-2">
-              <Compass className="w-4 h-4 text-[#FA5271]" />
+              <Compass className="w-4 h-4 text-[#7C4DFF]" />
               Phân loại gợi ý Khám phá
             </h3>
             <button
               onClick={() => onNavigateTab("discover")}
-              className="text-xs text-[#FA5271] font-semibold cursor-pointer hover:underline"
+              className="text-xs text-[#7C4DFF] font-semibold cursor-pointer hover:underline"
             >
               Quản lý
             </button>

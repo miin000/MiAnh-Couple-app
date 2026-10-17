@@ -27,7 +27,7 @@ MVP (làm): Discover (random món ăn/đồ uống/địa điểm, Do Something 
 Later (KHÔNG làm): AI date generator, AI tạo bài học, chấm phát âm, bản đồ/địa điểm thật, game nâng cao (Predict My Answer, Who's More Likely, Would You Rather, Secret Mission, Draw Partner), điểm/streak/huy hiệu, couple map, lịch chung, mood status, chia sẻ vị trí, safe arrival, virtual pet, theme/sticker, offline đầy đủ, push notification, theo dõi chu kỳ.
 Drop (KHÔNG làm): widget kiểu Locket, chat/gọi video, realtime như tính năng độc lập, đa ngôn ngữ, sở thích riêng từng thành viên, lịch sử/yêu thích/loại trừ kết quả random.
 
-Quy tắc: nếu tính năng không nằm trong phase hiện tại, không làm, không dựng sẵn khung “cho sau này” .
+Quy tắc: nếu tính năng không nằm trong phase hiện tại, không làm, không dựng sẵn khung "cho sau này" .
 
 A4. Điều hướng
 
@@ -101,7 +101,7 @@ Quy tắc quan trọng
 Mỗi cặp có tối đa 2 thành viên active — ep ở database (trigger/constraint + hàm join có khóa dòng), không chỉ ở UI.
 Bộ 10 từ của ngày dùng chung cho cặp, nhưng tiến độ ghi nhớ lưu riêng từng người ( user_word_progress). Không lưu một điểm chung.
 Daily Question: đáp án của người kia chỉ đọc được khi chính mình đã trả lời (ép bằng RLS hoặc RPC).
-“Ngày” của bài học/câu hỏi tính theo Asia/Ho_Chi_Minhđể hai người không lệch ngày.
+"Ngày" của bài học/câu hỏi tính theo Asia/Ho_Chi_Minhđể hai người không lệch ngày.
 A7. Bảo mật (áp dụng mọi phase)
 Bật RLS cho mọi bảng có dữ liệu cá nhân/cặp đôi; mặc định deny, mở policy tối thiểu.
 Chỉ thành viên active của cặp mới đọc/ghi dữ liệu chung của cặp đó.
@@ -128,6 +128,22 @@ npm run buildvà npm run lintpass.
 Cập nhật README.md(cách chạy, biến môi trường, cách chạy migration/seed).
 Báo cáo cuối phase gồm: đã làm gì, file/migration chính, giả định, những gì chưa làm, cách tôi chạy thử.
 Không tự bịa dữ liệu nhạy cảm; seed chỉ là nội dung mẫu.
-A10. Định nghĩa “xong” it’s the last phase
+A10. Định nghĩa "xong" it's the last phase
 
-Build/lint pass · migration chạy sạch trên DB trống · RLS đã bật cho bảng mới · có seed (nếu phase dùng nội dung) · chạy được trên màn hình điện thoại · mọi mục trong “Tôi sẽ kiểm thử” của phase hoạt động.
+Build/lint pass · migration chạy sạch trên DB trống · RLS đã bật cho bảng mới · có seed (nếu phase dùng nội dung) · chạy được trên màn hình điện thoại · mọi mục trong "Tôi sẽ kiểm thử" của phase hoạt động.
+
+Phạm vi
+
+Chuyển "Chia sẻ vị trí" từ Later sang MVP (Phase 6B).
+Thêm vào Drop: theo dõi vị trí nền, lịch sử di chuyển, Safe Arrival, thông báo khi người ấy đến nơi, chia sẻ vị trí không giới hạn thời gian.
+
+Điều hướng (A4): 6 tab: Home, Discover, Play, Learn, Our Space, Map; Settings mở từ avatar ở header.
+
+Quyền riêng tư (thêm vào A7)
+
+Mặc định TẮT; mỗi người tự bật cho chính mình; việc bật là chủ động và có thể dừng bất cứ lúc nào.
+Có thời hạn bắt buộc 1–8 giờ, không có "vô thời hạn". Hết hạn thì người kia không còn thấy.
+Chỉ lưu vị trí mới nhất, không lưu lịch sử ở DB, localStorage hay log.
+Người dùng luôn thấy rõ trạng thái "đang chia sẻ, còn X phút" và nút Dừng.
+Chia sẻ độc lập hai chiều: A bật không bắt buộc B bật; A chỉ thấy B khi B tự bật.
+Không cache vị trí trong service worker.

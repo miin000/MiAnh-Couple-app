@@ -70,7 +70,7 @@ export function QuestionModal({ questionItem, onClose, onSuccess }: QuestionModa
       <div className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 space-y-4 shadow-xl border border-[#F2EAE5]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <MessageCircleQuestion className="w-4 h-4 text-[#FA5271]" />
+            <MessageCircleQuestion className="w-4 h-4 text-[#7C4DFF]" />
             <h3 className="text-base font-extrabold text-[#201A1D]">
               {questionItem ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}
             </h3>
@@ -97,7 +97,7 @@ export function QuestionModal({ questionItem, onClose, onSuccess }: QuestionModa
               <select
                 value={kind}
                 onChange={(e) => setKind(e.target.value as QuestionItem["kind"])}
-                className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#FA5271]"
+                className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#7C4DFF]"
               >
                 <option value="daily">Câu hỏi mỗi ngày (Daily)</option>
                 <option value="truth">Nói thật (Truth)</option>
@@ -110,7 +110,7 @@ export function QuestionModal({ questionItem, onClose, onSuccess }: QuestionModa
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as QuestionItem["category"])}
-                className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#FA5271]"
+                className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#7C4DFF]"
               >
                 <option value="fun">Vui vẻ (fun)</option>
                 <option value="discover">Tìm hiểu (discover)</option>
@@ -132,7 +132,7 @@ export function QuestionModal({ questionItem, onClose, onSuccess }: QuestionModa
                   onClick={() => setIntimacyLevel(lvl)}
                   className={`py-2 rounded-xl font-bold border transition-colors cursor-pointer ${
                     intimacyLevel === lvl
-                      ? "bg-[#FA5271] text-white border-[#FA5271]"
+                      ? "bg-[#7C4DFF] text-white border-[#7C4DFF]"
                       : "bg-white text-stone-700 border-[#F2EAE5] hover:bg-stone-50"
                   }`}
                 >
@@ -152,7 +152,7 @@ export function QuestionModal({ questionItem, onClose, onSuccess }: QuestionModa
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Nhập câu hỏi hoặc hành động thử thách..."
-              className="w-full p-3 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#FA5271] text-xs resize-none"
+              className="w-full p-3 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#7C4DFF] text-xs resize-none"
             />
           </div>
 
@@ -162,7 +162,7 @@ export function QuestionModal({ questionItem, onClose, onSuccess }: QuestionModa
               id="is_active_question"
               checked={isActive}
               onChange={(e) => setIsActive(e.target.checked)}
-              className="w-4 h-4 rounded text-[#FA5271]"
+              className="w-4 h-4 rounded text-[#7C4DFF]"
             />
             <label htmlFor="is_active_question" className="font-bold text-[#201A1D] cursor-pointer">
               Đang hoạt động (cho phép xuất hiện trong trò chơi)
@@ -182,7 +182,7 @@ export function QuestionModal({ questionItem, onClose, onSuccess }: QuestionModa
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-xl bg-[#FA5271] hover:bg-[#E03A58] text-white text-xs font-bold"
+              className="rounded-xl bg-[#7C4DFF] hover:bg-[#6937D5] text-white text-xs font-bold"
             >
               {isSubmitting ? "Đang lưu..." : questionItem ? "Lưu thay đổi" : "Tạo câu hỏi"}
             </Button>

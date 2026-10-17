@@ -43,11 +43,11 @@ export function SlotMachine({
         {/* Center Active Item */}
         <div className="relative w-full py-2 flex items-center justify-center">
           {/* Left marker */}
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-7 bg-[#FA5271] rounded-r-full shadow-xs" />
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-7 bg-[#7C4DFF] rounded-r-full shadow-xs" />
 
           {/* Center text with emoji */}
           <div
-            className={`text-lg sm:text-xl font-extrabold text-[#FA5271] px-4 flex items-center justify-center gap-2 max-w-[90%] truncate transition-all duration-100 ${
+            className={`text-lg sm:text-xl font-extrabold text-[#7C4DFF] px-4 flex items-center justify-center gap-2 max-w-[90%] truncate transition-all duration-100 ${
               isSpinning ? "scale-95 opacity-80" : "scale-100 opacity-100"
             }`}
           >
@@ -58,7 +58,7 @@ export function SlotMachine({
           </div>
 
           {/* Right marker */}
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-7 bg-[#FA5271] rounded-l-full shadow-xs" />
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-7 bg-[#7C4DFF] rounded-l-full shadow-xs" />
         </div>
 
         {/* Divider below center */}

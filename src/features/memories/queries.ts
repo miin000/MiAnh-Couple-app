@@ -8,7 +8,7 @@ export async function getOurSpaceData(): Promise<OurSpaceData | null> {
   if (!coupleId) return null;
 
   const [coupleResult, memoriesResult, anniversariesResult, bucketResult] = await Promise.all([
-    supabase.from("couples").select("start_date").eq("id", coupleId).single(),
+    supabase.from("couples").select("start_date, timezone").eq("id", coupleId).single(),
     supabase.from("memories").select("id, title, note, happened_at, memory_photos(id, storage_path)").eq("couple_id", coupleId).order("happened_at", { ascending: false }).order("created_at", { ascending: false }),
     supabase.from("anniversary_countdowns").select("id, title, event_date, repeat_yearly, next_date, days_left").eq("couple_id", coupleId).order("next_date", { ascending: true }),
     supabase.from("bucket_list_items").select("id, title, is_done, done_at").eq("couple_id", coupleId).order("is_done", { ascending: true }).order("created_at", { ascending: false }),
@@ -31,6 +31,7 @@ export async function getOurSpaceData(): Promise<OurSpaceData | null> {
   return {
     coupleId,
     startDate: coupleResult.data.start_date,
+    timezone: coupleResult.data.timezone || "Asia/Ho_Chi_Minh",
     memories,
     anniversaries: anniversariesResult.data ?? [],
     bucketList: bucketResult.data ?? [],

@@ -48,7 +48,8 @@ export async function updateSession(request: NextRequest) {
     path.startsWith("/play") ||
     path.startsWith("/learn") ||
     path.startsWith("/our-space") ||
-    path.startsWith("/settings");
+    path.startsWith("/settings") ||
+    path.startsWith("/map");
 
   // If user is not logged in and tries to access protected app routes
   if (!user && isProtectedRoute) {
@@ -66,4 +67,3 @@ export async function updateSession(request: NextRequest) {
 
   return supabaseResponse;
 }
-

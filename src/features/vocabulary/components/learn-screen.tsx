@@ -124,7 +124,7 @@ export function LearnScreen({
           onClick={() => setActiveTab("cards")}
           className={`flex items-center justify-center gap-1 py-2 rounded-xl transition-all ${
             activeTab === "cards"
-              ? "bg-white text-[#FA5271] shadow-2xs"
+              ? "bg-white text-[#7C4DFF] shadow-2xs"
               : "text-[#786D73] hover:text-[#201A1D]"
           }`}
         >
@@ -137,7 +137,7 @@ export function LearnScreen({
           onClick={() => setActiveTab("quiz")}
           className={`flex items-center justify-center gap-1 py-2 rounded-xl transition-all ${
             activeTab === "quiz"
-              ? "bg-white text-[#FA5271] shadow-2xs"
+              ? "bg-white text-[#7C4DFF] shadow-2xs"
               : "text-[#786D73] hover:text-[#201A1D]"
           }`}
         >
@@ -150,14 +150,14 @@ export function LearnScreen({
           onClick={() => setActiveTab("review")}
           className={`flex items-center justify-center gap-1 py-2 rounded-xl transition-all relative ${
             activeTab === "review"
-              ? "bg-white text-[#FA5271] shadow-2xs"
+              ? "bg-white text-[#7C4DFF] shadow-2xs"
               : "text-[#786D73] hover:text-[#201A1D]"
           }`}
         >
           <Layers className="w-3.5 h-3.5" />
           <span>Ôn tập</span>
           {dueCount > 0 && (
-            <span className="w-2 h-2 rounded-full bg-[#FA5271] absolute top-1.5 right-1.5" />
+            <span className="w-2 h-2 rounded-full bg-[#7C4DFF] absolute top-1.5 right-1.5" />
           )}
         </button>
 
@@ -166,7 +166,7 @@ export function LearnScreen({
           onClick={() => setActiveTab("challenge")}
           className={`flex items-center justify-center gap-1 py-2 rounded-xl transition-all ${
             activeTab === "challenge"
-              ? "bg-white text-[#FA5271] shadow-2xs"
+              ? "bg-white text-[#7C4DFF] shadow-2xs"
               : "text-[#786D73] hover:text-[#201A1D]"
           }`}
         >
@@ -200,7 +200,7 @@ export function LearnScreen({
           <CoupleChallengeCard challengeData={challengeData} words={words} />
         ) : (
           <div className="rounded-3xl bg-white border border-[#EFE5E0] p-8 text-center space-y-3">
-            <Heart className="w-8 h-8 text-[#FA5271] mx-auto" />
+            <Heart className="w-8 h-8 text-[#7C4DFF] mx-auto" />
             <h4 className="text-sm font-bold text-[#201A1D]">Thử thách đang được tạo</h4>
             <p className="text-xs text-[#786D73]">
               Vui lòng kết nối cặp đôi để tham gia thử thách từ vựng hằng ngày nhé!
@@ -218,14 +218,14 @@ export function LearnScreen({
               </div>
               <div className="flex items-center gap-1">
                 <span className="text-[#8E8287] font-medium">Đã học</span>
-                <span className="font-bold text-[#FA5271]">
+                <span className="font-bold text-[#7C4DFF]">
                   {learnedCount}/{totalWords}
                 </span>
               </div>
             </div>
             <div className="h-1.5 rounded-full bg-[#EFE5E0] overflow-hidden">
               <div
-                className="h-full bg-[#FA5271] rounded-full transition-all duration-300"
+                className="h-full bg-[#7C4DFF] rounded-full transition-all duration-300"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -293,7 +293,7 @@ export function LearnScreen({
               type="button"
               disabled={isPending}
               onClick={() => handleReview(true)}
-              className="h-12 rounded-2xl font-bold text-xs sm:text-sm bg-[#FA5271] text-white hover:bg-[#e04563] active:scale-98 shadow-sm transition-all gap-1.5"
+              className="h-12 rounded-2xl font-bold text-xs sm:text-sm bg-[#7C4DFF] text-white hover:bg-[#e04563] active:scale-98 shadow-sm transition-all gap-1.5"
             >
               <Check className="w-4 h-4" />
               Đã nhớ
@@ -302,7 +302,7 @@ export function LearnScreen({
 
           {/* Completion celebration if 10/10 */}
           {learnedCount === totalWords && (
-            <div className="rounded-2xl bg-[#FFF5F7] border border-[#FFEBF0] p-3 text-center flex items-center justify-center gap-2 text-xs font-bold text-[#FA5271]">
+            <div className="rounded-2xl bg-[#FFF5F7] border border-[#F0E9FF] p-3 text-center flex items-center justify-center gap-2 text-xs font-bold text-[#7C4DFF]">
               <Trophy className="w-4 h-4 text-amber-500" />
               <span>Bạn đã hoàn thành bài học 10 từ của ngày hôm nay!</span>
             </div>

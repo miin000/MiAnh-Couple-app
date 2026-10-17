@@ -43,13 +43,13 @@ export function PwaInstallGuide() {
   return (
     <Card className="p-5 space-y-3">
       <div className="flex items-center gap-2">
-        <Download className="w-4 h-4 text-[#FA5271]" />
+        <Download className="w-4 h-4 text-[#7C4DFF]" />
         <h3 className="text-sm font-extrabold">Cài MiAnh lên màn hình chính</h3>
       </div>
       {installPrompt ? (
         <>
           <p className="text-xs text-[#786D73]">Mở nhanh như một ứng dụng, không cần tìm lại trong trình duyệt.</p>
-          <button type="button" onClick={install} className="w-full min-h-11 rounded-xl bg-[#FA5271] text-white text-sm font-bold">
+          <button type="button" onClick={install} className="w-full min-h-11 rounded-xl bg-[#7C4DFF] text-white text-sm font-bold">
             Cài đặt ứng dụng
           </button>
         </>

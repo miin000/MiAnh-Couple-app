@@ -17,7 +17,7 @@ export function PartnerProgressCard({
     return (
       <div className="rounded-2xl bg-white border border-[#EFE5E0] p-3.5 flex items-center justify-between text-xs text-[#786D73]">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-[#FFEBF0] text-[#FA5271] font-bold flex items-center justify-center text-xs">
+          <div className="w-8 h-8 rounded-full bg-[#F0E9FF] text-[#7C4DFF] font-bold flex items-center justify-center text-xs">
             {myProgress.display_name.charAt(0).toUpperCase()}
           </div>
           <span>Kết nối với người ấy để cùng theo dõi tiến độ mỗi ngày nhé</span>
@@ -42,7 +42,7 @@ export function PartnerProgressCard({
             {count === 0 ? (
               `${partnerName} chưa bắt đầu học hôm nay`
             ) : isDone ? (
-              <span className="text-[#FA5271] font-bold inline-flex items-center gap-1">
+              <span className="text-[#7C4DFF] font-bold inline-flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5" />
                 {partnerName} đã hoàn thành cả 10 từ hôm nay!
               </span>
@@ -61,7 +61,7 @@ export function PartnerProgressCard({
       </div>
 
       <div className="flex items-center gap-1 text-[#8E8287]">
-        <span className="text-xs font-bold text-[#FA5271]">
+        <span className="text-xs font-bold text-[#7C4DFF]">
           {count}/{total}
         </span>
         <ChevronRight className="w-4 h-4" />
