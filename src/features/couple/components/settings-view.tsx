@@ -71,11 +71,15 @@ export function SettingsView({
           setServerMessage({ type: "error", text: "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại." });
           return;
         }
+        if (avatarFile.size > 10 * 1024 * 1024) {
+          setServerMessage({ type: "error", text: "Ảnh đại diện tối đa 10 MB." });
+          return;
+        }
         const extension = avatarFile.type.split("/")[1] || "jpg";
         const path = `${authData.user.id}/avatar-${crypto.randomUUID()}.${extension}`;
         const upload = await supabase.storage.from("avatars").upload(path, avatarFile, { contentType: avatarFile.type, upsert: false });
         if (upload.error) {
-          setServerMessage({ type: "error", text: "Không thể tải ảnh đại diện lên. Vui lòng thử lại." });
+          setServerMessage({ type: "error", text: `Không thể tải ảnh đại diện lên: ${upload.error.message || "Vui lòng thử lại."}` });
           return;
         }
         avatarUrl = supabase.storage.from("avatars").getPublicUrl(path).data.publicUrl;
@@ -208,8 +212,8 @@ export function SettingsView({
                 <input id="avatarFile" type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(event) => {
                   const file = event.target.files?.[0];
                   if (!file) return;
-                  if (file.size > 5 * 1024 * 1024) {
-                    setServerMessage({ type: "error", text: "Ảnh đại diện tối đa 5 MB." });
+                  if (file.size > 10 * 1024 * 1024) {
+                    setServerMessage({ type: "error", text: "Ảnh đại diện tối đa 10 MB." });
                     return;
                   }
                   setAvatarFile(file);

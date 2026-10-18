@@ -3,7 +3,7 @@
 import "leaflet/dist/leaflet.css";
 import { Circle, MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export interface MapPoint {
   lat: number;
@@ -15,12 +15,15 @@ export interface MapPoint {
 
 function Recenter({ points }: { points: MapPoint[] }) {
   const map = useMap();
+  const hasRecentered = useRef(false);
   useEffect(() => {
-    if (points.length === 1) map.setView([points[0].lat, points[0].lng], 15);
-    if (points.length > 1) {
+    if (hasRecentered.current || points.length === 0) return;
+    if (points.length === 1) {
+      map.setView([points[0].lat, points[0].lng], 15);
+    } else {
       map.fitBounds(points.map((point) => [point.lat, point.lng] as [number, number]), { padding: [40, 40] });
     }
-
+    hasRecentered.current = true;
   }, [map, points]);
   return null;
 }
