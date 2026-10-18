@@ -1,14 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Nunito } from "next/font/google";
 import "./globals.css";
 import { PwaRegister } from "@/components/pwa-register";
-
-const appFont = Nunito({
-  variable: "--font-app",
-  subsets: ["latin", "vietnamese"],
-  weight: ["400", "500", "600", "700", "800"],
-  display: "swap",
-});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -41,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" suppressHydrationWarning className={`${appFont.variable} h-full antialiased`}>
+    <html lang="vi" suppressHydrationWarning className="h-full antialiased">
       <body className="min-h-full flex flex-col bg-[#FAF8FF] text-[#201A1D]">
         <PwaRegister />
         {children}
