@@ -16,6 +16,7 @@ import Link from "next/link";
 import { PwaInstallGuide } from "@/components/pwa-install-guide";
 import { LocationPrivacyCard } from "@/features/map/components/location-privacy-card";
 import { createClient } from "@/lib/supabase/client";
+import Cropper, { type Area, type Point } from "react-easy-crop";
 
 export interface CoupleMember {
   user_id: string;
@@ -35,6 +36,30 @@ export interface SettingsViewProps {
   isAdmin?: boolean;
 }
 
+async function createCroppedAvatar(imageSrc: string, crop: Area) {
+  const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const element = new Image();
+    element.onload = () => resolve(element);
+    element.onerror = reject;
+    element.src = imageSrc;
+  });
+  const canvas = document.createElement("canvas");
+  canvas.width = 800;
+  canvas.height = 800;
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Không thể xử lý ảnh.");
+  context.drawImage(image, crop.x, crop.y, crop.width, crop.height, 0, 0, 800, 800);
+  return new Promise<File>((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        reject(new Error("Không thể tạo ảnh đã cắt."));
+        return;
+      }
+      resolve(new File([blob], "avatar.jpg", { type: "image/jpeg" }));
+    }, "image/jpeg", 0.9);
+  });
+}
+
 export function SettingsView({
   initialDisplayName,
   initialStartDate,
@@ -52,6 +77,10 @@ export function SettingsView({
   const [isJoining, setIsJoining] = React.useState(false);
   const [avatarFile, setAvatarFile] = React.useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = React.useState(initialAvatarUrl || "");
+  const [cropSource, setCropSource] = React.useState<string | null>(null);
+  const [crop, setCrop] = React.useState<Point>({ x: 0, y: 0 });
+  const [zoom, setZoom] = React.useState(1);
+  const [croppedArea, setCroppedArea] = React.useState<Area | null>(null);
 
 
   const { register, handleSubmit, formState: { errors } } = useForm<UpdateProfileInput>({
@@ -109,6 +138,33 @@ export function SettingsView({
     }
   };
 
+  const handleAvatarSelected = (file: File) => {
+    if (file.size > 10 * 1024 * 1024) {
+      setServerMessage({ type: "error", text: "Ảnh đại diện tối đa 10 MB." });
+      return;
+    }
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setServerMessage({ type: "error", text: "Ảnh đại diện chỉ được là JPEG, PNG hoặc WebP." });
+      return;
+    }
+    setCropSource(URL.createObjectURL(file));
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+  };
+
+  const handleCropConfirm = async () => {
+    if (!cropSource || !croppedArea) return;
+    try {
+      const file = await createCroppedAvatar(cropSource, croppedArea);
+      setAvatarFile(file);
+      setAvatarPreview(URL.createObjectURL(file));
+      URL.revokeObjectURL(cropSource);
+      setCropSource(null);
+    } catch (error) {
+      setServerMessage({ type: "error", text: error instanceof Error ? error.message : "Không thể cắt ảnh." });
+    }
+  };
+
   const handleGenerateNewCode = async () => {
     try {
       setIsSubmitting(true);
@@ -159,7 +215,11 @@ export function SettingsView({
       />
 
       <Card className="p-5 flex items-center gap-4 bg-white">
-        <CoupleAvatars initials={initials} size="lg" />
+        <CoupleAvatars
+          initials={initials}
+          avatarUrls={[members[0]?.avatar_url, members[1]?.avatar_url]}
+          size="lg"
+        />
         <div className="flex-1 min-w-0">
           <h3 className="text-base font-extrabold text-[#201A1D] truncate">
             {members.map((m) => m.display_name).join(" & ") || initialDisplayName}
@@ -211,15 +271,11 @@ export function SettingsView({
                 Chọn ảnh từ thiết bị
                 <input id="avatarFile" type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(event) => {
                   const file = event.target.files?.[0];
-                  if (!file) return;
-                  if (file.size > 10 * 1024 * 1024) {
-                    setServerMessage({ type: "error", text: "Ảnh đại diện tối đa 10 MB." });
-                    return;
-                  }
-                  setAvatarFile(file);
-                  setAvatarPreview(URL.createObjectURL(file));
+                  if (file) handleAvatarSelected(file);
+                  event.currentTarget.value = "";
                 }} />
               </label>
+              {cropSource && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"><div className="w-full max-w-md space-y-4 rounded-3xl bg-[#FAF8FF] p-5"><h2 className="text-base font-extrabold">Căn chỉnh ảnh đại diện</h2><div className="relative h-72 overflow-hidden rounded-2xl bg-[#201A1D]"><Cropper image={cropSource} crop={crop} zoom={zoom} aspect={1} cropShape="round" showGrid={false} onCropChange={setCrop} onZoomChange={setZoom} onCropComplete={(_, pixels) => setCroppedArea(pixels)} /></div><label className="block text-xs font-semibold text-[#786D73]">Thu phóng<input className="mt-2 w-full accent-[#7C4DFF]" type="range" min={1} max={3} step={0.05} value={zoom} onChange={(event) => setZoom(Number(event.target.value))} /></label><div className="flex gap-2"><Button type="button" variant="secondary" className="flex-1" onClick={() => { URL.revokeObjectURL(cropSource); setCropSource(null); }}>Hủy</Button><Button type="button" className="flex-1" onClick={() => void handleCropConfirm()}>Dùng ảnh này</Button></div></div></div>}
             </div>
             <p className="text-[11px] text-[#8E8287] mt-1">Ảnh được tải trực tiếp lên kho lưu trữ riêng của ứng dụng.</p>
           </div>
