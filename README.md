@@ -60,14 +60,22 @@ where id = 'UUID_CUA_TAI_KHOAN';
 
 ### Phase 6B — Bản đồ và chia sẻ vị trí
 
-Migration `20261018000016_location_sharing.sql` tạo bảng private và các RPC
+Migration `20261018000016_location_sharing.sql` và
+`20261019000018_location_sharing_permanent.sql` tạo bảng private và các RPC
 `start_location_sharing`, `stop_location_sharing`, `update_my_location`,
-`get_partner_location`, `get_my_sharing_status`. Chỉ chạy migration sau các
+`get_partner_location`, `get_my_sharing_status`. Bản cập nhật mới cho phép
+chia sẻ vô thời hạn: khi bật, vị trí được chia sẻ cho đến khi chính người dùng
+bấm **Tắt** trong Cài đặt. Chỉ chạy migration sau các
 migration nền tảng hiện có. Tab Bản đồ dùng Leaflet + OpenStreetMap, không cần
-API key; tile công cộng không bị service worker cache. Vị trí chỉ được gửi khi
-người dùng đã đồng ý, đang chia sẻ và tab trình duyệt còn hiển thị.
+API key; tile công cộng không bị service worker cache. Header
+`Permissions-Policy` cho phép geolocation trên chính website. Lần đầu vào app,
+người dùng được hỏi có muốn chia sẻ vị trí hay không; sau đó có thể bật/tắt lại
+trong Cài đặt. Vị trí chỉ được gửi khi người dùng đã đồng ý, đang chia sẻ và
+tab trình duyệt còn hiển thị.
 
-Production nên chạy `purge_expired_locations()` mỗi 5 phút bằng pg_cron:
+Production có thể giữ job `purge_expired_locations()` mỗi 5 phút bằng pg_cron
+để dọn các bản ghi thời hạn cũ trong migration trước; chia sẻ vô thời hạn mới
+không bị job này tắt:
 
 ```sql
 select cron.schedule(
@@ -117,6 +125,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key # Chỉ dùng server, không l�
    - `20261014000005_learn.sql` (Phase 4-5: từ vựng, bài học hàng ngày, tiến độ, quiz)
    - `20261014000006_our_space.sql` (Phase 6: memories, photos, anniversaries, bucket list)
    - `20261016000014_our_space_hardening.sql` (Phase 6: xử lý ngày 29/2 và khóa Storage theo đúng memory của cặp)
+   - `20261018000016_location_sharing.sql` (Phase 6B: bản đồ và chia sẻ vị trí có thời hạn)
    - `20261014000008_admin_management.sql` (Quản trị hệ thống, RLS role admin)
    - `20261014000009_price_level_standards.sql` (Tùy biến quy chuẩn 4 mức chi tiêu)
    - `20261014000010_random_items_image_and_map.sql` (Hình ảnh gợi ý hẹn hò, storage bucket discover, vị trí Google Maps)

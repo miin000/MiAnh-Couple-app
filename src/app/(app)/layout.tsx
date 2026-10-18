@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { getCurrentCouple } from "@/features/couple/queries";
 import { CoupleHeader } from "@/components/layout/couple-header";
+import { LocationSharingPrompt } from "@/features/map/components/location-sharing-prompt";
 
 export default async function AppLayout({
 
@@ -45,6 +46,7 @@ export default async function AppLayout({
           {children}
         </main>
         <BottomNav />
+        <LocationSharingPrompt />
       </div>
     </div>
   );

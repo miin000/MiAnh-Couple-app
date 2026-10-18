@@ -106,6 +106,7 @@ function MemoryForm({ memory, onClose, onResult }: { memory?: Memory; onClose: (
     try { return JSON.parse(saved) as typeof fallback; } catch { return fallback; }
   });
   const [files, setFiles] = useState<File[]>([]);
+  const [removedPhotoIds, setRemovedPhotoIds] = useState<string[]>([]);
   const [pending, setPending] = useState(false);
   const [selectedPreview, setSelectedPreview] = useState<string | null>(null);
   const previewUrls = useMemo(() => files.map((file) => URL.createObjectURL(file)), [files]);
@@ -117,19 +118,22 @@ function MemoryForm({ memory, onClose, onResult }: { memory?: Memory; onClose: (
     const result = memory ? await updateMemoryAction({ id: memory.id, ...draft }) : await createMemoryAction(data);
     if (!memory && result.success && result.memoryId && result.coupleId && files.length > 0) {
       const supabase = createClient();
-      const paths: string[] = [];
-      for (const file of files) {
+      const uploads = await Promise.allSettled(files.map(async (file) => {
         const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
         const path = `${result.coupleId}/${result.memoryId}/${crypto.randomUUID()}-${safeName}`;
         const upload = await supabase.storage.from("memories").upload(path, file, { contentType: file.type, upsert: false });
-        if (upload.error) {
-          await supabase.storage.from("memories").remove(paths);
-          await deleteMemoryAction(result.memoryId);
-          onResult("Không thể tải ảnh lên. Vui lòng kiểm tra kết nối rồi thử lại.");
-          setPending(false);
-          return;
-        }
-        paths.push(path);
+        if (upload.error) throw upload.error;
+        return path;
+      }));
+      const paths = uploads
+        .filter((upload): upload is PromiseFulfilledResult<string> => upload.status === "fulfilled")
+        .map((upload) => upload.value);
+      if (uploads.some((upload) => upload.status === "rejected")) {
+        await supabase.storage.from("memories").remove(paths);
+        await deleteMemoryAction(result.memoryId);
+        onResult("Không thể tải đủ ảnh lên. Vui lòng kiểm tra kết nối rồi thử lại.");
+        setPending(false);
+        return;
       }
       const { error: photoError } = await supabase.from("memory_photos").insert(paths.map((storage_path) => ({ memory_id: result.memoryId, couple_id: result.coupleId, storage_path })));
       if (photoError) {
@@ -140,10 +144,54 @@ function MemoryForm({ memory, onClose, onResult }: { memory?: Memory; onClose: (
         return;
       }
     }
+    if (memory && result.success) {
+      const supabase = createClient();
+      const photosToRemove = memory.photos.filter((photo) => removedPhotoIds.includes(photo.id));
+      if (photosToRemove.length > 0) {
+        const { error: storageError } = await supabase.storage.from("memories").remove(photosToRemove.map((photo) => photo.storage_path));
+        const { error: photoError } = storageError
+          ? { error: storageError }
+          : await supabase.from("memory_photos").delete().in("id", photosToRemove.map((photo) => photo.id)).eq("memory_id", memory.id);
+        if (photoError) {
+          onResult("Không thể xóa ảnh. Vui lòng thử lại.");
+          setPending(false);
+          return;
+        }
+      }
+      if (files.length > 0) {
+        const { data: coupleId } = await supabase.rpc("current_couple_id");
+        if (!coupleId) {
+          onResult("Không tìm thấy không gian của hai bạn.");
+          setPending(false);
+          return;
+        }
+        const uploads = await Promise.allSettled(files.map(async (file) => {
+          const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+          const path = `${coupleId}/${memory.id}/${crypto.randomUUID()}-${safeName}`;
+          const upload = await supabase.storage.from("memories").upload(path, file, { contentType: file.type, upsert: false });
+          if (upload.error) throw upload.error;
+          return path;
+        }));
+        const paths = uploads.filter((upload): upload is PromiseFulfilledResult<string> => upload.status === "fulfilled").map((upload) => upload.value);
+        if (uploads.some((upload) => upload.status === "rejected")) {
+          await supabase.storage.from("memories").remove(paths);
+          onResult("Không thể tải ảnh mới lên. Vui lòng thử lại.");
+          setPending(false);
+          return;
+        }
+        const { error: photoError } = await supabase.from("memory_photos").insert(paths.map((storage_path) => ({ memory_id: memory.id, couple_id: coupleId, storage_path })));
+        if (photoError) {
+          await supabase.storage.from("memories").remove(paths);
+          onResult("Không thể lưu thông tin ảnh mới. Vui lòng thử lại.");
+          setPending(false);
+          return;
+        }
+      }
+    }
     onResult(result.message); setPending(false);
     if (result.success) { localStorage.removeItem(draftKey); onClose(); window.location.reload(); }
   }
-  return <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 p-3"><form onSubmit={submit} className="w-full max-w-md space-y-3 rounded-3xl bg-[#FAF8FF] p-5 shadow-xl"><div className="flex items-center justify-between"><h2 className="text-lg font-extrabold">{memory ? "Sửa kỷ niệm" : "Thêm kỷ niệm"}</h2><button type="button" onClick={onClose} className="min-h-[44px] min-w-[44px]"><X className="mx-auto" /></button></div><Input name="title" placeholder="Tiêu đề kỷ niệm" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} required /><textarea name="note" placeholder="Kể một chút về ngày hôm đó..." value={draft.note} onChange={(e) => setDraft({ ...draft, note: e.target.value })} className="min-h-28 w-full rounded-2xl border border-[#E9DFDA] bg-white p-4 text-sm outline-none focus:border-[#7C4DFF]" /><Input name="happened_at" type="date" value={draft.happened_at} onChange={(e) => setDraft({ ...draft, happened_at: e.target.value })} required />{!memory && <><label className="flex min-h-[44px] cursor-pointer items-center gap-2 rounded-2xl border border-dashed border-[#E0D3CD] bg-white px-4 text-xs font-semibold text-[#786D73]"><Upload className="h-4 w-4 text-[#7C4DFF]" /> Chọn ảnh (tối đa 10 MB/ảnh)<input type="file" accept="image/jpeg,image/png,image/webp" multiple className="hidden" onChange={(e) => { const selected = Array.from(e.target.files ?? []); const invalid = selected.map(validateMemoryPhoto).find(Boolean); if (invalid) { onResult(invalid); return; } setFiles(selected); e.currentTarget.value = ""; }} /></label>{files.length > 0 && <div className="space-y-2"><p className="text-xs font-semibold text-[#786D73]">{files.length} ảnh đã chọn · chạm để xem lớn</p><div className="grid grid-cols-4 gap-2">{files.map((file, index) => <div key={`${file.name}-${file.lastModified}-${index}`} className="relative"><button type="button" onClick={() => setSelectedPreview(previewUrls[index])} className="block w-full overflow-hidden rounded-xl border border-[#E9DFDA]"><img src={previewUrls[index]} alt={`Ảnh đã chọn ${index + 1}`} className="aspect-square w-full object-cover" /></button><button type="button" aria-label={`Bỏ ảnh ${file.name}`} onClick={() => setFiles((current) => current.filter((_, itemIndex) => itemIndex !== index))} className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-[#201A1D] text-white"><X className="h-3.5 w-3.5" /></button></div>)}</div></div>}</>}<div className="flex gap-2"><Button type="button" variant="secondary" className="flex-1" onClick={onClose}>Hủy</Button><Button type="submit" className="flex-1" disabled={pending}>{pending ? "Đang lưu..." : "Lưu kỷ niệm"}</Button></div></form>{selectedPreview && <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-5" onClick={() => setSelectedPreview(null)}><img src={selectedPreview} alt="Xem trước ảnh đã chọn" className="max-h-[80vh] max-w-full rounded-2xl object-contain" /><button type="button" aria-label="Đóng xem ảnh" onClick={() => setSelectedPreview(null)} className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#201A1D]"><X /></button></div>}</div>;
+  return <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 p-3"><form onSubmit={submit} className="max-h-[92vh] w-full max-w-md space-y-3 overflow-y-auto rounded-3xl bg-[#FAF8FF] p-5 shadow-xl"><div className="flex items-center justify-between"><h2 className="text-lg font-extrabold">{memory ? "Sửa kỷ niệm" : "Thêm kỷ niệm"}</h2><button type="button" onClick={onClose} className="min-h-[44px] min-w-[44px]"><X className="mx-auto" /></button></div><Input name="title" placeholder="Tiêu đề kỷ niệm" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} required /><textarea name="note" placeholder="Kể một chút về ngày hôm đó..." value={draft.note} onChange={(e) => setDraft({ ...draft, note: e.target.value })} className="min-h-28 w-full rounded-2xl border border-[#E9DFDA] bg-white p-4 text-sm outline-none focus:border-[#7C4DFF]" /><Input name="happened_at" type="date" value={draft.happened_at} onChange={(e) => setDraft({ ...draft, happened_at: e.target.value })} required />  {memory && memory.photos.length > 0 && <div className="space-y-2"><p className="text-xs font-semibold text-[#786D73]">Ảnh trong kỷ niệm · chạm để xem lớn hoặc xóa</p><div className="grid grid-cols-4 gap-2">{memory.photos.map((photo, index) => { const removed = removedPhotoIds.includes(photo.id); return <div key={photo.id} className={`relative ${removed ? "opacity-40" : ""}`}><button type="button" disabled={removed} onClick={() => setSelectedPreview(photo.signed_url)} className="block w-full overflow-hidden rounded-xl border border-[#E9DFDA]"><img src={photo.signed_url} alt={`Ảnh trong kỷ niệm ${index + 1}`} className="aspect-square w-full object-cover" /></button><button type="button" aria-label={removed ? "Khôi phục ảnh" : "Xóa ảnh"} onClick={() => setRemovedPhotoIds((current) => removed ? current.filter((id) => id !== photo.id) : [...current, photo.id])} className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-[#201A1D] text-white"><X className="h-3.5 w-3.5" /></button></div>; })}</div></div>}<><label className="flex min-h-[44px] cursor-pointer items-center gap-2 rounded-2xl border border-dashed border-[#E0D3CD] bg-white px-4 text-xs font-semibold text-[#786D73]"><Upload className="h-4 w-4 text-[#7C4DFF]" /> Thêm ảnh (tối đa 10 MB/ảnh)<input type="file" accept="image/jpeg,image/png,image/webp" multiple className="hidden" onChange={(e) => { const selected = Array.from(e.target.files ?? []); const invalid = selected.map(validateMemoryPhoto).find(Boolean); if (invalid) { onResult(invalid); return; } setFiles((current) => [...current, ...selected]); e.currentTarget.value = ""; }} /></label>{files.length > 0 && <div className="space-y-2"><p className="text-xs font-semibold text-[#786D73]">{files.length} ảnh đã chọn · chạm để xem lớn</p><div className="grid grid-cols-4 gap-2">{files.map((file, index) => <div key={`${file.name}-${file.lastModified}-${index}`} className="relative"><button type="button" onClick={() => setSelectedPreview(previewUrls[index])} className="block w-full overflow-hidden rounded-xl border border-[#E9DFDA]"><img src={previewUrls[index]} alt={`Ảnh đã chọn ${index + 1}`} className="aspect-square w-full object-cover" /></button><button type="button" aria-label={`Bỏ ảnh ${file.name}`} onClick={() => setFiles((current) => current.filter((_, itemIndex) => itemIndex !== index))} className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-[#201A1D] text-white"><X className="h-3.5 w-3.5" /></button></div>)}  </div></div>    }</><div className="flex gap-2"><Button type="button" variant="secondary" className="flex-1" onClick={onClose}>Hủy</Button><Button type="submit" className="flex-1" disabled={pending}>{pending ? "Đang lưu..." : "Lưu kỷ niệm"}</Button></div></form>{selectedPreview && <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-5" onClick={() => setSelectedPreview(null)}><img src={selectedPreview} alt="Xem trước ảnh đã chọn" className="max-h-[80vh] max-w-full rounded-2xl object-contain" /><button type="button" aria-label="Đóng xem ảnh" onClick={() => setSelectedPreview(null)} className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#201A1D]"><X /></button></div>}</div>;
 }
 
 function AnniversarySection({ anniversaries, showForm, onShowForm, run }: { anniversaries: Anniversary[]; showForm: boolean; onShowForm: (value: boolean) => void; run: (action: Promise<{ success: boolean; message: string }>) => Promise<void> }) {

@@ -45,10 +45,9 @@ function MapActions({ own, partner }: { own: MapPoint | null; partner: MapPoint 
 }
 
 function markerIcon(point: MapPoint, own: boolean) {
-  const content = own
-    ? `<span style="display:block;width:16px;height:16px;border-radius:50%;background:#2B8BE6;border:3px solid white;box-shadow:0 2px 8px #5678"></span>`
-    : `<span style="display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:#fff;border:3px solid white;box-shadow:0 2px 10px #5678;color:#6E56B8;font:bold 18px system-ui;overflow:hidden">${point.avatarUrl ? `<img src="${point.avatarUrl}" style="width:100%;height:100%;object-fit:cover">` : (point.label?.[0] || "?")}</span>`;
-  return L.divIcon({ html: content, className: "", iconSize: own ? [16, 16] : [42, 42], iconAnchor: own ? [8, 8] : [21, 21] });
+  const borderColor = own ? "#2B8BE6" : "#7C4DFF";
+  const content = `<span style="display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:#fff;border:3px solid ${borderColor};box-shadow:0 2px 10px #5678;color:#6E56B8;font:bold 18px system-ui;overflow:hidden">${point.avatarUrl ? `<img src="${point.avatarUrl}" alt="" style="width:100%;height:100%;object-fit:cover">` : (point.label?.[0] || "?")}</span>`;
+  return L.divIcon({ html: content, className: "", iconSize: [42, 42], iconAnchor: [21, 21] });
 }
 
 export function MapCanvas({ own, partner }: { own: MapPoint | null; partner: MapPoint | null }) {

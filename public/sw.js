@@ -1,4 +1,4 @@
-const CACHE_NAME = "mianh-public-shell-v2";
+const CACHE_NAME = "mianh-public-shell-v3";
 const PUBLIC_ASSETS = [
   "/offline.html",
   "/manifest.webmanifest",

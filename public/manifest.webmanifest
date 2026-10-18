@@ -3,11 +3,13 @@
   "short_name": "MiAnh",
   "description": "Không gian riêng cho hai người cùng trải nghiệm và lưu giữ kỷ niệm.",
   "lang": "vi",
+  "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#FAF8FF",
   "theme_color": "#7C4DFF",
+  "display_override": ["standalone", "browser"],
   "icons": [
     {
       "src": "/icons/icon-192.png",
