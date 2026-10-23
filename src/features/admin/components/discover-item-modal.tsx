@@ -97,6 +97,7 @@ export function DiscoverItemModal({ item, priceConfigs, onClose, onSuccess }: Di
   const [priceLevel, setPriceLevel] = useState<string>(
     item?.price_level ? String(item.price_level) : "2"
   );
+  const [pricePerPerson, setPricePerPerson] = useState(String(item?.price_per_person ?? ""));
   const [imageUrl, setImageUrl] = useState<string>(item?.image_url || "");
   const [mapUrl, setMapUrl] = useState<string>(item?.map_url || "");
   const [isActive, setIsActive] = useState<boolean>(item ? item.is_active : true);
@@ -152,6 +153,7 @@ export function DiscoverItemModal({ item, priceConfigs, onClose, onSuccess }: Di
     if (description.trim()) fd.append("description", description.trim());
     if (tip.trim()) fd.append("tip", tip.trim());
     if (priceLevel) fd.append("price_level", priceLevel);
+    if (pricePerPerson) fd.append("price_per_person", pricePerPerson);
     if (imageUrl.trim()) fd.append("image_url", imageUrl.trim());
     if (mapUrl.trim()) fd.append("map_url", mapUrl.trim());
     fd.append("is_active", String(isActive));
@@ -168,6 +170,7 @@ export function DiscoverItemModal({ item, priceConfigs, onClose, onSuccess }: Di
         description: description.trim() || null,
         tip: tip.trim() || null,
         price_level: priceLevel ? Number(priceLevel) : null,
+        price_per_person: item?.price_per_person ?? null,
         image_url: imageUrl.trim() || null,
         map_url: mapUrl.trim() || null,
         is_active: isActive,
@@ -216,6 +219,14 @@ export function DiscoverItemModal({ item, priceConfigs, onClose, onSuccess }: Di
                 </button>
               ))}
             </div>
+            <input
+              type="number"
+              min="0"
+              value={pricePerPerson}
+              onChange={(e) => setPricePerPerson(e.target.value)}
+              placeholder="Giá tham khảo mỗi người (₫)"
+              className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl text-xs"
+            />
           </div>
 
           <div className="space-y-1">

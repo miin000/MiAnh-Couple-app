@@ -29,7 +29,12 @@ export function AddToPlanModal({
   const [selectedPlanId, setSelectedPlanId] = useState<string>(
     plans[0]?.id || ""
   );
-  const [estimatedCost, setEstimatedCost] = useState("");
+  const [estimatedCost, setEstimatedCost] = useState(
+    item.price_per_person !== null && item.price_per_person !== undefined
+      ? String(item.price_per_person)
+      : ""
+  );
+  const [participantsCount, setParticipantsCount] = useState<1 | 2>(2);
   const [newPlanTitle, setNewPlanTitle] = useState("");
   const [newPlanDate, setNewPlanDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -71,7 +76,7 @@ export function AddToPlanModal({
         return;
       }
 
-      const res = await addDatePlanItemAction(planId, item.title, cost, item.id);
+      const res = await addDatePlanItemAction(planId, item.title, cost, item.id, participantsCount);
       if (res.success) {
         onSuccess(planId, item.title);
       } else {
@@ -206,16 +211,41 @@ export function AddToPlanModal({
 
             <div>
               <label className="text-xs font-semibold text-[#52464D] block mb-1">
-                Chi phí Æ°ớc tính cho mục này (₫)
+                Chi phí ước tính mỗi người (₫)
               </label>
               <Input
                 type="number"
                 value={estimatedCost}
                 onChange={(e) => setEstimatedCost(e.target.value)}
-                placeholder="Ví dụ: 150000 (tuỳ chọn)"
+                placeholder="Ví dụ: 150000/người"
                 step={10000}
                 className="text-xs rounded-xl"
               />
+            </div>
+            <p className="text-[11px] text-[#786D73]">
+              Tổng dự kiến:{" "}
+              {(Number(estimatedCost || 0) * participantsCount).toLocaleString("vi-VN")} ₫.
+            </p>
+            <div>
+              <label className="text-xs font-semibold text-[#52464D] block mb-1">
+                Tính cho bao nhiêu người?
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {[1, 2].map((count) => (
+                  <button
+                    key={count}
+                    type="button"
+                    onClick={() => setParticipantsCount(count as 1 | 2)}
+                    className={`rounded-xl border px-3 py-2 text-xs font-semibold ${
+                      participantsCount === count
+                        ? "border-[#7C4DFF] bg-[#F0E9FF] text-[#7C4DFF]"
+                        : "border-[#E5DAD5] text-[#786D73]"
+                    }`}
+                  >
+                    {count === 1 ? "1 người" : "2 người (x2)"}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="pt-2 flex gap-2">

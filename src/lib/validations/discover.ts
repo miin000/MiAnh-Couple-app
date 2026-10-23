@@ -57,6 +57,7 @@ export const createDatePlanItemSchema = z.object({
     .nonnegative("Chi phí Æ°ớc tính không được âm")
     .optional()
     .default(0),
+  participants_count: z.coerce.number().int().min(1).max(2).default(2),
   actual_cost: z.coerce
     .number()
     .nonnegative("Chi phí thực tế không được âm")
@@ -83,6 +84,7 @@ export const updateDatePlanItemSchema = z.object({
     .nonnegative("Chi phí thực tế không được âm")
     .optional()
     .nullable(),
+  participants_count: z.coerce.number().int().min(1).max(2).optional(),
 });
 
 export type UpdateDatePlanItemInput = z.infer<typeof updateDatePlanItemSchema>;

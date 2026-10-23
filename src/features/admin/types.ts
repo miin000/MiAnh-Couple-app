@@ -43,6 +43,9 @@ export interface VocabularyWord {
   topic: string;
   level: "A1" | "A2" | "B1" | "B2" | "C1" | "C2" | null;
   collocations?: string[];
+  phrase?: string | null;
+  sentence_en?: string | null;
+  sentence_vi?: string | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;

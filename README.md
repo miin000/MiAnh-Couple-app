@@ -175,6 +175,49 @@ npx supabase start
 npx supabase db reset
 ```
 
+### Mở rộng ngân sách, thông báo và học từ vựng
+
+Migration `20261023000020_budget_notifications_vocabulary.sql` bổ sung:
+
+- kế hoạch ngân sách theo **tuần/tháng/năm** và từng dòng tiền đã chi; số tiền
+  trong Discover nhập theo **mỗi người**, khi thêm vào kế hoạch hẹn hò có thể
+  chọn tính cho 1 hoặc 2 người. Kế hoạch sẽ hiển thị rõ tổng theo lựa chọn đó.
+  Kế hoạch được chuẩn hóa về ngày
+  đầu kỳ; khoản chi tự tìm kế hoạch đúng tuần/tháng/năm theo ngày chi, bắt đầu
+  ở trạng thái chờ xác nhận và chỉ được tính vào tổng sau khi xác nhận;
+- tab **Tiết kiệm** với mục tiêu, số tiền đích và thao tác thêm tiền;
+- trạng thái gửi đối phương (`đang nhớ`, `vui`, `bận`, `muốn nói chuyện`) có
+  thời hạn bắt buộc từ 1–8 giờ, không lưu lịch sử;
+- bảng thông báo hệ thống/học tập và subscription Web Push. Service worker
+  không cache dữ liệu riêng tư; để gửi push production cần cấu hình VAPID ở
+  worker/cron phía server, không đưa secret vào `NEXT_PUBLIC_*`;
+- import từ vựng CSV với các cột bắt buộc
+  `word,meaning_vi,part_of_speech,level,topic` và cột tùy chọn
+  `ipa,phrase,sentence_en,sentence_vi,example_en,example_vi`.
+
+Migration `20261023000021_date_plan_budget_link.sql`,
+`20261023000022_fix_date_plan_budget_matching.sql` và
+`20261023000023_monthly_expense_tracking.sql` liên kết việc xác nhận
+mục chi trong kế hoạch hẹn hò với nguồn tiền: khoản đã xác nhận được ghi vào
+khoản chi của kế hoạch tháng tương ứng theo ngày hẹn, không ghi trùng khi sửa
+lại số tiền. Giao diện không còn tạo kế hoạch tuần; dữ liệu tuần cũ vẫn được
+giữ để tương thích. Kế hoạch năm có phần mở rộng để xem tổng theo từng tháng.
+Kế hoạch tháng có thể đặt ngưỡng cảnh báo nhẹ riêng.
+
+Migration `20261023000024_auto_monthly_expense_bucket.sql` bổ sung cơ chế
+tự tạo ngăn khoản chi tháng khi xác nhận một mục trong kế hoạch hẹn hò. Vì vậy
+người dùng không cần tạo kế hoạch tháng trước; chỉ cần xác nhận khoản chi,
+ứng dụng sẽ tự thêm khoản đó vào đúng tháng theo ngày hẹn.
+
+Migration `20261023000025_archive_date_plans.sql` thêm lưu trữ kế hoạch hẹn hò.
+Kế hoạch đã lưu trữ không còn nằm trong danh sách chính nhưng vẫn xem và khôi
+phục được tại **Kho lưu trữ**. Hạn mức tháng được nhập trực tiếp ở thẻ **Khoản
+chi**, còn thẻ **Năm** tự tạo và hiển thị tổng của 12 tháng.
+
+Sau khi chạy migration, vào `/admin` > **Từ vựng** > **Nhập CSV**. Bài 10 từ
+trong ngày vẫn dùng chung cho cặp; tiến độ và lịch ôn Leitner (`1/2/4/7/14
+ngày`) được lưu riêng từng người.
+
 ---
 
 ## 🔐 Luồng Xác thực & Ghép đôi (Phase 1)

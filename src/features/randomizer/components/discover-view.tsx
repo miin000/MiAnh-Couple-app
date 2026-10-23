@@ -10,6 +10,8 @@ import {
 import { SlotMachine } from "./slot-machine";
 import { SpinResultCard } from "./spin-result-card";
 import { DatePlanManager } from "./date-plan-manager";
+import { BudgetManager } from "@/features/budget/components/budget-manager";
+import { BudgetPlan, SavingsGoal } from "@/features/budget/types";
 import { AddToPlanModal } from "./add-to-plan-modal";
 import { PageHeader } from "@/components/shared/page-header";
 import { CoupleAvatars } from "@/components/shared/couple-avatars";
@@ -30,6 +32,8 @@ interface DiscoverViewProps {
   priceConfigs?: PriceLevelConfig[];
   isPaired: boolean;
   coupleInitials?: [string, string];
+  budgetPlans: BudgetPlan[];
+  savingsGoals: SavingsGoal[];
 }
 
 type TabType = "random" | "plans";
@@ -41,6 +45,8 @@ export function DiscoverView({
   priceConfigs,
   isPaired,
   coupleInitials = ["M", "A"],
+  budgetPlans,
+  savingsGoals,
 }: DiscoverViewProps) {
   const [activeTab, setActiveTab] = useState<TabType>("random");
   const [step, setStep] = useState<DiscoverStep>("categories");
@@ -160,7 +166,10 @@ export function DiscoverView({
       </div>
 
       {activeTab === "plans" ? (
-        <DatePlanManager plans={plans} isPaired={isPaired} />
+        <div className="space-y-6">
+          <DatePlanManager plans={plans} isPaired={isPaired} />
+          <BudgetManager initialPlans={budgetPlans} initialSavingsGoals={savingsGoals} />
+        </div>
       ) : (
         <>
           {step === "categories" && (

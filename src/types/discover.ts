@@ -8,6 +8,7 @@ export interface RandomItem {
   description: string | null;
   tip: string | null;
   price_level: number | null;
+  price_per_person?: number | null;
   image_url?: string | null;
   map_url?: string | null;
   is_active: boolean;
@@ -33,6 +34,8 @@ export interface DatePlanItem {
   random_item_id: string | null;
   title: string;
   estimated_cost: number;
+  estimated_cost_per_person: number | null;
+  participants_count: number;
   actual_cost: number | null;
   position: number;
   created_at: string;
@@ -48,6 +51,7 @@ export interface DatePlan {
   created_by: string;
   created_at: string;
   updated_at: string;
+  archived_at: string | null;
   items?: DatePlanItem[];
   total_estimated?: number;
   total_actual?: number;

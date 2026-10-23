@@ -22,6 +22,9 @@ export function VocabModal({ wordItem, onClose, onSuccess }: VocabModalProps) {
   const [collocations, setCollocations] = useState<string>(
     wordItem?.collocations?.join(", ") || ""
   );
+  const [phrase, setPhrase] = useState(wordItem?.phrase || "");
+  const [sentenceEn, setSentenceEn] = useState(wordItem?.sentence_en || "");
+  const [sentenceVi, setSentenceVi] = useState(wordItem?.sentence_vi || "");
   const [topic, setTopic] = useState(wordItem?.topic || "general");
   const [level, setLevel] = useState<string>(wordItem?.level || "A2");
   const [isActive, setIsActive] = useState<boolean>(wordItem ? wordItem.is_active : true);
@@ -47,6 +50,9 @@ export function VocabModal({ wordItem, onClose, onSuccess }: VocabModalProps) {
     if (exampleEn.trim()) fd.append("example_en", exampleEn.trim());
     if (exampleVi.trim()) fd.append("example_vi", exampleVi.trim());
     fd.append("collocations", collocations.trim());
+    fd.append("phrase", phrase.trim());
+    fd.append("sentence_en", sentenceEn.trim());
+    fd.append("sentence_vi", sentenceVi.trim());
     fd.append("topic", topic.trim());
     if (level) fd.append("level", level);
     fd.append("is_active", String(isActive));
@@ -69,6 +75,9 @@ export function VocabModal({ wordItem, onClose, onSuccess }: VocabModalProps) {
         example_en: exampleEn.trim() || null,
         example_vi: exampleVi.trim() || null,
         collocations: parsedCollocs,
+        phrase: phrase.trim() || null,
+        sentence_en: sentenceEn.trim() || null,
+        sentence_vi: sentenceVi.trim() || null,
         topic: topic.trim(),
         level: (level as VocabularyWord["level"]) || null,
         is_active: isActive,
@@ -91,6 +100,7 @@ export function VocabModal({ wordItem, onClose, onSuccess }: VocabModalProps) {
               {wordItem ? "Chỉnh sửa từ vựng" : "Thêm từ mới"}
             </h3>
           </div>
+
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center">
             <X className="w-4 h-4 text-stone-600" />
           </button>
@@ -176,6 +186,12 @@ export function VocabModal({ wordItem, onClose, onSuccess }: VocabModalProps) {
               placeholder="yêu thương, trân trọng..."
               className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl focus:border-[#1B9B68]"
             />
+          </div>
+
+          <div className="grid gap-2">
+            <input value={phrase} onChange={(e) => setPhrase(e.target.value)} placeholder="Cụm từ / phrasal verb" className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl" />
+            <input value={sentenceEn} onChange={(e) => setSentenceEn(e.target.value)} placeholder="Câu ví dụ tiếng Anh" className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl" />
+            <input value={sentenceVi} onChange={(e) => setSentenceVi(e.target.value)} placeholder="Dịch câu ví dụ" className="w-full p-2.5 bg-white border border-[#F2EAE5] rounded-xl" />
           </div>
 
           <div>

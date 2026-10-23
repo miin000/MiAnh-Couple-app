@@ -19,6 +19,7 @@ export const adminRandomItemSchema = z.object({
     .max(4, "Mức chi tiêu tối đa là 4")
     .nullable()
     .optional(),
+  price_per_person: z.coerce.number().int().nonnegative().nullable().optional(),
   image_url: z
     .string()
     .trim()
@@ -76,6 +77,9 @@ export const adminVocabularyWordSchema = z.object({
     .default("general"),
   level: z.enum(["A1", "A2", "B1", "B2", "C1", "C2"]).nullable().optional(),
   collocations: z.string().trim().max(500, "Cụm từ không quá 500 ký tự").optional().nullable(),
+  phrase: z.string().trim().max(300, "Cụm từ không quá 300 ký tự").optional().nullable(),
+  sentence_en: z.string().trim().max(300, "Câu tiếng Anh không quá 300 ký tự").optional().nullable(),
+  sentence_vi: z.string().trim().max(300, "Câu tiếng Việt không quá 300 ký tự").optional().nullable(),
   is_active: z.boolean().default(true),
 });
 
@@ -125,4 +129,3 @@ export const adminPriceLevelConfigSchema = z.object({
 });
 
 export const adminPriceLevelConfigsListSchema = z.array(adminPriceLevelConfigSchema).length(4, "Cần cấu hình đủ 4 mức giá");
-

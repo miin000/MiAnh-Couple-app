@@ -6,7 +6,8 @@ import { PlanItemRow } from "./plan-item-row";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { addDatePlanItemAction, deleteDatePlanAction } from "../actions";
+import { addDatePlanItemAction, deleteDatePlanAction, confirmAllDatePlanItemsAction, archiveDatePlanAction, restoreDatePlanAction } from "../actions";
+import { useRouter } from "next/navigation";
 import {
   Calendar,
   Wallet,
@@ -22,6 +23,7 @@ interface PlanCardProps {
   isExpanded: boolean;
   onToggleExpand: () => void;
   onEdit: (plan: DatePlan) => void;
+  archived?: boolean;
 }
 
 export function PlanCard({
@@ -29,10 +31,13 @@ export function PlanCard({
   isExpanded,
   onToggleExpand,
   onEdit,
+  archived = false,
 }: PlanCardProps) {
+  const router = useRouter();
   const [showAddForm, setShowAddForm] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newCost, setNewCost] = useState("");
+  const [newParticipantsCount, setNewParticipantsCount] = useState<1 | 2>(2);
   const [isPending, startTransition] = useTransition();
 
   const formatVND = (amount: number) => {
@@ -43,6 +48,7 @@ export function PlanCard({
   const isOverBudget =
     (plan.total_actual || 0) > (plan.planned_budget || 0) &&
     (plan.planned_budget || 0) > 0;
+  const pendingItems = plan.items?.filter((item) => item.actual_cost === null) ?? [];
 
   const handleDeletePlan = () => {
     if (!confirm(`Xóa kế hoạch "${plan.title}"?`)) return;
@@ -56,12 +62,27 @@ export function PlanCard({
     const cost = parseInt(newCost.replace(/\D/g, ""), 10) || 0;
 
     startTransition(async () => {
-      const res = await addDatePlanItemAction(plan.id, newTitle.trim(), cost);
+      const res = await addDatePlanItemAction(plan.id, newTitle.trim(), cost, null, newParticipantsCount);
       if (res.success) {
         setNewTitle("");
         setNewCost("");
         setShowAddForm(false);
       }
+    });
+  };
+
+  const handleArchive = () => {
+    startTransition(async () => {
+      const result = archived ? await restoreDatePlanAction(plan.id) : await archiveDatePlanAction(plan.id);
+      if (result.success) router.refresh();
+    });
+  };
+
+  const handleConfirmAll = () => {
+    if (pendingItems.length === 0) return;
+    startTransition(async () => {
+      const result = await confirmAllDatePlanItemsAction(plan.id);
+      if (result.success) router.refresh();
     });
   };
 
@@ -92,9 +113,15 @@ export function PlanCard({
             <div className="flex flex-wrap items-center gap-2 mt-2">
               <span className="text-xs text-[#52464D] flex items-center gap-1">
                 <Wallet className="w-3.5 h-3.5 text-[#9E9096]" />
-                Dự kiến:{" "}
+                Hạn mức:{" "}
                 <strong className="text-[#201A1D]">
                   {formatVND(plan.planned_budget)}
+                </strong>
+              </span>
+              <span className="text-xs text-[#52464D]">
+                Tổng dự tính:{" "}
+                <strong className="text-[#201A1D]">
+                  {formatVND(plan.total_estimated || 0)}
                 </strong>
               </span>
               <span className="text-xs text-[#52464D]">
@@ -131,6 +158,9 @@ export function PlanCard({
             >
               <Edit2 className="w-4 h-4" />
             </button>
+            <button type="button" onClick={(e) => { e.stopPropagation(); handleArchive(); }} disabled={isPending} className="rounded-lg p-1.5 text-[#9E9096] hover:text-[#7C4DFF]" title={archived ? "Khôi phục kế hoạch" : "Lưu trữ kế hoạch"}>
+              {archived ? "↩" : "⌑"}
+            </button>
             <button
               type="button"
               onClick={(e) => {
@@ -158,7 +188,17 @@ export function PlanCard({
         <div className="border-t border-[#F2EAE5] bg-[#FDFBF7]/40 p-4 space-y-3">
           <div className="flex items-center justify-between text-xs font-bold text-[#786D73]">
             <span>CÁC MỤC CHI TIẾT ({plan.items?.length || 0})</span>
-            <span>Ước tính / Thực tế</span>
+            {pendingItems.length > 0 && (
+              <Button
+                type="button"
+                size="sm"
+                onClick={handleConfirmAll}
+                disabled={isPending}
+                className="h-7 rounded-lg px-2 text-[10px]"
+              >
+                Xác nhận tất cả ({pendingItems.length})
+              </Button>
+            )}
           </div>
 
           {(!plan.items || plan.items.length === 0) && (
@@ -205,6 +245,22 @@ export function PlanCard({
                 >
                   Hủy
                 </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {[1, 2].map((count) => (
+                  <button
+                    key={count}
+                    type="button"
+                    onClick={() => setNewParticipantsCount(count as 1 | 2)}
+                    className={`rounded-lg border px-2 py-1.5 text-[11px] font-semibold ${
+                      newParticipantsCount === count
+                        ? "border-[#7C4DFF] bg-[#F0E9FF] text-[#7C4DFF]"
+                        : "border-[#E5DAD5] text-[#786D73]"
+                    }`}
+                  >
+                    {count === 1 ? "1 người" : "2 người (x2)"}
+                  </button>
+                ))}
               </div>
             </div>
           ) : (

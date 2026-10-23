@@ -10,6 +10,8 @@ import { HomePairCard } from "@/features/couple/components/home-pair-card";
 import { Sparkles, MessageCircle, BookOpen, Compass, ArrowRight, MapPin, CheckCircle2, Clock, Trophy, Layers } from "lucide-react";
 import Link from "next/link";
 import { getDaysTogether } from "@/lib/utils";
+import { getPartnerStatuses } from "@/features/couple/status-actions";
+import { PartnerStatusCard } from "@/features/couple/components/partner-status-card";
 
 interface Member {
   user_id: string;
@@ -18,13 +20,14 @@ interface Member {
 }
 
 export default async function HomePage() {
-  const [coupleInfo, randomSuggestion, dailyQuestionData, lessonData, learnStats, upcomingAnniversary] = await Promise.all([
+  const [coupleInfo, randomSuggestion, dailyQuestionData, lessonData, learnStats, upcomingAnniversary, partnerStatuses] = await Promise.all([
     getCurrentCouple(),
     getRandomSuggestionForHome(),
     getDailyQuestion(),
     getTodaysLesson(),
     getLearnStats(),
     getUpcomingAnniversary(),
+    getPartnerStatuses(),
   ]);
   const isPaired = Boolean(coupleInfo && coupleInfo.member_count >= 2);
 
@@ -74,6 +77,7 @@ export default async function HomePage() {
       ) : (
         <HomePairCard inviteCode={coupleInfo?.active_invite?.code} />
       )}
+      {isPaired && <PartnerStatusCard statusesForCouple={partnerStatuses} />}
 
       {isPaired && upcomingAnniversary && (
         <Card className="border-[#E5D8FF] bg-[#F5F0FF] p-4">

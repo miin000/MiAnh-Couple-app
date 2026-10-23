@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { VocabularyWord } from "../types";
-import { deleteVocabularyWordAdminAction, toggleVocabularyWordStatusAdminAction } from "../actions";
+import { deleteVocabularyWordAdminAction, toggleVocabularyWordStatusAdminAction, importVocabularyFileAdminAction } from "../actions";
 import { VocabModal } from "./vocab-modal";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -20,10 +20,19 @@ export function VocabularyManager({ initialWords }: VocabularyManagerProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [, startTransition] = useTransition();
   const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const importRef = useRef<HTMLInputElement>(null);
 
   const showNotify = (type: "success" | "error", message: string) => {
     setNotification({ type, message });
     setTimeout(() => setNotification(null), 3000);
+  };
+
+  const handleImport = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const result = await importVocabularyFileAdminAction(formData);
+    showNotify(result.success ? "success" : "error", result.message || "Đã xử lý file.");
+    if (result.success) window.location.reload();
   };
 
   const filteredWords = words.filter((w) => {
@@ -87,6 +96,18 @@ export function VocabularyManager({ initialWords }: VocabularyManagerProps) {
             className="w-full pl-9 pr-3 py-2 bg-white border border-[#F2EAE5] rounded-xl text-xs focus:border-[#1B9B68]"
           />
         </div>
+        <Button
+          variant="outline"
+          onClick={() => importRef.current?.click()}
+          className="rounded-xl text-xs font-bold gap-1.5 h-9 shrink-0"
+        >
+          Nhập CSV
+        </Button>
+        <input ref={importRef} type="file" accept=".csv,text/csv" className="hidden" onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) void handleImport(file);
+          e.currentTarget.value = "";
+        }} />
         <Button
           onClick={() => { setEditingWord(null); setIsModalOpen(true); }}
           className="rounded-xl bg-[#1B9B68] hover:bg-[#147951] text-white text-xs font-bold gap-1.5 h-9 shrink-0"

@@ -78,6 +78,12 @@ export function SpinResultCard({
           <h3 className="text-xl font-extrabold text-[#201A1D] mt-1">
             {item.title}
           </h3>
+          {typeof item.price_per_person === "number" && (
+            <p className="mt-2 text-xs font-semibold text-[#7C4DFF]">
+              Khoảng {item.price_per_person.toLocaleString("vi-VN")} ₫/người ·{" "}
+              {(item.price_per_person * 2).toLocaleString("vi-VN")} ₫ cho hai người
+            </p>
+          )}
           {item.description && (
             <p className="text-xs text-[#52464D] mt-2 leading-relaxed max-w-xs mx-auto">
               {item.description}
@@ -138,4 +144,3 @@ export function SpinResultCard({
     </div>
   );
 }
-

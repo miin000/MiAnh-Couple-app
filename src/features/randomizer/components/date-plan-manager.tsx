@@ -6,7 +6,7 @@ import { PlanCard } from "./plan-card";
 import { CreatePlanModal, EditPlanModal } from "./plan-modals";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Receipt, Sparkles } from "lucide-react";
+import { Plus, Receipt, Sparkles, Archive } from "lucide-react";
 
 interface DatePlanManagerProps {
   plans: DatePlan[];
@@ -23,6 +23,8 @@ export function DatePlanManager({
 }: DatePlanManagerProps) {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingPlan, setEditingPlan] = useState<DatePlan | null>(null);
+  const [showArchive, setShowArchive] = useState(false);
+  const activePlans = plans.filter((plan) => showArchive ? Boolean(plan.archived_at) : !plan.archived_at);
   const [expandedPlanId, setExpandedPlanId] = useState<string | null>(
     selectedPlanId || plans[0]?.id || null
   );
@@ -46,6 +48,9 @@ export function DatePlanManager({
         >
           <Plus className="w-4 h-4" /> Tạo kế hoạch
         </Button>
+        <Button variant="outline" size="sm" onClick={() => setShowArchive(!showArchive)} className="ml-2 rounded-2xl text-xs">
+          <Archive className="mr-1 h-4 w-4" /> {showArchive ? "Kế hoạch đang dùng" : "Kho lưu trữ"}
+        </Button>
       </div>
 
       {!isPaired && (
@@ -58,7 +63,7 @@ export function DatePlanManager({
       )}
 
       {/* Danh sách kế hoạch */}
-      {plans.length === 0 ? (
+      {activePlans.length === 0 ? (
         <Card className="p-8 text-center flex flex-col items-center justify-center bg-white border border-[#F2EAE5]">
           <div className="w-12 h-12 rounded-2xl bg-[#FFF2EB] text-[#E56A2E] flex items-center justify-center mb-3">
             <Receipt className="w-6 h-6" />
@@ -82,7 +87,7 @@ export function DatePlanManager({
         </Card>
       ) : (
         <div className="space-y-3">
-          {plans.map((plan) => (
+          {activePlans.map((plan) => (
             <PlanCard
               key={plan.id}
               plan={plan}
@@ -93,6 +98,7 @@ export function DatePlanManager({
                 if (nextId) onSelectPlan?.(nextId);
               }}
               onEdit={(p) => setEditingPlan(p)}
+              archived={showArchive}
             />
           ))}
         </div>
@@ -122,4 +128,3 @@ export function DatePlanManager({
     </div>
   );
 }
-

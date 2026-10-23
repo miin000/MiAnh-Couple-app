@@ -58,6 +58,7 @@ export async function saveRandomItemAdminAction(
       description: formData.get("description") || null,
       tip: formData.get("tip") || null,
       price_level: formData.get("price_level") ? Number(formData.get("price_level")) : null,
+      price_per_person: formData.get("price_per_person") ? Number(formData.get("price_per_person")) : null,
       image_url: formData.get("image_url") || null,
       map_url: formData.get("map_url") || null,
       is_active: formData.get("is_active") === "true",
@@ -264,6 +265,9 @@ export async function saveVocabularyWordAdminAction(
       topic: formData.get("topic") || "general",
       level: formData.get("level") || null,
       collocations: formData.get("collocations") || null,
+      phrase: formData.get("phrase") || null,
+      sentence_en: formData.get("sentence_en") || null,
+      sentence_vi: formData.get("sentence_vi") || null,
       is_active: formData.get("is_active") === "true",
     };
 
@@ -332,6 +336,60 @@ export async function saveVocabularyWordAdminAction(
   } catch (err) {
     console.error("saveVocabularyWordAdminAction error:", err);
     return { success: false, message: "Lỗi quyền truy cập hoặc xử lý." };
+  }
+}
+
+function parseCsvLine(line: string): string[] {
+  const values: string[] = [];
+  let value = "";
+  let quoted = false;
+  for (let index = 0; index < line.length; index += 1) {
+    const char = line[index];
+    if (char === '"' && line[index + 1] === '"') { value += '"'; index += 1; }
+    else if (char === '"') quoted = !quoted;
+    else if (char === "," && !quoted) { values.push(value.trim()); value = ""; }
+    else value += char;
+  }
+  values.push(value.trim());
+  return values;
+}
+
+export async function importVocabularyFileAdminAction(formData: FormData): Promise<ActionResult<{ count: number }>> {
+  try {
+    await requireAdmin();
+    const file = formData.get("file");
+    if (!(file instanceof File) || file.size === 0) return { success: false, message: "Vui lòng chọn file CSV." };
+    const rows = (await file.text()).replace(/^\uFEFF/, "").split(/\r?\n/).filter((line) => line.trim());
+    if (rows.length < 2) return { success: false, message: "File cần có dòng tiêu đề và ít nhất một từ." };
+    const headers = parseCsvLine(rows[0]).map((header) => header.toLowerCase());
+    const required = ["word", "meaning_vi", "part_of_speech", "level", "topic"];
+    const missing = required.find((header) => !headers.includes(header));
+    if (missing) return { success: false, message: `Thiếu cột bắt buộc: ${missing}` };
+    const values = rows.slice(1).map((row) => {
+      const cells = parseCsvLine(row);
+      const get = (key: string) => cells[headers.indexOf(key)]?.trim() || null;
+      return {
+        word: get("word"), meaning_vi: get("meaning_vi"), part_of_speech: get("part_of_speech") || "other",
+        level: get("level"), topic: get("topic") || "general", ipa: get("ipa"),
+        phrase: get("phrase"), sentence_en: get("sentence_en"), sentence_vi: get("sentence_vi"),
+        example_en: get("example_en"), example_vi: get("example_vi"), is_active: true,
+      };
+    }).filter((row) => row.word && row.meaning_vi);
+    const parsed = values.map((row) => adminVocabularyWordSchema.safeParse(row));
+    const invalid = parsed.find((item) => !item.success);
+    if (invalid && !invalid.success) return { success: false, message: invalid.error.issues[0]?.message || "Có dòng không hợp lệ." };
+    const adminClient = createAdminClient();
+    const { error } = await adminClient.from("vocabulary_words").insert(values);
+    if (error) {
+      console.error("Import vocabulary error:", error);
+      return { success: false, message: "Không thể nhập file từ vựng." };
+    }
+    revalidatePath("/admin");
+    revalidatePath("/learn");
+    return { success: true, message: `Đã nhập ${values.length} từ vựng.`, data: { count: values.length } };
+  } catch (err) {
+    console.error("importVocabularyFileAdminAction error:", err);
+    return { success: false, message: "Lỗi xử lý file từ vựng." };
   }
 }
 

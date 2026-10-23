@@ -4,6 +4,7 @@ import { BottomNav } from "@/components/layout/bottom-nav";
 import { getCurrentCouple } from "@/features/couple/queries";
 import { CoupleHeader } from "@/components/layout/couple-header";
 import { LocationSharingPrompt } from "@/features/map/components/location-sharing-prompt";
+import { PushNotificationRegister } from "@/components/push-notification-register";
 
 export default async function AppLayout({
 
@@ -47,6 +48,7 @@ export default async function AppLayout({
         </main>
         <BottomNav />
         <LocationSharingPrompt />
+        <PushNotificationRegister />
       </div>
     </div>
   );
