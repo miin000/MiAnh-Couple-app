@@ -74,11 +74,20 @@ self.addEventListener("push", (event) => {
     body: data.body,
     icon: "/icons/icon-192.png",
     badge: "/icons/icon-192.png",
-    data: data.data || {},
+    tag: data.tag || "mianh-notification",
+    data: { url: data.url || data.data?.url || "/home" },
   }));
 });
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  event.waitUntil(clients.openWindow("/home"));
+  const url = event.notification.data?.url || "/home";
+  event.waitUntil(clients.matchAll({ type: "window", includeUncontrolled: true }).then((windows) => {
+    const target = windows.find((client) => "focus" in client);
+    if (target) {
+      target.navigate(url);
+      return target.focus();
+    }
+    return clients.openWindow(url);
+  }));
 });

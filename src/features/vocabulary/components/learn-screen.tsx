@@ -14,7 +14,7 @@ import { LearnQuiz } from "./learn-quiz";
 import { LeitnerReview } from "./leitner-review";
 import { CoupleChallengeCard } from "./couple-challenge-card";
 import { LearnStatsCard } from "./learn-stats-card";
-import { recordWordReviewAction } from "../actions";
+import { completeLessonAction, recordWordReviewAction } from "../actions";
 import { Button } from "@/components/ui/button";
 import {
   BookOpen,
@@ -52,7 +52,7 @@ export function LearnScreen({
 }: LearnScreenProps) {
   const { lesson, words: initialWords, myProgress, partnerProgress } = initialData;
 
-  const [words, setWords] = useState<LessonWordItem[]>(initialWords);
+  const [words] = useState<LessonWordItem[]>(initialWords);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [activeTab, setActiveTab] = useState<"cards" | "quiz" | "review" | "challenge">("cards");
@@ -78,25 +78,6 @@ export function LearnScreen({
     const wordId = currentWord.id;
     const wordText = currentWord.word;
 
-    setWords((prev) =>
-      prev.map((w) =>
-        w.id === wordId
-          ? {
-              ...w,
-              user_progress: {
-                status: "learning",
-                box: isCorrect ? Math.min((w.user_progress?.box || 1) + 1, 5) : 1,
-                next_review_at: new Date(
-                  Date.now() + (isCorrect ? 2 : 1) * 86400000
-                ).toISOString(),
-                correct_count: (w.user_progress?.correct_count || 0) + (isCorrect ? 1 : 0),
-                wrong_count: (w.user_progress?.wrong_count || 0) + (isCorrect ? 0 : 1),
-              },
-            }
-          : w
-      )
-    );
-
     if (isCorrect) {
       showToast(`Tuyệt vời! Đã ghi nhớ: ${wordText}`);
     } else {
@@ -104,7 +85,10 @@ export function LearnScreen({
     }
 
     startTransition(async () => {
-      await recordWordReviewAction(wordId, isCorrect);
+      const reviewResult = await recordWordReviewAction(wordId, isCorrect);
+      if (reviewResult.success && currentIndex === words.length - 1) {
+        await completeLessonAction(lesson.id);
+      }
     });
 
     if (currentIndex < words.length - 1) {
@@ -318,4 +302,3 @@ export function LearnScreen({
     </div>
   );
 }
-

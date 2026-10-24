@@ -34,6 +34,9 @@ export interface AdminUser {
 export interface VocabularyWord {
   id: string;
   external_key: string | null;
+  entry_type: "word" | "phrase" | "collocation" | "idiom";
+  tags: string[];
+  note: string | null;
   word: string;
   ipa: string | null;
   part_of_speech: string;

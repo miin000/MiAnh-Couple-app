@@ -10,7 +10,7 @@ export type PartOfSpeech =
   | "phrase"
   | "other";
 
-export type WordProgressStatus = "new" | "learning" | "review" | "mastered";
+export type WordProgressStatus = "learning" | "review" | "mastered";
 
 export interface VocabularyCollocation {
   id: string;
@@ -22,6 +22,9 @@ export interface VocabularyCollocation {
 export interface VocabularyWord {
   id: string;
   external_key: string | null;
+  entry_type: "word" | "phrase" | "collocation" | "idiom";
+  tags: string[];
+  note: string | null;
   word: string;
   ipa: string | null;
   part_of_speech: PartOfSpeech;
@@ -59,6 +62,9 @@ export interface UserWordProgress {
 export interface LessonWordItem {
   id: string;
   external_key: string | null;
+  entry_type: "word" | "phrase" | "collocation" | "idiom";
+  tags: string[];
+  note: string | null;
   word: string;
   ipa: string | null;
   part_of_speech: PartOfSpeech;
@@ -223,4 +229,3 @@ export interface CoupleLearnStatsViewData {
   myStats: UserLearnStats;
   partnerStats: PartnerLearnStats | null;
 }
-

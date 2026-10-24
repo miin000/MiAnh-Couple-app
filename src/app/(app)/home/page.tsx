@@ -10,8 +10,8 @@ import { HomePairCard } from "@/features/couple/components/home-pair-card";
 import { Sparkles, MessageCircle, BookOpen, Compass, ArrowRight, MapPin, CheckCircle2, Clock, Trophy, Layers } from "lucide-react";
 import Link from "next/link";
 import { getDaysTogether } from "@/lib/utils";
-import { getPartnerStatuses } from "@/features/couple/status-actions";
-import { PartnerStatusCard } from "@/features/couple/components/partner-status-card";
+import { getCoupleStatuses, getStatusPresets } from "@/features/couple/status-queries";
+import { CoupleStatusBoard } from "@/features/couple/components/couple-status-board";
 
 interface Member {
   user_id: string;
@@ -20,14 +20,15 @@ interface Member {
 }
 
 export default async function HomePage() {
-  const [coupleInfo, randomSuggestion, dailyQuestionData, lessonData, learnStats, upcomingAnniversary, partnerStatuses] = await Promise.all([
+  const [coupleInfo, randomSuggestion, dailyQuestionData, lessonData, learnStats, upcomingAnniversary, statuses, statusPresets] = await Promise.all([
     getCurrentCouple(),
     getRandomSuggestionForHome(),
     getDailyQuestion(),
     getTodaysLesson(),
     getLearnStats(),
     getUpcomingAnniversary(),
-    getPartnerStatuses(),
+    getCoupleStatuses(),
+    getStatusPresets(),
   ]);
   const isPaired = Boolean(coupleInfo && coupleInfo.member_count >= 2);
 
@@ -51,34 +52,30 @@ export default async function HomePage() {
         title={`Chào ${coupleNames}`}
       />
 
-      {/* Hero Days Together Card (Only when fully paired) */}
       {isPaired ? (
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#7C4DFF] via-[#F45B69] to-[#FF758F] text-white p-6 shadow-[0_10px_25px_rgba(250,82,113,0.35)]">
-          <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10 blur-xl pointer-events-none" />
-          <div className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full bg-white/10 blur-lg pointer-events-none" />
-
-          <div className="relative z-10 flex flex-col items-center text-center py-2">
-            <p className="text-xs font-semibold uppercase tracking-wider text-white/80 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 fill-white/80" />
-              Ngày bên nhau
-            </p>
-            <div className="text-5xl font-extrabold tracking-tight my-2 font-mono">
-              {(daysTogether ?? 0).toLocaleString("vi-VN")}
-            </div>
-            <p className="text-xs text-white/90 font-medium">
-              Kể từ ngày {formattedStartDate}
-            </p>
-
-            <div className="mt-4 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-sm text-xs font-semibold">
-              <span>♥ Mỗi ngày đều đáng nhớ</span>
+        <div className="rounded-[2rem] border border-[#F2EAE5] bg-white p-2 shadow-[0_5px_18px_rgba(32,26,29,0.04)]">
+          <CoupleStatusBoard initialStatuses={statuses} presets={statusPresets} />
+          <div className="relative mt-3 overflow-hidden rounded-[1.7rem] bg-gradient-to-br from-[#7C4DFF] via-[#F45B69] to-[#FF758F] p-6 text-white shadow-[0_10px_25px_rgba(250,82,113,0.35)]">
+            <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-xl" />
+            <div className="pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-white/10 blur-lg" />
+            <div className="relative z-10 flex flex-col items-center py-2 text-center">
+              <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-white/80">
+                <Sparkles className="h-3.5 w-3.5 fill-white/80" />
+                Ngày bên nhau
+              </p>
+              <div className="my-2 font-mono text-5xl font-extrabold tracking-tight">
+                {(daysTogether ?? 0).toLocaleString("vi-VN")}
+              </div>
+              <p className="text-xs font-medium text-white/90">Kể từ ngày {formattedStartDate}</p>
+              <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3.5 py-1.5 text-xs font-semibold backdrop-blur-sm">
+                <span>♥ Mỗi ngày đều đáng nhớ</span>
+              </div>
             </div>
           </div>
         </div>
       ) : (
         <HomePairCard inviteCode={coupleInfo?.active_invite?.code} />
       )}
-      {isPaired && <PartnerStatusCard statusesForCouple={partnerStatuses} />}
-
       {isPaired && upcomingAnniversary && (
         <Card className="border-[#E5D8FF] bg-[#F5F0FF] p-4">
           <p className="text-[11px] font-bold uppercase tracking-wider text-[#6840B8]">

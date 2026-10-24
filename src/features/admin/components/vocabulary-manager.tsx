@@ -6,7 +6,7 @@ import { deleteVocabularyWordAdminAction, toggleVocabularyWordStatusAdminAction,
 import { VocabModal } from "./vocab-modal";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { BookOpen, Plus, Search, Filter, Edit2, Trash2, Eye, EyeOff, CheckCircle2, AlertCircle } from "lucide-react";
+import { BookOpen, Plus, Search, Filter, Edit2, Trash2, Eye, EyeOff, CheckCircle2, AlertCircle, Download } from "lucide-react";
 
 interface VocabularyManagerProps {
   initialWords: VocabularyWord[];
@@ -18,6 +18,7 @@ export function VocabularyManager({ initialWords }: VocabularyManagerProps) {
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
   const [editingWord, setEditingWord] = useState<VocabularyWord | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
   const [, startTransition] = useTransition();
   const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null);
   const importRef = useRef<HTMLInputElement>(null);
@@ -28,11 +29,18 @@ export function VocabularyManager({ initialWords }: VocabularyManagerProps) {
   };
 
   const handleImport = async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    const result = await importVocabularyFileAdminAction(formData);
-    showNotify(result.success ? "success" : "error", result.message || "Đã xử lý file.");
-    if (result.success) window.location.reload();
+    setIsImporting(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const result = await importVocabularyFileAdminAction(formData);
+      showNotify(result.success ? "success" : "error", result.message || "Đã xử lý file.");
+      if (result.success) window.location.reload();
+    } catch {
+      showNotify("error", "Không thể nhập file. Vui lòng thử lại.");
+    } finally {
+      setIsImporting(false);
+    }
   };
 
   const filteredWords = words.filter((w) => {
@@ -99,11 +107,20 @@ export function VocabularyManager({ initialWords }: VocabularyManagerProps) {
         <Button
           variant="outline"
           onClick={() => importRef.current?.click()}
+          disabled={isImporting}
           className="rounded-xl text-xs font-bold gap-1.5 h-9 shrink-0"
         >
-          Nhập CSV
+          {isImporting ? "Đang kiểm tra và nhập…" : "Nhập CSV/XLSX"}
         </Button>
-        <input ref={importRef} type="file" accept=".csv,text/csv" className="hidden" onChange={(e) => {
+        <a
+          href="/templates/mau-nhap-tu-vung.xlsx"
+          download
+          className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-xl border border-[#F2EAE5] bg-white px-3 text-xs font-bold text-[#1B9B68] hover:bg-emerald-50"
+        >
+          <Download className="h-4 w-4" />
+          Tải file mẫu
+        </a>
+        <input ref={importRef} type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" className="hidden" onChange={(e) => {
           const file = e.target.files?.[0];
           if (file) void handleImport(file);
           e.currentTarget.value = "";

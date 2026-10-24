@@ -71,6 +71,9 @@ export function LeitnerReview({
     ? {
         id: currentItem.word.id,
         external_key: currentItem.word.external_key,
+        entry_type: currentItem.word.entry_type,
+        tags: currentItem.word.tags,
+        note: currentItem.word.note,
         word: currentItem.word.word,
         ipa: currentItem.word.ipa,
         part_of_speech: currentItem.word.part_of_speech,
@@ -95,6 +98,9 @@ export function LeitnerReview({
   const dueAsLessonItems: LessonWordItem[] = dueList.map((item, i) => ({
     id: item.word.id,
     external_key: item.word.external_key,
+    entry_type: item.word.entry_type,
+    tags: item.word.tags,
+    note: item.word.note,
     word: item.word.word,
     ipa: item.word.ipa,
     part_of_speech: item.word.part_of_speech,
@@ -268,4 +274,3 @@ export function LeitnerReview({
     </div>
   );
 }
-

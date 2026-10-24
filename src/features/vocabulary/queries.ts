@@ -12,19 +12,7 @@ export async function getTodaysLesson(): Promise<DailyLessonViewData | null> {
     return null;
   }
 
-  // 1. Get or create today's lesson via RPC
-  let { data: lesson, error: lessonError } = await supabase.rpc(
-    "get_or_create_todays_lesson"
-  );
-
-  // Fallback to get_todays_lesson if get_or_create_todays_lesson is not yet migrated
-  if (lessonError || !lesson) {
-    const fallback = await supabase.rpc("get_todays_lesson");
-    if (fallback.data) {
-      lesson = fallback.data;
-      lessonError = null;
-    }
-  }
+  const { data: lesson, error: lessonError } = await supabase.rpc("get_or_create_todays_lesson");
 
   if (lessonError || !lesson) {
     return null;
@@ -39,6 +27,9 @@ export async function getTodaysLesson(): Promise<DailyLessonViewData | null> {
       vocabulary_words (
         id,
         external_key,
+        entry_type,
+        tags,
+        note,
         word,
         ipa,
         part_of_speech,
@@ -81,7 +72,7 @@ export async function getTodaysLesson(): Promise<DailyLessonViewData | null> {
     .in("word_id", wordIds);
 
   const progressByWord = new Map<string, {
-    status: "new" | "learning" | "review" | "mastered";
+    status: "learning" | "review" | "mastered";
     box: number;
     next_review_at: string | null;
     correct_count: number;
@@ -105,6 +96,9 @@ export async function getTodaysLesson(): Promise<DailyLessonViewData | null> {
     return {
       id: w.id,
       external_key: w.external_key,
+      entry_type: w.entry_type,
+      tags: w.tags ?? [],
+      note: w.note ?? null,
       word: w.word,
       ipa: w.ipa,
       part_of_speech: w.part_of_speech,
@@ -199,45 +193,23 @@ export async function getDueReviewWords(): Promise<import("@/types/learn").DueRe
 
   if (!user) return [];
 
-  const nowIso = new Date().toISOString();
-
-  const { data, error } = await supabase
-    .from("user_word_progress")
-    .select(`
-      user_id,
-      word_id,
-      status,
-      box,
-      next_review_at,
-      correct_count,
-      wrong_count,
-      vocabulary_words (
-        id,
-        external_key,
-        word,
-        ipa,
-        part_of_speech,
-        meaning_vi,
-        example_en,
-        example_vi,
-        topic,
-        level,
-        is_active,
-        created_at,
-        updated_at
-      )
-    `)
-    .eq("user_id", user.id)
-    .lte("next_review_at", nowIso)
-    .order("next_review_at", { ascending: true });
+  const { data, error } = await supabase.rpc("get_review_queue");
 
   if (error || !data) {
     console.error("Error fetching due review words:", error);
     return [];
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return data.map((item: any) => ({
+  return (data || []).map((item: {
+    user_id: string;
+    word_id: string;
+    status: "learning" | "review" | "mastered";
+    box: number;
+    next_review_at: string;
+    correct_count: number;
+    wrong_count: number;
+    word: import("@/types/learn").VocabularyWord;
+  }) => ({
     user_id: item.user_id,
     word_id: item.word_id,
     status: item.status,
@@ -245,7 +217,7 @@ export async function getDueReviewWords(): Promise<import("@/types/learn").DueRe
     next_review_at: item.next_review_at,
     correct_count: item.correct_count,
     wrong_count: item.wrong_count,
-    word: item.vocabulary_words,
+    word: item.word,
   }));
 }
 
@@ -534,5 +506,3 @@ export async function getLearnStats(): Promise<import("@/types/learn").CoupleLea
     partnerStats,
   };
 }
-
-

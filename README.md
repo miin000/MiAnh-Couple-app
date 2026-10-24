@@ -58,14 +58,41 @@ set is_admin = true
 where id = 'UUID_CUA_TAI_KHOAN';
 ```
 
+### Phase 4B — Học từ vựng, review và quiz
+
+Migration `20261024000026_learn_phase4b_admin_phase7b.sql` là nguồn sự thật
+cho tiến độ học. Client chỉ gọi RPC; không tự tính box, trạng thái, số lần
+đúng/sai hoặc ngày ôn tiếp theo. Leitner dùng khoảng cách theo box cũ:
+`1, 2, 4, 7, 14, 30` ngày; trả lời sai luôn về box 1 và ôn sau 1 ngày.
+Progress của hai người độc lập. `lesson_completions` lưu việc hoàn thành bài
+riêng từng người; partner chỉ nhận trạng thái hoàn thành và số liệu tổng hợp,
+không nhận tiến độ từng từ. Review queue chỉ lấy từ active, sắp xếp quá hạn
+lâu nhất trước và tối đa 20 từ. Cumulative test chỉ có sau khi đã hoàn thành
+bài trong 7 ngày; không có streak, điểm tổng, huy hiệu, AI hoặc chấm phát âm.
+
+### Phase 7B — Nhập và quản lý nội dung từ vựng
+
+Admin có thể nhập CSV hoặc XLSX theo các cột `external_key`, `word`,
+`entry_type`, `meaning_vi`, `part_of_speech`, `level`, `topic`, `ipa`,
+`example_en`, `example_vi`, `tags`, `note`, `collocations`. Luồng nhập tạo
+batch staging, chia chunk tối đa 2.000 dòng, kiểm tra toàn bộ rồi mới commit
+atomic. Có lỗi ở bất kỳ dòng nào thì không ghi vào `vocabulary_words`.
+Upsert ưu tiên `external_key`, sau đó dùng `natural_key` là
+`normalized(word):entry_type`; collocation dùng unique `(word_id, phrase)` nên
+không bị nhân đôi. CSV UTF-8 được hỗ trợ; CSV từ Excel lưu bằng mã Windows
+tiếng Việt cũng được giải mã. File có dấu tiếng Việt đã bị thay bằng `?` sẽ
+bị từ chối để tránh lưu nghĩa bị hỏng. Các RPC import và tự động xếp bài chỉ
+được gọi bởi admin. Migration `20261025000029_fix_vocabulary_import_ipa.sql`
+giữ lại trường IPA khi nhập hoặc cập nhật từ file.
+
 ### Phase 6B — Bản đồ và chia sẻ vị trí
 
 Migration `20261018000016_location_sharing.sql` và
 `20261019000018_location_sharing_permanent.sql` tạo bảng private và các RPC
 `start_location_sharing`, `stop_location_sharing`, `update_my_location`,
-`get_partner_location`, `get_my_sharing_status`. Bản cập nhật mới cho phép
-chia sẻ vô thời hạn: khi bật, vị trí được chia sẻ cho đến khi chính người dùng
-bấm **Tắt** trong Cài đặt. Chỉ chạy migration sau các
+`get_partner_location`, `get_my_sharing_status`. Chia sẻ luôn mặc định tắt và
+bắt buộc chọn thời hạn từ 1 đến 8 giờ; hết hạn thì người kia không còn thấy.
+Không có chia sẻ vô thời hạn, theo dõi nền hoặc lịch sử vị trí. Chỉ chạy migration sau các
 migration nền tảng hiện có. Tab Bản đồ dùng Leaflet + OpenStreetMap, không cần
 API key; tile công cộng không bị service worker cache. Header
 `Permissions-Policy` cho phép geolocation trên chính website. Lần đầu vào app,
@@ -74,8 +101,7 @@ trong Cài đặt. Vị trí chỉ được gửi khi người dùng đã đồn
 tab trình duyệt còn hiển thị.
 
 Production có thể giữ job `purge_expired_locations()` mỗi 5 phút bằng pg_cron
-để dọn các bản ghi thời hạn cũ trong migration trước; chia sẻ vô thời hạn mới
-không bị job này tắt:
+để dọn các bản ghi đã hết hạn:
 
 ```sql
 select cron.schedule(
@@ -94,6 +120,32 @@ service-role key vào trình duyệt.
 ---
 
 ## 🚀 Hướng dẫn chạy Local
+
+### Phase 9 — Thông báo và note
+
+Migration `20261024000027_phase9_status_push.sql` thêm note có hạn dùng,
+RPC `get_couple_statuses`, hộp thư, cài đặt thông báo và đăng ký Web Push.
+Tạo khóa VAPID bằng `npx web-push generate-vapid-keys`, đặt
+`NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` và một
+`DISPATCH_NOTIFICATIONS_SECRET` chỉ ở Supabase Edge Function. Worker
+`supabase/functions/dispatch-notifications` yêu cầu header bí mật này; không
+đưa service-role key vào client. pg_cron có thể gọi worker theo lịch của
+project sau khi cấu hình secret.
+
+Service worker không cache dữ liệu Supabase, note, hộp thư, khoản chi hoặc vị
+trí. Trên iPhone, nút bật chỉ hoạt động sau khi PWA được thêm vào màn hình
+chính. Cần kiểm thử push trên Android Chrome PWA và iPhone thật (iOS 16.4+);
+chưa có thiết bị thật trong môi trường phát triển này nên chưa ghi nhận kết
+quả thiết bị.
+
+Màn quản trị từ vựng có nút **Tải file mẫu** tại
+`/templates/mau-nhap-tu-vung.xlsx`. File gồm sheet `vocabulary` với các cột
+đúng chuẩn import và sheet `huong_dan`; nội dung mẫu dùng Unicode tiếng Việt,
+xóa hai dòng demo trước khi nhập. File nhập tối đa 10 MB và 10.000 dòng.
+Migration `20261025000028_notifications_learning.sql` tạo nhắc học hàng ngày
+qua pg_cron, chống lặp theo ngày và không gửi nhắc bài đã hoàn thành. Note
+chỉ tạo thông báo cho người ấy khi người ấy bật loại thông báo tương ứng và
+giới hạn một thông báo trong 5 phút.
 
 ### 1. Cài đặt phụ thuộc
 ```bash
@@ -133,6 +185,8 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key # Chỉ dùng server, không l�
    - `20261014000011_play_questions_seed_and_trigger.sql` (Phase 3: nạp ≥72 câu hỏi Daily, ≥42 câu Truth, ≥42 câu Dare và trigger hoàn thành phiên)
    - `20261014000012_learn_content_seed_and_daily_lesson.sql` (Phase 4: nạp 60 từ vựng 6 chủ đề, cơ chế chọn bài học hôm nay & fallback, thống kê tiến độ đôi)
    - `20261015000013_learn_phase5_enhancements.sql` (Phase 5: RPC nộp thử thách đôi mutual-reveal, RPC thống kê học tập đôi và Leitner sync)
+   - `20261024000026_learn_phase4b_admin_phase7b.sql` (Phase 4B/7B: progress RPC, Leitner, lesson completion, staging import CSV/XLSX và lịch bài)
+   - `20261025000029_fix_vocabulary_import_ipa.sql` (Giữ IPA khi nhập hoặc cập nhật từ vựng qua batch import)
 3. Chạy file `supabase/seed.sql` để nạp nội dung mẫu (các câu hỏi, từ vựng, gợi ý hẹn hò).
 > **Lưu ý:** Các file trong thư mục `supabase/tests/` (`00_supabase_stub.sql`, `rls_smoke_test.sql`) chỉ dùng để test môi trường CI/Postgres độc lập, không chạy lên Supabase Cloud.
 

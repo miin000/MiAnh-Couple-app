@@ -15,6 +15,7 @@ import { User, Calendar, KeyRound, LogOut, Save, Copy, Check, RefreshCw, ShieldC
 import Link from "next/link";
 import { PwaInstallGuide } from "@/components/pwa-install-guide";
 import { LocationPrivacyCard } from "@/features/map/components/location-privacy-card";
+import { NotificationSettings } from "@/components/notification-settings";
 import { createClient } from "@/lib/supabase/client";
 import Cropper, { type Area, type Point } from "react-easy-crop";
 
@@ -403,6 +404,7 @@ export function SettingsView({
       )}
 
       <PwaInstallGuide />
+      <NotificationSettings />
       <LocationPrivacyCard />
 
       <div className="pt-2">

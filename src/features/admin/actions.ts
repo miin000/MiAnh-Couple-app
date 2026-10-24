@@ -11,6 +11,7 @@ import {
 } from "./validations";
 import { PriceLevelConfig } from "@/types/discover";
 import { DEFAULT_PRICE_LEVEL_CONFIGS } from "@/features/randomizer/components/discover-helpers";
+import * as XLSX from "xlsx";
 
 
 export interface ActionResult<T = unknown> {
@@ -339,54 +340,128 @@ export async function saveVocabularyWordAdminAction(
   }
 }
 
-function parseCsvLine(line: string): string[] {
-  const values: string[] = [];
-  let value = "";
-  let quoted = false;
-  for (let index = 0; index < line.length; index += 1) {
-    const char = line[index];
-    if (char === '"' && line[index + 1] === '"') { value += '"'; index += 1; }
-    else if (char === '"') quoted = !quoted;
-    else if (char === "," && !quoted) { values.push(value.trim()); value = ""; }
-    else value += char;
-  }
-  values.push(value.trim());
-  return values;
-}
-
 export async function importVocabularyFileAdminAction(formData: FormData): Promise<ActionResult<{ count: number }>> {
   try {
     await requireAdmin();
     const file = formData.get("file");
-    if (!(file instanceof File) || file.size === 0) return { success: false, message: "Vui lòng chọn file CSV." };
-    const rows = (await file.text()).replace(/^\uFEFF/, "").split(/\r?\n/).filter((line) => line.trim());
-    if (rows.length < 2) return { success: false, message: "File cần có dòng tiêu đề và ít nhất một từ." };
-    const headers = parseCsvLine(rows[0]).map((header) => header.toLowerCase());
-    const required = ["word", "meaning_vi", "part_of_speech", "level", "topic"];
-    const missing = required.find((header) => !headers.includes(header));
-    if (missing) return { success: false, message: `Thiếu cột bắt buộc: ${missing}` };
-    const values = rows.slice(1).map((row) => {
-      const cells = parseCsvLine(row);
-      const get = (key: string) => cells[headers.indexOf(key)]?.trim() || null;
-      return {
-        word: get("word"), meaning_vi: get("meaning_vi"), part_of_speech: get("part_of_speech") || "other",
-        level: get("level"), topic: get("topic") || "general", ipa: get("ipa"),
-        phrase: get("phrase"), sentence_en: get("sentence_en"), sentence_vi: get("sentence_vi"),
-        example_en: get("example_en"), example_vi: get("example_vi"), is_active: true,
-      };
-    }).filter((row) => row.word && row.meaning_vi);
-    const parsed = values.map((row) => adminVocabularyWordSchema.safeParse(row));
-    const invalid = parsed.find((item) => !item.success);
-    if (invalid && !invalid.success) return { success: false, message: invalid.error.issues[0]?.message || "Có dòng không hợp lệ." };
-    const adminClient = createAdminClient();
-    const { error } = await adminClient.from("vocabulary_words").insert(values);
-    if (error) {
-      console.error("Import vocabulary error:", error);
-      return { success: false, message: "Không thể nhập file từ vựng." };
+    if (!(file instanceof File) || file.size === 0) return { success: false, message: "Vui lòng chọn file CSV hoặc XLSX." };
+    if (file.size > 10 * 1024 * 1024) return { success: false, message: "File không được vượt quá 10 MB." };
+    const extension = file.name.toLowerCase().split(".").pop();
+    if (extension !== "csv" && extension !== "xlsx") {
+      return { success: false, message: "Chỉ hỗ trợ file CSV hoặc XLSX." };
     }
+
+    const buffer = Buffer.from(await file.arrayBuffer());
+    let workbook: XLSX.WorkBook;
+    if (extension === "csv") {
+      let csvText: string;
+      try {
+        csvText = new TextDecoder("utf-8", { fatal: true }).decode(buffer);
+      } catch {
+        // Excel on Windows may save CSV using the Vietnamese Windows code page.
+        csvText = new TextDecoder("windows-1258").decode(buffer);
+      }
+      workbook = XLSX.read(csvText.replace(/^\uFEFF/, ""), { type: "string" });
+    } else {
+      workbook = XLSX.read(buffer, { type: "buffer" });
+    }
+    const firstSheet = workbook.SheetNames[0];
+    if (!firstSheet) return { success: false, message: "File không có trang tính để nhập." };
+    const sheet = workbook.Sheets[firstSheet];
+    if (!sheet) return { success: false, message: "Không đọc được trang tính đầu tiên trong file." };
+    const rawRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: null });
+    if (rawRows.length === 0) return { success: false, message: "File cần có dòng tiêu đề và ít nhất một từ." };
+    if (rawRows.length > 10000) return { success: false, message: "Mỗi file chỉ được nhập tối đa 10.000 dòng." };
+    const values = rawRows.map((raw, index) => {
+      const normalized = new Map(Object.entries(raw).map(([key, value]) => [key.replace(/^\uFEFF/, "").trim().toLowerCase(), value]));
+      const get = (key: string) => {
+        const value = normalized.get(key);
+        return value === null || value === undefined ? null : String(value).normalize("NFC").trim() || null;
+      };
+      return {
+        row_number: index + 2,
+        external_key: get("external_key"),
+        word: get("word"),
+        entry_type: get("entry_type") || "word",
+        meaning_vi: get("meaning_vi"),
+        part_of_speech: get("part_of_speech") || "other",
+        level: get("level"),
+        topic: get("topic") || "general",
+        ipa: get("ipa"),
+        example_en: get("example_en"),
+        example_vi: get("example_vi"),
+        note: get("note"),
+        tags: (get("tags") || "").split(/[|,]/).map((tag) => tag.trim()).filter(Boolean),
+        collocations: (get("collocations") || "").split(/[|,]/).map((phrase) => phrase.trim()).filter(Boolean),
+        is_active: true,
+      };
+    });
+    const invalidRows: string[] = [];
+    const validEntryTypes = new Set(["word", "phrase", "collocation", "idiom"]);
+    const validPartsOfSpeech = new Set(["noun", "verb", "adjective", "adverb", "preposition", "conjunction", "pronoun", "interjection", "phrase", "other"]);
+    for (const row of values) {
+      const invalidFields: string[] = [];
+      if (!row.word) invalidFields.push("word");
+      if (!row.meaning_vi) invalidFields.push("meaning_vi");
+      if (!validEntryTypes.has(row.entry_type)) invalidFields.push("entry_type");
+      if (!validPartsOfSpeech.has(row.part_of_speech)) invalidFields.push("part_of_speech");
+      if (row.level && !["A1", "A2", "B1", "B2", "C1", "C2"].includes(row.level.toUpperCase())) invalidFields.push("level");
+      const parsedWord = adminVocabularyWordSchema.safeParse({
+        word: row.word,
+        ipa: row.ipa,
+        part_of_speech: row.part_of_speech,
+        meaning_vi: row.meaning_vi,
+        example_en: row.example_en,
+        example_vi: row.example_vi,
+        topic: row.topic,
+        level: row.level?.toUpperCase() || null,
+        collocations: row.collocations.join("|"),
+        is_active: true,
+      });
+      if (!parsedWord.success) {
+        const schemaFields = [...new Set(parsedWord.error.issues.map((issue) => String(issue.path[0] || "dữ liệu")))];
+        invalidFields.push(...schemaFields.filter((field) => !invalidFields.includes(field)));
+      }
+      const vietnameseText = [row.meaning_vi, row.example_vi, row.note].filter(Boolean).join(" ");
+      if (/[\p{L}]\?[\p{L}]/u.test(vietnameseText)) {
+        return {
+          success: false,
+          message: `Dòng ${row.row_number} có dấu tiếng Việt bị thay bằng "?". Hãy dùng file mẫu mới hoặc lưu CSV với mã hóa UTF-8 rồi nhập lại.`,
+        };
+      }
+      if (invalidFields.length) invalidRows.push(`Dòng ${row.row_number}: ${invalidFields.join(", ")}`);
+    }
+    if (invalidRows.length) {
+      return { success: false, message: `File có dữ liệu chưa hợp lệ (${invalidRows.slice(0, 4).join("; ")}${invalidRows.length > 4 ? "; …" : ""}). Chưa có dữ liệu nào được ghi.` };
+    }
+
+    const supabase = await createClient();
+    const { data: batchId, error: startError } = await supabase.rpc("start_vocab_import", {
+      p_file_name: file.name.normalize("NFC"),
+      p_row_count: values.length,
+    });
+    if (startError || !batchId) throw startError || new Error("Không tạo được batch import.");
+    for (let index = 0; index < values.length; index += 2000) {
+      const { error } = await supabase.rpc("stage_vocab_import_rows", {
+        p_batch_id: batchId,
+        p_rows: values.slice(index, index + 2000),
+      });
+      if (error) throw error;
+    }
+    const { data: errorCount, error: validationError } = await supabase.rpc("validate_vocab_import", {
+      p_batch_id: batchId,
+    });
+    if (validationError) throw validationError;
+    if (errorCount && errorCount > 0) {
+      return { success: false, message: `Dry-run phát hiện ${errorCount} dòng lỗi; chưa ghi dữ liệu.` };
+    }
+    const { data: count, error: commitError } = await supabase.rpc("commit_vocabulary_import", {
+      p_batch_id: batchId,
+    });
+    if (commitError) throw commitError;
     revalidatePath("/admin");
     revalidatePath("/learn");
-    return { success: true, message: `Đã nhập ${values.length} từ vựng.`, data: { count: values.length } };
+    return { success: true, message: `Đã kiểm tra và nhập ${count ?? values.length} từ vựng.`, data: { count: count ?? values.length } };
   } catch (err) {
     console.error("importVocabularyFileAdminAction error:", err);
     return { success: false, message: "Lỗi xử lý file từ vựng." };

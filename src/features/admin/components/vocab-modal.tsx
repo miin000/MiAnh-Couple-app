@@ -68,6 +68,9 @@ export function VocabModal({ wordItem, onClose, onSuccess }: VocabModalProps) {
       const saved: VocabularyWord = {
         id: wordItem?.id || "temp-" + Date.now(),
         external_key: wordItem?.external_key || null,
+        entry_type: wordItem?.entry_type || "word",
+        tags: wordItem?.tags || [],
+        note: wordItem?.note || null,
         word: word.trim(),
         ipa: ipa.trim() || null,
         part_of_speech: partOfSpeech,

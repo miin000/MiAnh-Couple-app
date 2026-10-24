@@ -40,9 +40,30 @@ export async function recordWordReviewAction(
   }
 }
 
+export async function completeLessonAction(
+  lessonId: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: "Vui lòng đăng nhập để hoàn thành bài học" };
+    const { error } = await supabase.rpc("complete_lesson", { p_lesson_id: lessonId });
+    if (error) {
+      console.error("Error completing lesson:", error);
+      return { success: false, error: error.message };
+    }
+    revalidatePath("/learn");
+    revalidatePath("/home");
+    return { success: true };
+  } catch (err: unknown) {
+    console.error("Unexpected error in completeLessonAction:", err);
+    return { success: false, error: err instanceof Error ? err.message : "Không thể hoàn thành bài học" };
+  }
+}
+
 export async function submitQuizAction(payload: {
   lessonId: string | null;
-  kind: "lesson" | "review";
+  kind: "lesson" | "review" | "cumulative";
   answers: Array<{
     word_id: string;
     question_type: "choose_meaning" | "choose_word" | "fill_blank";
@@ -111,37 +132,14 @@ export async function submitChallengeAction(
       return { success: false, error: "Nội dung không được vượt quá 2000 ký tự" };
     }
 
-    // 1. Thử qua RPC submit_challenge nếu có
     const { error: rpcErr } = await supabase.rpc("submit_challenge", {
       p_challenge_id: challengeId,
       p_content: trimmed,
     });
 
     if (rpcErr) {
-      // 2. Fallback ghi trực tiếp qua RLS (bảng learning_challenge_submissions cho phép insert)
-      const { data: challengeRow } = await supabase
-        .from("couple_learning_challenges")
-        .select("couple_id")
-        .eq("id", challengeId)
-        .single();
-
-      if (!challengeRow) {
-        return { success: false, error: "Không tìm thấy thử thách hôm nay" };
-      }
-
-      const { error: insertErr } = await supabase
-        .from("learning_challenge_submissions")
-        .insert({
-          challenge_id: challengeId,
-          couple_id: challengeRow.couple_id,
-          user_id: user.id,
-          content: trimmed,
-        });
-
-      if (insertErr) {
-        console.error("Error inserting challenge submission:", insertErr);
-        return { success: false, error: insertErr.message };
-      }
+      console.error("Error submitting challenge:", rpcErr);
+      return { success: false, error: rpcErr.message };
     }
 
     revalidatePath("/learn");
@@ -155,4 +153,3 @@ export async function submitChallengeAction(
     };
   }
 }
-

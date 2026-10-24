@@ -19,7 +19,7 @@ interface LearnQuizProps {
   lessonId: string | null;
   words: LessonWordItem[];
   allWords?: LessonWordItem[];
-  kind?: "lesson" | "review";
+  kind?: "lesson" | "review" | "cumulative";
   onFinish?: () => void;
 }
 
@@ -395,4 +395,3 @@ export function LearnQuiz({
     </div>
   );
 }
-
