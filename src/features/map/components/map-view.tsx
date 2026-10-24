@@ -1,11 +1,12 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import { MapPin, Navigation, RefreshCw } from "lucide-react";
+import { LOCATION_UPDATED_EVENT, type LocationUpdatedEventDetail } from "../location-sharing-events";
 
 const MapCanvas = dynamic(() => import("./map-canvas").then((module) => module.MapCanvas), { ssr: false, loading: () => <div className="h-[440px] animate-pulse rounded-3xl bg-[#E8EEE8]" /> });
 
@@ -41,11 +42,8 @@ export function MapView({ coupleId, ownName, ownAvatarUrl }: MapViewProps) {
   const [partner, setPartner] = useState<LocationRow | null>(null);
   const [own, setOwn] = useState<{ lat: number; lng: number; accuracy_m: number | null } | null>(null);
   const [ownUpdatedAt, setOwnUpdatedAt] = useState<string | null>(null);
-  const [sharingUntil, setSharingUntil] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [clock, setClock] = useState(0);
-  const lastSent = useRef<{ lat: number; lng: number; at: number } | null>(null);
-  const watchId = useRef<number | null>(null);
 
   const locateOwn = useCallback(() => {
     if (!navigator.geolocation) {
@@ -69,12 +67,7 @@ export function MapView({ coupleId, ownName, ownAvatarUrl }: MapViewProps) {
   }, []);
 
   const loadLocations = useCallback(async () => {
-    const [{ data: status }, { data: partnerRow, error }] = await Promise.all([
-      supabase.rpc("get_my_sharing_status"),
-      supabase.rpc("get_partner_location"),
-    ]);
-    const currentStatus = status?.[0] as { is_sharing?: boolean } | undefined;
-    setSharingUntil(currentStatus?.is_sharing ? "permanent" : null);
+    const { data: partnerRow, error } = await supabase.rpc("get_partner_location");
     if (error) setMessage("Không thể tải vị trí người ấy. Bạn hãy thử lại.");
     else setPartner((partnerRow?.[0] as LocationRow | undefined) || null);
   }, [supabase]);
@@ -95,48 +88,15 @@ export function MapView({ coupleId, ownName, ownAvatarUrl }: MapViewProps) {
     return () => window.clearInterval(interval);
   }, []);
 
-  const sendPosition = useCallback((position: GeolocationPosition) => {
-    const next = { lat: position.coords.latitude, lng: position.coords.longitude, accuracy_m: position.coords.accuracy };
-    const previous = lastSent.current;
-    const moved = previous ? Math.hypot((next.lat - previous.lat) * 111000, (next.lng - previous.lng) * 111000) : Infinity;
-    if (!previous || moved > 30 || Date.now() - previous.at > 60000) {
-      lastSent.current = { lat: next.lat, lng: next.lng, at: Date.now() };
-      setOwn(next);
-      setOwnUpdatedAt(new Date().toISOString());
-      void supabase.rpc("update_my_location", { p_lat: next.lat, p_lng: next.lng, p_accuracy: next.accuracy_m }).then(({ error }) => {
-        if (error) setMessage("Không thể cập nhật vị trí. Bạn hãy kiểm tra kết nối.");
-      });
-    } else {
-      setOwn(next);
-      setOwnUpdatedAt(new Date().toISOString());
-    }
-  }, [supabase]);
-
   useEffect(() => {
-    if (!sharingUntil) {
-      if (watchId.current !== null) navigator.geolocation?.clearWatch(watchId.current);
-      watchId.current = null;
-      return;
-    }
-    if (!navigator.geolocation) {
-      window.setTimeout(() => setMessage("Trình duyệt không hỗ trợ định vị."), 0);
-      return;
-    }
-    const startWatch = () => {
-      watchId.current = navigator.geolocation.watchPosition(sendPosition, (error) => {
-        setMessage(error.code === error.PERMISSION_DENIED ? "Bạn đã từ chối quyền định vị. Hãy bật lại quyền trong cài đặt trình duyệt." : "Không lấy được vị trí. Hãy thử lại khi GPS ổn định hơn.");
-      }, { enableHighAccuracy: false, maximumAge: 15000, timeout: 15000 });
+    const onLocationUpdated = (event: Event) => {
+      const detail = (event as CustomEvent<LocationUpdatedEventDetail>).detail;
+      setOwn({ lat: detail.lat, lng: detail.lng, accuracy_m: detail.accuracy_m });
+      setOwnUpdatedAt(detail.updated_at);
     };
-    startWatch();
-    const onVisible = () => {
-      if (document.visibilityState === "visible") navigator.geolocation.getCurrentPosition(sendPosition, () => undefined, { enableHighAccuracy: false, maximumAge: 15000 });
-    };
-    document.addEventListener("visibilitychange", onVisible);
-    return () => {
-      if (watchId.current !== null) navigator.geolocation.clearWatch(watchId.current);
-      document.removeEventListener("visibilitychange", onVisible);
-    };
-  }, [sendPosition, sharingUntil]);
+    window.addEventListener(LOCATION_UPDATED_EVENT, onLocationUpdated);
+    return () => window.removeEventListener(LOCATION_UPDATED_EVENT, onLocationUpdated);
+  }, []);
 
   const secondsOld = partner ? partner.seconds_since_update + clock * 30 : 0;
   const distance = distanceKm(partner, own);

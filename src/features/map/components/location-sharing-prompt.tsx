@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import { ShieldCheck } from "lucide-react";
+import { notifyLocationSharingChanged } from "../location-sharing-events";
 
 const PROMPT_KEY = "mianh-location-sharing-prompted";
 
@@ -40,6 +41,7 @@ export function LocationSharingPrompt() {
         setPending(false);
         return;
       }
+      notifyLocationSharingChanged();
       const { error: updateError } = await supabase.rpc("update_my_location", {
         p_lat: position.coords.latitude,
         p_lng: position.coords.longitude,
@@ -68,7 +70,7 @@ export function LocationSharingPrompt() {
         <div>
           <h2 className="text-base font-extrabold">Chia sẻ vị trí với người ấy?</h2>
           <p className="mt-1 text-xs leading-relaxed text-[#786D73]">
-            Chỉ lưu vị trí mới nhất. Chia sẻ tiếp tục cho đến khi bạn tự tắt trong Cài đặt.
+            Chỉ lưu vị trí mới nhất. Khi bật chia sẻ, vị trí tự cập nhật lúc ứng dụng đang mở. Trình duyệt có thể tạm dừng định vị khi app ở nền hoặc đã đóng; GPS thường xuyên có thể dùng nhiều pin. Bạn có thể dừng trong Cài đặt.
           </p>
         </div>
         {message && <p role="alert" className="rounded-xl bg-[#FFF1F2] px-3 py-2 text-xs font-semibold text-[#B4233D]">{message}</p>}

@@ -92,13 +92,18 @@ Migration `20261018000016_location_sharing.sql` và
 `start_location_sharing`, `stop_location_sharing`, `update_my_location`,
 `get_partner_location`, `get_my_sharing_status`. Chia sẻ luôn mặc định tắt và
 bắt buộc chọn thời hạn từ 1 đến 8 giờ; hết hạn thì người kia không còn thấy.
-Không có chia sẻ vô thời hạn, theo dõi nền hoặc lịch sử vị trí. Chỉ chạy migration sau các
+Không có theo dõi nền được bảo đảm hoặc lịch sử vị trí. Bộ theo dõi ở layout
+chung cập nhật khi người dùng đã bật chia sẻ và ứng dụng đang chạy; trình duyệt
+có thể tạm dừng trang khi ứng dụng bị đưa xuống nền hoặc đóng, nên cần mở lại
+ứng dụng để tiếp tục lấy vị trí. Chỉ chạy migration sau các
 migration nền tảng hiện có. Tab Bản đồ dùng Leaflet + OpenStreetMap, không cần
 API key; tile công cộng không bị service worker cache. Header
 `Permissions-Policy` cho phép geolocation trên chính website. Lần đầu vào app,
 người dùng được hỏi có muốn chia sẻ vị trí hay không; sau đó có thể bật/tắt lại
-trong Cài đặt. Vị trí chỉ được gửi khi người dùng đã đồng ý, đang chia sẻ và
-tab trình duyệt còn hiển thị.
+trong Cài đặt. Vị trí chỉ được gửi khi người dùng đã đồng ý và đang chia sẻ.
+Mỗi lần trình duyệt báo có vị trí mới, app gửi nếu đã di chuyển khoảng 25 m
+hoặc đã qua ít nhất 15 giây từ lần gửi trước. Vị trí nền không được bảo đảm
+trên PWA.
 
 Production có thể giữ job `purge_expired_locations()` mỗi 5 phút bằng pg_cron
 để dọn các bản ghi đã hết hạn:
