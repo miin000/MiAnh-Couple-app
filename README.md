@@ -131,17 +131,18 @@ service-role key vào trình duyệt.
 Migration `20261024000027_phase9_status_push.sql` thêm note có hạn dùng,
 RPC `get_couple_statuses`, hộp thư, cài đặt thông báo và đăng ký Web Push.
 Tạo khóa VAPID bằng `npx web-push generate-vapid-keys`, đặt
-`NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` và một
+`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` và một
 `DISPATCH_NOTIFICATIONS_SECRET` chỉ ở Supabase Edge Function. Worker
 `supabase/functions/dispatch-notifications` yêu cầu header bí mật này; không
 đưa service-role key vào client. pg_cron có thể gọi worker theo lịch của
 project sau khi cấu hình secret.
 
-Production: trong Vercel Project Settings → Environment Variables, đặt
-`NEXT_PUBLIC_VAPID_PUBLIC_KEY` bằng đúng public key VAPID đã cấu hình ở Edge
-Function, áp dụng cho Production, rồi redeploy. Đây là biến public dùng ở lúc
-build; thêm biến sau khi deploy không cập nhật bản đang chạy. Không đặt khóa
-private VAPID hoặc service-role vào Vercel với tiền tố `NEXT_PUBLIC_`.
+Production: route `/api/push/config` đọc `VAPID_PUBLIC_KEY` ở runtime và trả
+public key cho trình duyệt. Có thể dùng `NEXT_PUBLIC_VAPID_PUBLIC_KEY` để tương
+thích ngược, nhưng tên `VAPID_PUBLIC_KEY` được khuyến nghị. Public key trong
+Vercel phải trùng với `VAPID_PUBLIC_KEY` ở Supabase Edge Function. Sau khi đổi
+biến hoặc code, redeploy Production. Chỉ public key được trả về trình duyệt;
+không đưa khóa private hoặc service-role vào `NEXT_PUBLIC_*`.
 
 Service worker không cache dữ liệu Supabase, note, hộp thư, khoản chi hoặc vị
 trí. Trên iPhone, nút bật chỉ hoạt động sau khi PWA được thêm vào màn hình

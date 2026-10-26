@@ -25,6 +25,7 @@ export function CoupleStatusBoard({ initialStatuses, presets }: { initialStatuse
   const [emoji, setEmoji] = useState(initialStatuses.find((item) => item.is_me)?.emoji ?? "💬");
   const [hours, setHours] = useState(12);
   const [notify, setNotify] = useState(true);
+  const [actionError, setActionError] = useState("");
   const [pending, startTransition] = useTransition();
   const supabase = useMemo(() => createClient(), []);
   const refresh = async () => {
@@ -46,11 +47,26 @@ export function CoupleStatusBoard({ initialStatuses, presets }: { initialStatuse
   const me = statuses.find((item) => item.is_me);
   const partner = statuses.find((item) => !item.is_me);
   const save = () => startTransition(async () => {
-    const result = await saveMyStatusAction({ emoji, noteText: note.trim(), hours, notifyPartner: notify });
-    if (result.success) { setEditorOpen(false); await refresh(); }
+    setActionError("");
+    try {
+      const result = await saveMyStatusAction({ emoji, noteText: note.trim(), hours, notifyPartner: notify });
+      if (result.success) { setEditorOpen(false); await refresh(); }
+      else setActionError(result.message || "Không thể lưu ghi chú. Hãy thử lại.");
+    } catch (error) {
+      console.error("Save note action failed:", error);
+      setActionError("Máy chủ chưa phản hồi được thao tác lưu. Hãy tải lại trang rồi thử lại.");
+    }
   });
   const clear = () => startTransition(async () => {
-    if ((await clearMyStatusAction()).success) { setEditorOpen(false); await refresh(); }
+    setActionError("");
+    try {
+      const result = await clearMyStatusAction();
+      if (result.success) { setEditorOpen(false); await refresh(); }
+      else setActionError(result.message || "Không thể xóa ghi chú. Hãy thử lại.");
+    } catch (error) {
+      console.error("Clear note action failed:", error);
+      setActionError("Máy chủ chưa phản hồi được thao tác xóa. Hãy tải lại trang rồi thử lại.");
+    }
   });
   if (!me || !partner) return null;
   const myNote = me.seconds_left > 0 ? me.note_text : null;
@@ -73,6 +89,6 @@ export function CoupleStatusBoard({ initialStatuses, presets }: { initialStatuse
       </div>
     </div>
     {selected && <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 p-4" onClick={() => setSelected(null)}><div className="w-full max-w-md rounded-3xl bg-white p-5" onClick={(event) => event.stopPropagation()}><button type="button" className="float-right" onClick={() => setSelected(null)}><X className="h-5 w-5" /></button><p className="font-bold">{selected.emoji} {selected.note_text}</p><p className="mt-2 text-xs text-[#786D73]">Cập nhật {selected.updated_at ? new Date(selected.updated_at).toLocaleString("vi-VN") : "vừa xong"}</p></div></div>}
-    {editorOpen && <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 p-4" onClick={() => setEditorOpen(false)}><div className="w-full max-w-md space-y-4 rounded-t-3xl bg-white p-5" onClick={(event) => event.stopPropagation()}><div className="flex items-center justify-between"><h2 className="font-extrabold">Ghi chú của mình</h2><button type="button" onClick={() => setEditorOpen(false)}><X /></button></div><div className="grid grid-cols-6 gap-2">{presets.map((preset) => <button key={preset.id} type="button" onClick={() => { setEmoji(preset.emoji); setNote(preset.label); }} className={`rounded-xl border p-2 text-xl ${emoji === preset.emoji ? "border-[#7C4DFF] bg-[#F0E9FF]" : ""}`}>{preset.emoji}</button>)}</div><label className="block text-xs font-bold">Tự viết<textarea value={note} maxLength={80} onChange={(event) => setNote(event.target.value)} className="mt-1 min-h-20 w-full rounded-xl border border-[#E5D8FF] p-3 text-sm" /><span className="text-[10px] text-[#9E9096]">{note.length}/80</span></label><div className="flex gap-2"><select value={hours} onChange={(event) => setHours(Number(event.target.value))} className="min-h-11 flex-1 rounded-xl border px-3 text-sm">{[1, 4, 12, 24].map((value) => <option key={value} value={value}>{value} giờ</option>)}</select><label className="flex min-h-11 flex-1 items-center gap-2 rounded-xl border px-3 text-xs"><input type="checkbox" checked={notify} onChange={(event) => setNotify(event.target.checked)} /> Báo cho người ấy</label></div><Button className="w-full" disabled={pending} onClick={save}>Lưu ghi chú</Button>{me.note_text && <button type="button" disabled={pending} onClick={clear} className="w-full text-xs font-bold text-red-500">Xóa ghi chú</button>}</div></div>}
+    {editorOpen && <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 p-4" onClick={() => setEditorOpen(false)}><div className="w-full max-w-md space-y-4 rounded-t-3xl bg-white p-5" onClick={(event) => event.stopPropagation()}><div className="flex items-center justify-between"><h2 className="font-extrabold">Ghi chú của mình</h2><button type="button" onClick={() => setEditorOpen(false)}><X /></button></div><div className="grid grid-cols-6 gap-2">{presets.map((preset) => <button key={preset.id} type="button" onClick={() => { setEmoji(preset.emoji); setNote(preset.label); }} className={`rounded-xl border p-2 text-xl ${emoji === preset.emoji ? "border-[#7C4DFF] bg-[#F0E9FF]" : ""}`}>{preset.emoji}</button>)}</div><label className="block text-xs font-bold">Tự viết<textarea value={note} maxLength={80} onChange={(event) => setNote(event.target.value)} className="mt-1 min-h-20 w-full rounded-xl border border-[#E5D8FF] p-3 text-sm" /><span className="text-[10px] text-[#9E9096]">{note.length}/80</span></label><div className="flex gap-2"><select value={hours} onChange={(event) => setHours(Number(event.target.value))} className="min-h-11 flex-1 rounded-xl border px-3 text-sm">{[1, 4, 12, 24].map((value) => <option key={value} value={value}>{value} giờ</option>)}</select><label className="flex min-h-11 flex-1 items-center gap-2 rounded-xl border px-3 text-xs"><input type="checkbox" checked={notify} onChange={(event) => setNotify(event.target.checked)} /> Báo cho người ấy</label></div><Button className="w-full" disabled={pending} onClick={save}>Lưu ghi chú</Button>{actionError && <p role="alert" className="text-xs text-red-600">{actionError}</p>}{me.note_text && <button type="button" disabled={pending} onClick={clear} className="w-full text-xs font-bold text-red-500">Xóa ghi chú</button>}</div></div>}
   </section>;
 }

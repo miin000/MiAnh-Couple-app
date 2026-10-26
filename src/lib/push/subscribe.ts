@@ -1,13 +1,15 @@
 import { createClient } from "@/lib/supabase/client";
+import { decodeVapidPublicKey, getVapidPublicKey } from "@/lib/push/config";
 
 export async function enablePushNotifications() {
-  const key = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-  if (!key || key === "your-vapid-public-key") {
+  const key = await getVapidPublicKey();
+  if (!key) {
     throw new Error("Ứng dụng chưa được cấu hình khóa thông báo. Hãy báo quản trị viên cấu hình VAPID trên máy chủ.");
   }
   if (!("Notification" in window) || !("serviceWorker" in navigator) || !("PushManager" in window)) {
     throw new Error("Thiết bị hoặc trình duyệt này chưa hỗ trợ thông báo đẩy.");
   }
+  const applicationServerKey = decodeVapidPublicKey(key);
   if (/iPhone|iPad|iPod/i.test(navigator.userAgent) &&
       !window.matchMedia("(display-mode: standalone)").matches &&
       !(navigator as Navigator & { standalone?: boolean }).standalone) {
@@ -24,14 +26,6 @@ export async function enablePushNotifications() {
   }
 
   const registration = await navigator.serviceWorker.ready;
-  const padding = "=".repeat((4 - key.length % 4) % 4);
-  const applicationServerKey = Uint8Array.from(
-    atob((key + padding).replace(/-/g, "+").replace(/_/g, "/")),
-    (character) => character.charCodeAt(0),
-  );
-  if (applicationServerKey.length !== 65 || applicationServerKey[0] !== 4) {
-    throw new Error("Khóa thông báo trên máy chủ không hợp lệ. Hãy báo quản trị viên kiểm tra cấu hình VAPID.");
-  }
   const subscription = await registration.pushManager.getSubscription() ??
     await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey });
   const json = subscription.toJSON();

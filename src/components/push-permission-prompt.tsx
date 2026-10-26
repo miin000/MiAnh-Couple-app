@@ -5,25 +5,28 @@ import { Bell, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { enablePushNotifications } from "@/lib/push/subscribe";
-
-const vapidConfigured = Boolean(
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY &&
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY !== "your-vapid-public-key",
-);
+import { getVapidPublicKey } from "@/lib/push/config";
 
 export function PushPermissionPrompt() {
   const [visible, setVisible] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const [vapidConfigured, setVapidConfigured] = useState(false);
 
   useEffect(() => {
     let active = true;
     if (!("Notification" in window) || !("serviceWorker" in navigator) || !("PushManager" in window)) return;
-    void navigator.serviceWorker.ready.then(async (registration) => {
+    void Promise.all([navigator.serviceWorker.ready, getVapidPublicKey()]).then(async ([registration, key]) => {
       const subscription = await registration.pushManager.getSubscription();
-      if (active) setVisible(Notification.permission !== "granted" || !subscription);
+      if (active) {
+        setVapidConfigured(Boolean(key));
+        setVisible(Notification.permission !== "granted" || !subscription);
+      }
     }).catch(() => {
-      if (active) setVisible(Notification.permission !== "granted");
+      if (active) {
+        setVapidConfigured(false);
+        setVisible(Notification.permission !== "granted");
+      }
     });
     return () => { active = false; };
   }, []);
