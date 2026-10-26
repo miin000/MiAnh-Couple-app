@@ -27,6 +27,8 @@ Deno.serve(async (request) => {
     const { data: subscriptions } = await supabase
       .from("push_subscriptions").select("endpoint,p256dh,auth_key,auth")
       .eq("user_id", row.recipient_id);
+    let delivered = 0;
+    let failed = false;
     for (const subscription of subscriptions ?? []) {
       try {
         await webpush.sendNotification({
@@ -34,11 +36,20 @@ Deno.serve(async (request) => {
           keys: { p256dh: subscription.p256dh, auth: subscription.auth_key || subscription.auth },
         }, JSON.stringify({ title: row.title, body: row.body, url: row.data?.url || "/home", tag: row.kind || row.id }));
         sent++;
+        delivered++;
       } catch (sendError) {
         console.error("Push delivery failed", sendError);
+        const statusCode = (sendError as { statusCode?: number }).statusCode;
+        if (statusCode === 404 || statusCode === 410) {
+          await supabase.from("push_subscriptions").delete().eq("endpoint", subscription.endpoint);
+        } else {
+          failed = true;
+        }
       }
     }
-    await supabase.from("notifications").update({ push_sent_at: new Date().toISOString() }).eq("id", row.id);
+    if (!failed && (delivered > 0 || !subscriptions?.length)) {
+      await supabase.from("notifications").update({ push_sent_at: new Date().toISOString() }).eq("id", row.id);
+    }
   }
   return Response.json({ sent });
 });

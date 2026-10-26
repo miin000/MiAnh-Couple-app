@@ -152,6 +152,20 @@ qua pg_cron, chống lặp theo ngày và không gửi nhắc bài đã hoàn th
 chỉ tạo thông báo cho người ấy khi người ấy bật loại thông báo tương ứng và
 giới hạn một thông báo trong 5 phút.
 
+Migration `20261026000030_schedule_web_push_dispatch.sql` lên lịch gọi Edge
+Function gửi push mỗi phút. Để bật gửi push thật, deploy
+`supabase/functions/dispatch-notifications`, bật các extension `pg_cron`,
+`pg_net`, `vault`, rồi lưu hai secret trong Supabase Vault:
+
+- `supabase_url`: URL đầy đủ `https://<project-ref>.supabase.co/functions/v1/dispatch-notifications`
+- `dispatch_notifications_secret`: cùng giá trị với secret Edge Function `DISPATCH_NOTIFICATIONS_SECRET`
+
+Đặt `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` và
+`DISPATCH_NOTIFICATIONS_SECRET` trong secrets của Edge Function. Chạy migration
+sau khi bật extensions; lịch sẽ gọi worker mỗi phút để gửi cả note và thông báo
+học tập đang chờ. Khóa riêng VAPID và service-role chỉ nằm ở Supabase, không đưa
+vào biến `NEXT_PUBLIC_*`.
+
 ### 1. Cài đặt phụ thuộc
 ```bash
 npm install

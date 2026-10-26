@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Bell, BellOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { enablePushNotifications } from "@/lib/push/subscribe";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
@@ -58,22 +59,7 @@ export function NotificationSettings() {
         setMessage("Đã tắt thông báo trên thiết bị này.");
         return;
       }
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") {
-        setMessage(permission === "denied"
-          ? "Thông báo đang bị chặn. Hãy cho phép Mi & Anh trong cài đặt quyền của trình duyệt."
-          : "Bạn chưa cho phép thông báo.");
-        return;
-      }
-      const key = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-      if (!key) { setMessage("Ứng dụng chưa được cấu hình khóa thông báo."); return; }
-      const padding = "=".repeat((4 - key.length % 4) % 4);
-      const applicationServerKey = Uint8Array.from(atob((key + padding).replace(/-/g, "+").replace(/_/g, "/")), (char) => char.charCodeAt(0));
-      const subscription = await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey });
-      const json = subscription.toJSON();
-      if (!json.endpoint || !json.keys?.p256dh || !json.keys.auth) throw new Error("Không đọc được đăng ký thông báo.");
-      const { error } = await supabase.rpc("register_push_subscription", { p_endpoint: json.endpoint, p_p256dh: json.keys.p256dh, p_auth_key: json.keys.auth, p_user_agent: navigator.userAgent });
-      if (error) throw error;
+      await enablePushNotifications();
       setEnabled(true);
       setMessage("Đã bật thông báo trên thiết bị này.");
     } catch (error) {

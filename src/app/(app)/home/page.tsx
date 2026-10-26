@@ -12,6 +12,7 @@ import Link from "next/link";
 import { getDaysTogether } from "@/lib/utils";
 import { getCoupleStatuses, getStatusPresets } from "@/features/couple/status-queries";
 import { CoupleStatusBoard } from "@/features/couple/components/couple-status-board";
+import { PushPermissionPrompt } from "@/components/push-permission-prompt";
 
 interface Member {
   user_id: string;
@@ -47,6 +48,7 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-4">
+      <PushPermissionPrompt />
       <PageHeader
         category="HÔM NAY"
         title={`Chào ${coupleNames}`}
@@ -54,7 +56,6 @@ export default async function HomePage() {
 
       {isPaired ? (
         <div className="rounded-[2rem] border border-[#F2EAE5] bg-white p-2 shadow-[0_5px_18px_rgba(32,26,29,0.04)]">
-          <CoupleStatusBoard initialStatuses={statuses} presets={statusPresets} />
           <div className="relative mt-3 overflow-hidden rounded-[1.7rem] bg-gradient-to-br from-[#7C4DFF] via-[#F45B69] to-[#FF758F] p-6 text-white shadow-[0_10px_25px_rgba(250,82,113,0.35)]">
             <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-xl" />
             <div className="pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-white/10 blur-lg" />
@@ -72,6 +73,7 @@ export default async function HomePage() {
               </div>
             </div>
           </div>
+          <CoupleStatusBoard initialStatuses={statuses} presets={statusPresets} />
         </div>
       ) : (
         <HomePairCard inviteCode={coupleInfo?.active_invite?.code} />

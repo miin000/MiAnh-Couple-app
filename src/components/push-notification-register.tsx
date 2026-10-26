@@ -13,9 +13,12 @@ export function PushNotificationRegister() {
       const json = subscription.toJSON();
       if (!json.endpoint || !json.keys?.p256dh || !json.keys.auth) return;
       const supabase = createClient();
-      await supabase.from("push_subscriptions").upsert({
-        endpoint: json.endpoint, p256dh: json.keys.p256dh, auth: json.keys.auth,
-      }, { onConflict: "user_id,endpoint" });
+      await supabase.rpc("register_push_subscription", {
+        p_endpoint: json.endpoint,
+        p_p256dh: json.keys.p256dh,
+        p_auth_key: json.keys.auth,
+        p_user_agent: navigator.userAgent,
+      });
     }).catch((error) => console.error("Push registration error:", error));
   }, []);
   return null;
