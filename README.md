@@ -137,6 +137,12 @@ Tạo khóa VAPID bằng `npx web-push generate-vapid-keys`, đặt
 đưa service-role key vào client. pg_cron có thể gọi worker theo lịch của
 project sau khi cấu hình secret.
 
+Production: trong Vercel Project Settings → Environment Variables, đặt
+`NEXT_PUBLIC_VAPID_PUBLIC_KEY` bằng đúng public key VAPID đã cấu hình ở Edge
+Function, áp dụng cho Production, rồi redeploy. Đây là biến public dùng ở lúc
+build; thêm biến sau khi deploy không cập nhật bản đang chạy. Không đặt khóa
+private VAPID hoặc service-role vào Vercel với tiền tố `NEXT_PUBLIC_`.
+
 Service worker không cache dữ liệu Supabase, note, hộp thư, khoản chi hoặc vị
 trí. Trên iPhone, nút bật chỉ hoạt động sau khi PWA được thêm vào màn hình
 chính. Cần kiểm thử push trên Android Chrome PWA và iPhone thật (iOS 16.4+);
