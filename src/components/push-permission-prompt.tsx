@@ -12,6 +12,7 @@ export function PushPermissionPrompt() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [vapidConfigured, setVapidConfigured] = useState(false);
+  const [vapidPublicKey, setVapidPublicKey] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -20,11 +21,13 @@ export function PushPermissionPrompt() {
       const subscription = await registration.pushManager.getSubscription();
       if (active) {
         setVapidConfigured(Boolean(key));
+        setVapidPublicKey(key);
         setVisible(Notification.permission !== "granted" || !subscription);
       }
     }).catch(() => {
       if (active) {
         setVapidConfigured(false);
+        setVapidPublicKey(null);
         setVisible(Notification.permission !== "granted");
       }
     });
@@ -36,7 +39,8 @@ export function PushPermissionPrompt() {
     setBusy(true);
     setMessage("");
     try {
-      await enablePushNotifications();
+      if (!vapidPublicKey) throw new Error("Ứng dụng chưa được cấu hình khóa thông báo.");
+      await enablePushNotifications(vapidPublicKey);
       setVisible(false);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Không thể bật thông báo. Hãy thử lại.");

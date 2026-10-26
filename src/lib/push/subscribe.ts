@@ -1,11 +1,7 @@
 import { createClient } from "@/lib/supabase/client";
-import { decodeVapidPublicKey, getVapidPublicKey } from "@/lib/push/config";
+import { decodeVapidPublicKey } from "@/lib/push/config";
 
-export async function enablePushNotifications() {
-  const key = await getVapidPublicKey();
-  if (!key) {
-    throw new Error("Ứng dụng chưa được cấu hình khóa thông báo. Hãy báo quản trị viên cấu hình VAPID trên máy chủ.");
-  }
+export async function enablePushNotifications(key: string) {
   if (!("Notification" in window) || !("serviceWorker" in navigator) || !("PushManager" in window)) {
     throw new Error("Thiết bị hoặc trình duyệt này chưa hỗ trợ thông báo đẩy.");
   }
@@ -16,9 +12,11 @@ export async function enablePushNotifications() {
     throw new Error("Trên iPhone, hãy thêm Mi & Anh vào Màn hình chính rồi mở ứng dụng để bật thông báo.");
   }
 
-  const permission = Notification.permission === "granted"
-    ? "granted"
-    : await Notification.requestPermission();
+  // Call requestPermission before the first await so browsers retain the tap's user activation.
+  const permissionRequest: Promise<NotificationPermission> = Notification.permission === "granted"
+    ? Promise.resolve("granted")
+    : Notification.requestPermission();
+  const permission = await permissionRequest;
   if (permission !== "granted") {
     throw new Error(permission === "denied"
       ? "Thông báo đang bị chặn. Hãy cho phép Mi & Anh trong cài đặt trình duyệt hoặc thiết bị."
