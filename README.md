@@ -63,7 +63,7 @@ where id = 'UUID_CUA_TAI_KHOAN';
 Migration `20261024000026_learn_phase4b_admin_phase7b.sql` là nguồn sự thật
 cho tiến độ học. Client chỉ gọi RPC; không tự tính box, trạng thái, số lần
 đúng/sai hoặc ngày ôn tiếp theo. Leitner dùng khoảng cách theo box cũ:
-`1, 2, 4, 7, 14, 30` ngày; trả lời sai luôn về box 1 và ôn sau 1 ngày.
+`1, 3, 5, 10, 20` ngày; trả lời sai luôn về box 1 và ôn sau 1 ngày.
 Progress của hai người độc lập. `lesson_completions` lưu việc hoàn thành bài
 riêng từng người; partner chỉ nhận trạng thái hoàn thành và số liệu tổng hợp,
 không nhận tiến độ từng từ. Review queue chỉ lấy từ active, sắp xếp quá hạn
@@ -173,6 +173,13 @@ sau khi bật extensions; lịch sẽ gọi worker mỗi phút để gửi cả 
 học tập đang chờ. Khóa riêng VAPID và service-role chỉ nằm ở Supabase, không đưa
 vào biến `NEXT_PUBLIC_*`.
 
+Function này được gọi bởi pg_cron bằng header `x-dispatch-secret`, không dùng
+JWT người dùng. `supabase/config.toml` tắt kiểm tra JWT mặc định riêng cho
+dispatcher; phần thân Function vẫn kiểm tra secret trước khi xử lý. Sau khi đổi
+file config hoặc code, deploy lại bằng
+`supabase functions deploy dispatch-notifications --project-ref <project-ref>`.
+Biến đặt trong Vercel không tự được chuyển sang Supabase Edge Functions.
+
 ### 1. Cài đặt phụ thuộc
 ```bash
 npm install
@@ -213,6 +220,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key # Chỉ dùng server, không l�
    - `20261015000013_learn_phase5_enhancements.sql` (Phase 5: RPC nộp thử thách đôi mutual-reveal, RPC thống kê học tập đôi và Leitner sync)
    - `20261024000026_learn_phase4b_admin_phase7b.sql` (Phase 4B/7B: progress RPC, Leitner, lesson completion, staging import CSV/XLSX và lịch bài)
    - `20261025000029_fix_vocabulary_import_ipa.sql` (Giữ IPA khi nhập hoặc cập nhật từ vựng qua batch import)
+   - `20261116000030_fix_daily_learning_and_review_intervals.sql` (Bổ sung đủ 10 từ cho bài mới và lịch ôn 1–3–5–10–20 ngày)
 3. Chạy file `supabase/seed.sql` để nạp nội dung mẫu (các câu hỏi, từ vựng, gợi ý hẹn hò).
 > **Lưu ý:** Các file trong thư mục `supabase/tests/` (`00_supabase_stub.sql`, `rls_smoke_test.sql`) chỉ dùng để test môi trường CI/Postgres độc lập, không chạy lên Supabase Cloud.
 

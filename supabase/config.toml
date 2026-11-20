@@ -1,0 +1,4 @@
+[functions.dispatch-notifications]
+# The pg_cron caller authenticates with the x-dispatch-secret header in the
+# function itself, rather than a user JWT.
+verify_jwt = false

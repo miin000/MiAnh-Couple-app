@@ -136,10 +136,10 @@ export function LeitnerReview({
         <div className="grid grid-cols-5 gap-1.5 text-center">
           {[
             { box: 1, days: "1 ngày", count: boxesDistribution.b1 },
-            { box: 2, days: "2 ngày", count: boxesDistribution.b2 },
-            { box: 3, days: "4 ngày", count: boxesDistribution.b3 },
-            { box: 4, days: "7 ngày", count: boxesDistribution.b4 },
-            { box: 5, days: "14 ngày", count: boxesDistribution.b5 },
+            { box: 2, days: "3 ngày", count: boxesDistribution.b2 },
+            { box: 3, days: "5 ngày", count: boxesDistribution.b3 },
+            { box: 4, days: "10 ngày", count: boxesDistribution.b4 },
+            { box: 5, days: "20 ngày", count: boxesDistribution.b5 },
           ].map((item) => (
             <div
               key={item.box}
