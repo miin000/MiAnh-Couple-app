@@ -1,12 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/features/couple/queries";
 import { DailyQuestionData, Game, Question, QuestionKind } from "@/types/play";
 
 export async function getDailyQuestion(): Promise<DailyQuestionData | null> {
   const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     return null;
@@ -21,32 +19,40 @@ export async function getDailyQuestion(): Promise<DailyQuestionData | null> {
     return null;
   }
 
-  // 2. Fetch the question details
-  const { data: question, error: questionError } = await supabase
-    .from("questions")
-    .select("*")
-    .eq("id", session.question_id)
-    .single();
+  const [questionResult, membersResult] = await Promise.all([
+    supabase
+      .from("questions")
+      .select("*")
+      .eq("id", session.question_id)
+      .single(),
+    supabase
+      .from("couple_members")
+      .select("user_id")
+      .eq("couple_id", session.couple_id)
+      .is("left_at", null),
+  ]);
 
-  if (questionError || !question) {
+  if (questionResult.error || !questionResult.data) {
     return null;
   }
-
-  // 3. Fetch couple members to distinguish user vs partner
-  const { data: members } = await supabase
-    .from("couple_members")
-    .select("user_id")
-    .eq("couple_id", session.couple_id)
-    .is("left_at", null);
+  const question = questionResult.data;
+  const members = membersResult.data;
 
   const memberIds = (members || []).map((m) => m.user_id);
   const partnerId = memberIds.find((id) => id !== user.id) || null;
 
-  // Fetch profiles
-  const { data: profiles } = await supabase
+  const profilesPromise = supabase
     .from("profiles")
     .select("id, display_name, avatar_url")
     .in("id", memberIds);
+  const answersPromise = supabase
+    .from("game_answers")
+    .select("*")
+    .eq("session_id", session.id);
+  const [{ data: profiles }, { data: answers }] = await Promise.all([
+    profilesPromise,
+    answersPromise,
+  ]);
 
   const profilesMap = new Map((profiles || []).map((p) => [p.id, p]));
   const myProfile = profilesMap.get(user.id) || {
@@ -55,12 +61,6 @@ export async function getDailyQuestion(): Promise<DailyQuestionData | null> {
     avatar_url: null,
   };
   const partnerProfile = partnerId ? profilesMap.get(partnerId) || null : null;
-
-  // 4. Fetch answers for this session (RLS safely filters visibility)
-  const { data: answers } = await supabase
-    .from("game_answers")
-    .select("*")
-    .eq("session_id", session.id);
 
   const answersList = answers || [];
   const myAnswer = answersList.find((a) => a.user_id === user.id) || null;

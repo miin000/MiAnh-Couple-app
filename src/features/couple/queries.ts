@@ -22,17 +22,21 @@ export interface CurrentCoupleData {
   } | null;
 }
 
-export const getCurrentCouple = cache(async function getCurrentCouple(): Promise<CurrentCoupleData | null> {
+export const getCurrentUser = cache(async function getCurrentUser() {
   const supabase = await createClient();
-
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  return user;
+});
 
+export const getCurrentCouple = cache(async function getCurrentCouple(): Promise<CurrentCoupleData | null> {
+  const user = await getCurrentUser();
   if (!user) {
     return null;
   }
 
+  const supabase = await createClient();
   // Check current couple id via RPC
   const { data: coupleId, error: rpcError } = await supabase.rpc(
     "current_couple_id"
@@ -42,33 +46,47 @@ export const getCurrentCouple = cache(async function getCurrentCouple(): Promise
     return null;
   }
 
-  // Fetch couple info
-  const { data: couple, error: coupleError } = await supabase
-    .from("couples")
-    .select("id, start_date, timezone")
-    .eq("id", coupleId)
-    .single();
+  const [coupleResult, membersResult] = await Promise.all([
+    supabase
+      .from("couples")
+      .select("id, start_date, timezone")
+      .eq("id", coupleId)
+      .single(),
+    supabase
+      .from("couple_members")
+      .select("user_id, joined_at")
+      .eq("couple_id", coupleId)
+      .is("left_at", null),
+  ]);
 
-  if (coupleError || !couple) {
+  if (coupleResult.error || !coupleResult.data) {
     return null;
   }
-
-  // Fetch active members
-  const { data: membersRows, error: membersError } = await supabase
-    .from("couple_members")
-    .select("user_id, joined_at")
-    .eq("couple_id", coupleId)
-    .is("left_at", null);
-
-  if (membersError || !membersRows) {
+  const couple = coupleResult.data;
+  const membersRows = membersResult.data;
+  if (membersResult.error || !membersRows) {
     return null;
   }
 
   const memberIds = membersRows.map((m) => m.user_id);
-  const { data: profilesRows } = await supabase
+  const profilesPromise = supabase
     .from("profiles")
     .select("id, display_name, avatar_url")
     .in("id", memberIds);
+  const invitePromise = membersRows.length < 2
+    ? supabase
+        .from("invitations")
+        .select("id, code, expires_at, used_count, max_uses, revoked_at")
+        .eq("couple_id", coupleId)
+        .is("revoked_at", null)
+        .gt("expires_at", new Date().toISOString())
+        .order("created_at", { ascending: false })
+        .limit(1)
+    : Promise.resolve({ data: null });
+  const [{ data: profilesRows }, { data: inviteRows }] = await Promise.all([
+    profilesPromise,
+    invitePromise,
+  ]);
 
   const profilesMap = new Map(
     (profilesRows || []).map((p) => [p.id, p])
@@ -85,27 +103,15 @@ export const getCurrentCouple = cache(async function getCurrentCouple(): Promise
     };
   });
 
-  // Fetch latest active invitation if only 1 member
   let activeInvite: CurrentCoupleData["active_invite"] = null;
-  if (members.length < 2) {
-    const { data: inviteRows } = await supabase
-      .from("invitations")
-      .select("id, code, expires_at, used_count, max_uses, revoked_at")
-      .eq("couple_id", coupleId)
-      .is("revoked_at", null)
-      .gt("expires_at", new Date().toISOString())
-      .order("created_at", { ascending: false })
-      .limit(1);
-
-    if (inviteRows && inviteRows.length > 0) {
-      const inv = inviteRows[0];
-      if (inv.used_count < inv.max_uses) {
-        activeInvite = {
-          id: inv.id,
-          code: inv.code,
-          expires_at: inv.expires_at,
-        };
-      }
+  if (inviteRows && inviteRows.length > 0) {
+    const inv = inviteRows[0];
+    if (inv.used_count < inv.max_uses) {
+      activeInvite = {
+        id: inv.id,
+        code: inv.code,
+        expires_at: inv.expires_at,
+      };
     }
   }
 

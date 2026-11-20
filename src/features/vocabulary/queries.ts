@@ -1,12 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/features/couple/queries";
 import { DailyLessonViewData, LessonWordItem, PartnerProgress } from "@/types/learn";
 
 export async function getTodaysLesson(): Promise<DailyLessonViewData | null> {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     return null;
@@ -50,12 +49,28 @@ export async function getTodaysLesson(): Promise<DailyLessonViewData | null> {
 
   const wordIds = lessonWordsData.map((lw) => lw.word_id);
 
-  // 3. Fetch collocations for all words in this lesson
-  const { data: collocationsData } = await supabase
-    .from("vocabulary_collocations")
-    .select("word_id, phrase, position")
-    .in("word_id", wordIds)
-    .order("position", { ascending: true });
+  const [collocationsResult, userProgressResult, progressSummariesResult, memberRowsResult] =
+    await Promise.all([
+      supabase
+        .from("vocabulary_collocations")
+        .select("word_id, phrase, position")
+        .in("word_id", wordIds)
+        .order("position", { ascending: true }),
+      supabase
+        .from("user_word_progress")
+        .select("word_id, status, box, next_review_at, correct_count, wrong_count")
+        .eq("user_id", user.id)
+        .in("word_id", wordIds),
+      supabase.rpc("partner_progress_summary", { p_lesson_id: lesson.id }),
+      supabase
+        .from("couple_members")
+        .select("user_id, couple_id")
+        .eq("user_id", user.id)
+        .is("left_at", null)
+        .single(),
+    ]);
+
+  const collocationsData = collocationsResult.data;
 
   const collocationsByWord = new Map<string, string[]>();
   for (const c of collocationsData || []) {
@@ -64,12 +79,7 @@ export async function getTodaysLesson(): Promise<DailyLessonViewData | null> {
     collocationsByWord.set(c.word_id, arr);
   }
 
-  // 4. Fetch current user's progress for these words
-  const { data: userProgressData } = await supabase
-    .from("user_word_progress")
-    .select("word_id, status, box, next_review_at, correct_count, wrong_count")
-    .eq("user_id", user.id)
-    .in("word_id", wordIds);
+  const userProgressData = userProgressResult.data;
 
   const progressByWord = new Map<string, {
     status: "learning" | "review" | "mastered";
@@ -113,19 +123,8 @@ export async function getTodaysLesson(): Promise<DailyLessonViewData | null> {
     };
   });
 
-  // 6. Fetch partner progress summary via RPC
-  const { data: progressSummaries } = await supabase.rpc(
-    "partner_progress_summary",
-    { p_lesson_id: lesson.id }
-  );
-
-  // 7. Get couple members profiles
-  const { data: memberRows } = await supabase
-    .from("couple_members")
-    .select("user_id, couple_id")
-    .eq("user_id", user.id)
-    .is("left_at", null)
-    .single();
+  const progressSummaries = progressSummariesResult.data;
+  const memberRows = memberRowsResult.data;
 
   let partnerId: string | null = null;
   if (memberRows?.couple_id) {
@@ -187,9 +186,7 @@ export async function getTodaysLesson(): Promise<DailyLessonViewData | null> {
 export async function getDueReviewWords(): Promise<import("@/types/learn").DueReviewItem[]> {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) return [];
 
@@ -224,9 +221,7 @@ export async function getDueReviewWords(): Promise<import("@/types/learn").DueRe
 export async function getCoupleChallenge(): Promise<import("@/types/learn").CoupleChallengeViewData | null> {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) return null;
 
@@ -372,9 +367,7 @@ export async function getCoupleChallenge(): Promise<import("@/types/learn").Coup
 export async function getLearnStats(): Promise<import("@/types/learn").CoupleLearnStatsViewData | null> {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) return null;
 
