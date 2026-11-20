@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 
 export interface CoupleMemberInfo {
@@ -21,7 +22,7 @@ export interface CurrentCoupleData {
   } | null;
 }
 
-export async function getCurrentCouple(): Promise<CurrentCoupleData | null> {
+export const getCurrentCouple = cache(async function getCurrentCouple(): Promise<CurrentCoupleData | null> {
   const supabase = await createClient();
 
   const {
@@ -116,4 +117,4 @@ export async function getCurrentCouple(): Promise<CurrentCoupleData | null> {
     members,
     active_invite: activeInvite,
   };
-}
+});

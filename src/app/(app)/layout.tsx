@@ -14,24 +14,16 @@ export default async function AppLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
-
-  // Check if user has an active couple
-  const { data: coupleId } = await supabase.rpc("current_couple_id");
-
-  if (!coupleId) {
-    redirect("/pair");
-  }
   const couple = await getCurrentCouple();
-  const members = couple?.members ?? [];
+  if (!couple) {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    redirect(user ? "/pair" : "/login");
+  }
+  const members = couple.members;
 
   return (
     <div className="min-h-screen bg-[#FAF8FF] flex justify-center text-[#201A1D]">
